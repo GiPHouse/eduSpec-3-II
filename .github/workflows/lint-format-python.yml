@@ -1,0 +1,25 @@
+name: Ruff linter
+
+on:
+  [push,pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v6
+
+      - name: Install python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+
+      - name: Install Ruff
+        run:
+          pip install ruff
+
+      - name: Run Ruff linter
+        run:
+          ruff check --color always
