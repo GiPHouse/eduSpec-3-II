@@ -1,6 +1,12 @@
 import streamlit as st
 import pandas as pd
 
+from MultipleChoiceQuestion import MultipleChoiceQuestion
+from QuestionDrawer import QuestionDrawer
+
 st.write("""
 Hello world
 """)
+
+mcq = MultipleChoiceQuestion("hi",["aaa","bbb"],0,["true","false"])
+QuestionDrawer.drawQuestion(mcq)
