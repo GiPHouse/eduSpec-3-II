@@ -1,5 +1,6 @@
 from Question import Question
 from MultipleChoiceQuestion import MultipleChoiceQuestion
+from IntegerQuestion import IntegerQuestion
 
 class QuestionDrawer():
     
@@ -7,5 +8,7 @@ class QuestionDrawer():
     def drawQuestion(current_question:Question):
 
         if current_question is MultipleChoiceQuestion:
+            pass
+        if current_question is IntegerQuestion:
             pass
         
