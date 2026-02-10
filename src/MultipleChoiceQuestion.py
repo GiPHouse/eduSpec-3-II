@@ -3,12 +3,12 @@ from typing import *
 
 class MultipleChoiceQuestion(Question):
     
-    def __init__(self, bodytext:str, answers:List[str], correct_answer:int, feedbacks:List[str],imgpath:Optional[str]=None):
+    def __init__(self, title:str, bodytext:str, answers:List[str], correct_answer:int, feedbacks:List[str],imgpath:Optional[str]=None):
 
         assert (len(answers) == len(feedbacks))
         assert (correct_answer >=0 and correct_answer<len(answers))
 
-        super().__init__(bodytext,imgpath)
+        super().__init__(title,bodytext,imgpath)
         print(self.bodytext)
         self.answers = answers
         self.correct_answer = correct_answer
