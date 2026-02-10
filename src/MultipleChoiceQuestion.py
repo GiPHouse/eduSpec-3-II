@@ -14,10 +14,11 @@ class MultipleChoiceQuestion(Question):
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
 
-
+    'Returns if the users answer is correct and the feedback for the users answer'
     def verifyAndFeedback(self, user_input:int):
         return ((self.correct_answer == user_input), self.feedback(user_input))
 
+    'Returns the feedback for the users answer'
     def feedback(self,user_input):
         return self.feedbacks[user_input]
     
