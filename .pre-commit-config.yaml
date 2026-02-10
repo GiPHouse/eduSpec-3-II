@@ -1,4 +1,6 @@
 repos:
+  # Basic checks
+  # TODO: Add test file checking
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -8,16 +10,12 @@ repos:
       - id: mixed-line-ending
       - id: trailing-whitespace
         args: [--markdown-linebreak-ex=md]
-        exclude: .*/static/.*
       - id: end-of-file-fixer
-        exclude: .*/static.*
       - id: debug-statements
-      - id: name-tests-test
-        args: [--django]
-        exclude: .*/__mocks__.py
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.6
+    rev: v0.15.0
     hooks:
+      - id: ruff-check
+        args: [--fix]
       - id: ruff-format
-      - id: ruff
