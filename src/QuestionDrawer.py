@@ -1,9 +1,3 @@
-"""Public class for displaying questions
-
-Returns:
-_type_: Module
-"""
-
 import numpy as np
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -13,11 +7,7 @@ from SpectralQuestion import SpectralQuestion
 
 
 class QuestionDrawer:
-    """Public class for displaying questions
-
-    Returns:
-        _type_: Class
-    """
+    """Public class for displaying questions"""
 
     @staticmethod
     def drawQuestion(current_question: Question) -> None:

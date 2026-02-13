@@ -1,9 +1,6 @@
-"""The application itself"""
-
 import streamlit as st
 
 from QuestionDrawer import QuestionDrawer
-from MoleculeDisplay import MoleculeDisplay
 from SpectralQuestion import SpectralQuestion
 
 st.write("""
