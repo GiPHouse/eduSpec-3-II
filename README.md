@@ -1,3 +1,10 @@
+Code style:
+- snake_case for variables
+- camelCase for functions
+- PascalCase for classes
+- Google doc strings
+- Always use type hints for function parameters and return type
+
 This is the first commit to this repo, by Yusuf
 
 To be able to run src/main.py, use the following command:
