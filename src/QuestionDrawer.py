@@ -1,29 +1,30 @@
 import streamlit as st
 
 from Question import Question
-from MultipleChoiceQuestion import MultipleChoiceQuestion
-from IntegerQuestion import IntegerQuestion
 
-class QuestionDrawer():
-    
-    
+
+class QuestionDrawer:
+    """_summary_"""
+
     @staticmethod
-    def drawQuestion(current_question:Question):
+    def drawQuestion(current_question: Question) -> None:
+        """draws the parts of the question that are the same for all questions
 
-        if current_question is MultipleChoiceQuestion:
-            pass
-        if current_question is IntegerQuestion:
-            pass
-        
+        Args:
+            current_question (Question): _description_
+        """
         with st.container():
             st.title(current_question.title)
-            st.image(current_question.imgpath) #if imgpath is None it just does nothing?
+            if current_question.imgpath:
+                st.image(current_question.imgpath)
             st.text(current_question.bodytext)
+            st.title("this is a test")
 
-            #depending on question we have an input field or smth
+            # depending on question we have an input field or smth
+            user_input = current_question.drawYourself()
+            if st.button("Submit Answer", key="submit button"):
+                feedback = current_question.verifyAndFeedback(user_input)
+                st.write(feedback)
 
-            #if st.button: check answer
-            st.button("Submit Answer")
-
-            st.button("Reset")
-
+            # if st.button("Reset"):
+            #     st.rerun()
