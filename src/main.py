@@ -2,7 +2,9 @@
 
 import streamlit as st
 
-from Question import Question
+from QuestionDrawer import QuestionDrawer
+from MoleculeDisplay import MoleculeDisplay
+from SpectralQuestion import SpectralQuestion
 
 st.write("""
 Hello world
