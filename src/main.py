@@ -1,23 +1,23 @@
-import streamlit as st
-import pandas as pd
+"""The application itself"""
 
-from MultipleChoiceQuestion import MultipleChoiceQuestion
+import streamlit as st
+
 from QuestionDrawer import QuestionDrawer
 from MoleculeDisplay import MoleculeDisplay
+from SpectralQuestion import SpectralQuestion
 
 st.write("""
 Hello world
 """)
 
-mcq = MultipleChoiceQuestion("hi",["aaa","bbb"],0,["true","false"])
-QuestionDrawer.drawQuestion(mcq)
+# mcq = MultipleChoiceQuestion("title","hi",["aaa","bbb"],0,["true","false"])
+# QuestionDrawer.drawQuestion(mcq)
 
-# 3D Molecule Display Section
-st.divider()
-st.header("3D Molecule Viewer")
+spc = SpectralQuestion("title", "bodytext", "../spectra/easy001/ir.dx")
+figure = QuestionDrawer.drawQuestion(spc)
+# The Question Drawer should actually return the figure and a button, something for us to figure out.
 
-# Example 1: Display protein by PDB ID
-st.subheader("Protein Structure (PDB: 1CRN)")
-MoleculeDisplay.displayProteinById(pdb_id='1CRN', style='stick', height=500, width=800)
-MoleculeDisplay.displayMoleculeFromFile('src/neoNR8.pdb', style='stick', height=500, width=800)
-# Example 2: Display molecule from PDB string (water molecule)
+if figure is not None:
+    st.plotly_chart(figure, use_container_width=True)
+else:
+    st.warning("No figure returned for this question type.")
