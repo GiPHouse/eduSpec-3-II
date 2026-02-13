@@ -1,45 +1,38 @@
-from Question import Question
-from MultipleChoiceQuestion import MultipleChoiceQuestion
 import streamlit as st
 
-class QuestionDrawer():
-    
+from Question import Question
+
+
+class QuestionDrawer:
+    """QuestionDrawer."""
+
     @staticmethod
-    def drawQuestion(current_question:Question):
+    def drawQuestion(current_question: Question) -> None:
+        """_summary_
 
-        if isinstance(current_question, MultipleChoiceQuestion):
-            pass
+        Args:
+            current_question (Question): the question to be drawn
+        """
+        st.title(current_question.title)
+        st.text(current_question.bodytext)
 
-    @staticmethod    
-    def drawMCQ(mcq:MultipleChoiceQuestion, qid: str):
+        if getattr(current_question, "imgpath", None):
+            st.image(current_question.imgpath, width="stretch")
 
-        chosen_key = qid + "_chosen"        # selected option by the user
-        submitted_key = qid + "_submitted"  # boolean to check if the user has submitted an answer
-        result_key = qid + "_result"        # tuple of (is_correct: bool, feedback: str)
-
-        with st.container():
-            # Display the question title and body text
-            if getattr(mcq, "title", None):
-                st.markdown(f"### {mcq.title}")
-            if getattr(mcq, "bodytext", None):
-                st.markdown(mcq.bodytext)
-
-            # Image display if imgpath is provided    
-            imgpath = getattr(mcq, "imgpath", None)
-            if imgpath:
-                st.image(imgpath, width="stretch")
-
-            # Options (Radio in streamlit)
-            selected_option = st.radio("Pick one", mcq.answers, key=chosen_key)
-
-            # Submit button (TBD)
-            '''# 4) Submit Answer button (only button inside drawer)
-            if st.button("Submit Answer", key=f"{qid}_submit"):
-                selected_index = mcq.answers.index(selected_option)
-                is_correct, feedback = mcq.verifyAndFeedback(selected_index)
-
-                st.session_state[submitted_key] = True
-                st.session_state[result_key] = (is_correct, feedback)'''
-
-
-            # Feedback after submission (TBD)
+        user_input = current_question.drawYourself()
+        if st.button("Submit Answer", key="submit_button"):
+            is_correct, feedback = current_question.verifyAndFeedback(user_input)
+            if is_correct:
+                st.markdown(
+                    "<span style='color: green;'>Your answer is correct!</span>",
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    f"<span style='color: green;'>{feedback}</span>", unsafe_allow_html=True
+                )
+            else:
+                st.markdown(
+                    "<span style='color: red;'>Your answer is incorrect!</span>",
+                    unsafe_allow_html=True,
+                )
+                st.markdown(f"<span style='color: red;'>{feedback}</span>", unsafe_allow_html=True)
