@@ -2,7 +2,7 @@ Code style:
 - snake_case for variables
 - camelCase for functions
 - PascalCase for classes
-- Google doc strings
+- Google-style docstrings
 - Always use type hints for function parameters and return type
 
 This is the first commit to this repo, by Yusuf
