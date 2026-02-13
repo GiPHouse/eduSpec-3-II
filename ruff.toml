@@ -1,5 +1,4 @@
-# TODO: Move into pyproject.toml
-target-version = "py314"
+target-version = "py312"
 line-length = 100
 
 [lint]
