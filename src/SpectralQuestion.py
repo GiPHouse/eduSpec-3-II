@@ -7,8 +7,7 @@ from Question import Question
 
 
 class SpectralQuestion(Question):
-    """Class for Spectral Questions
-    """
+    """Class for Spectral Questions"""
 
     def __init__(self, title: str, bodytext: str, imgpath: Optional[str]):
         """Function to initialize a spectral question instance
