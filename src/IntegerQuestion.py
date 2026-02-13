@@ -17,6 +17,14 @@ class IntegerQuestion(Question):
 
 
     def verifyAndFeedback(self, user_input:int):
+        """_summary_
+
+        Args:
+            user_input (int): _description_
+
+        Returns:
+            _type_: _description_
+        """
         isAnswerCorrect:bool
         ReturnFeedback:str
 
