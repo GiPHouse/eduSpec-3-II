@@ -7,7 +7,7 @@ class MoleculeDisplay:
     """Class to handle 3D interactive molecule display using stmol"""
     
     @staticmethod
-    def display_protein_by_id(pdb_id, style='cartoon', height=500, width=800):
+    def displayProteinById(pdb_id, style='cartoon', height=500, width=800) -> None :
         """
         Display a protein structure by PDB ID
         
@@ -29,7 +29,7 @@ class MoleculeDisplay:
         showmol(viewer, height=height, width=width)
     
     @staticmethod
-    def display_pdb_string(pdb_string: str, style="stick", height=500, width=800):
+    def displayPdbString(pdb_string: str, style="stick", height=500, width=800):
         view = py3Dmol.view(width=width, height=height)
         view.addModel(pdb_string, "pdb")
         view.setStyle({style: {}})
@@ -37,7 +37,7 @@ class MoleculeDisplay:
         showmol(view, height=height, width=width)
     
     @staticmethod
-    def display_molecule_from_file(pdb_file_path, style='cartoon', height=500, width=800):
+    def displayMoleculeFromFile(pdb_file_path, style='cartoon', height=500, width=800):
         """
         Display a molecule from a PDB file
         
@@ -50,4 +50,4 @@ class MoleculeDisplay:
         with open(pdb_file_path, 'r') as f:
             pdb_string = f.read()
         
-        MoleculeDisplay.display_pdb_string(pdb_string, style, height, width)
+        MoleculeDisplay.displayPdbString(pdb_string, style, height, width)

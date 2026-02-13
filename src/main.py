@@ -18,6 +18,6 @@ st.header("3D Molecule Viewer")
 
 # Example 1: Display protein by PDB ID
 st.subheader("Protein Structure (PDB: 1CRN)")
-MoleculeDisplay.display_protein_by_id(pdb_id='1CRN', style='stick', height=500, width=800)
-MoleculeDisplay.display_molecule_from_file('src/neoNR8.pdb', style='stick', height=500, width=800)
+MoleculeDisplay.displayProteinById(pdb_id='1CRN', style='stick', height=500, width=800)
+MoleculeDisplay.displayMoleculeFromFile('src/neoNR8.pdb', style='stick', height=500, width=800)
 # Example 2: Display molecule from PDB string (water molecule)
