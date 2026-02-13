@@ -9,15 +9,16 @@ from Question import Question
 class SpectralQuestion(Question):
     """Class for Spectral Questions"""
 
-    def __init__(self, title: str, bodytext: str, imgpath: Optional[str]):
+    def __init__(self, name: str, title: str, bodytext: str, imgpath: Optional[str]):
         """Function to initialize a spectral question instance
 
         Args:
+            name (str): The unique name/ID of the question.
             title (str): Title of the Question
             bodytext (str): Bodytext, the question itself
             imgpath (Optional[str]): The path that points to the spectral data, to be displayed with the question
         """
-        super().__init__(title, bodytext, imgpath)
+        super().__init__(name, title, bodytext, imgpath)
 
     def verifyAndFeedback(self, user_input: int) -> str:
         """Function that verifies the user input and gives feedback depending on the answer
@@ -30,7 +31,7 @@ class SpectralQuestion(Question):
         """
         pass
 
-    def feedback(user_input: int) -> str:
+    def feedback(self, user_input: int) -> str:
         """Gives the feedback depending on the user input
 
         Args:
@@ -45,7 +46,7 @@ class SpectralQuestion(Question):
         """Parsing logic for JCAMP-DX files.
 
         Returns:
-            tuple[list,list]: X and Y coordinate values, respecitvely.
+            tuple[list,list]: X and Y coordinate values, respectively.
         """
         with open(self.imgpath, "rb") as f:
             lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]

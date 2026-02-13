@@ -8,6 +8,7 @@ class MultipleChoiceQuestion(Question):
 
     def __init__(
         self,
+        name: str,
         title: str,
         bodytext: str,
         answers: list[str],
@@ -18,6 +19,7 @@ class MultipleChoiceQuestion(Question):
         """Initialises a new multiple-choice question
 
         Args:
+            name (str): The unique name/ID of the question.
             title (str): The title of the questio
             bodytext (str): The body text of the question
             answers (list[str]): The possible answers
@@ -26,9 +28,10 @@ class MultipleChoiceQuestion(Question):
             imgpath (Optional[str], optional): _description_. Defaults to None.
         """
         assert len(answers) == len(feedbacks)
-        assert correct_answer >= 0 and correct_answer < len(answers)
+        assert correct_answer >= 0
+        assert correct_answer < len(answers)
 
-        super().__init__(title, bodytext, imgpath)
+        super().__init__(name, title, bodytext, imgpath)
         print(self.bodytext)
         self.answers = answers
         self.correct_answer = correct_answer

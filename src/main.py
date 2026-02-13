@@ -1,11 +1,13 @@
 from MultipleChoiceQuestion import MultipleChoiceQuestion
 from Question import Question
+from QuestionSerialiser import QuestionSerialiser
 
 # st.write("""
 # Hello world
 # """)
 
-mcq = MultipleChoiceQuestion("title", "hi", ["aaa", "bbb"], 0, ["true", "false"])
+mcq = MultipleChoiceQuestion("question1", "title", "hi", ["aaa", "bbb"], 0, ["true", "false"])
+# mcq = MultipleChoiceQuestion("title", "hi", ["aaa", "bbb"], 0, ["true", "false"])
 # QuestionDrawer.drawQuestion(mcq)
 # print(type(mcq)==MultipleChoiceQuestion)
 match mcq.__class__:
@@ -15,5 +17,5 @@ match mcq.__class__:
         print("true")
     case n:
         print(n)
-# mcq = MultipleChoiceQuestion("title","hi",["aaa","bbb"],0,["true","false"])
 # QuestionDrawer.drawQuestion(mcq)
+print(QuestionSerialiser.questionToJson(mcq))
