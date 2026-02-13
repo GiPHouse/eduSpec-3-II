@@ -1,25 +1,62 @@
-from Question import Question
-from typing import *
-import numpy as np
-import plotly.graph_objects as go
+"""Module for Spectral Questions
+
+Returns:
+    _type_: Module
+"""
+
+from typing import List, Optional, Tuple
+
 import jcamp
+import numpy as np
+
+from Question import Question
+
 
 class SpectralQuestion(Question):
-    
-    def __init__(self, title:str, bodytext:str,imgpath:Optional[str]):
-        super().__init__(title,bodytext,imgpath)
-    def verifyAndFeedback(self, user_input:int):
-        pass
-    def feedback(user_input:int):
-        pass
+    """Class for Spectral Questions
 
+    Returns:
+        _type_: Class
+    """
 
-    def parse_jcampdx(self):
+    def __init__(self, title: str, bodytext: str, imgpath: Optional[str]):
+        """Function to initialize a spectral question instance
+
+        Args:
+            title (str): Title of the Question
+            bodytext (str): Bodytext, the question itself
+            imgpath (Optional[str]): The path that points to the spectral data, to be displayed with the question
         """
-        Parsing logic for JCAMP-DX files.
-        Returns x and y dimensions of the parsed data.
-        """
+        super().__init__(title, bodytext, imgpath)
 
+    def verifyAndFeedback(self, user_input: int) -> str:
+        """Function that verifies the user input and gives feedback depending on the answer
+
+        Args:
+            user_input (int): The user input provided by the UI
+
+        Returns:
+            str: the feedback message
+        """
+        pass
+
+    def feedback(user_input: int) -> str:
+        """Gives the feedback depending on the user input
+
+        Args:
+            user_input (int): The user input provided by the UI
+
+        Returns:
+            str: the feedback message
+        """
+        pass
+
+    def parse_jcampdx(self) -> Tuple[List, List]:
+        """Parsing logic for JCAMP-DX files.
+
+        Returns:
+            Tuple[List,List]: X and Y coordinate values, respecitvely.
+        """
         with open(self.imgpath, "rb") as f:
             lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]
 
@@ -30,8 +67,6 @@ class SpectralQuestion(Question):
 
         if y.max() > 0:
             y = (y / y.max()) * 100
-        self.units=data.get("xunits", "m/z")
+        self.units = data.get("xunits", "m/z")
 
-
-
-        return (x,y)
+        return (x, y)
