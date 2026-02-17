@@ -20,12 +20,12 @@ class MultipleChoiceQuestion(Question):
         """Initialises a new multiple-choice question
 
         Args:
-            title (str): The title of the questio
+            title (str): The title of the question
             bodytext (str): The body text of the question
             answers (list[str]): The possible answers
             correct_answer (int): The correct answer, as an index to the answers list
             feedbacks (list[str]): The feedbacks to the answers. Needs to be the same length as answers.
-            imgpath (Optional[str], optional): _description_. Defaults to None.
+            imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
         assert len(answers) == len(feedbacks)
         assert correct_answer >= 0 and correct_answer < len(answers)
@@ -61,10 +61,10 @@ class MultipleChoiceQuestion(Question):
         return self.feedbacks[user_input]
 
     def drawYourself(self) -> int:
-        """_summary_
+        """Question draws itself
 
         Returns:
-            int: _description_
+            int: returns the user input
         """
         # Options (Radio in streamlit)
         if self.widget_key not in st.session_state:

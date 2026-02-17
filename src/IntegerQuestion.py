@@ -6,11 +6,7 @@ from Question import Question
 
 
 class IntegerQuestion(Question):
-    """_summary_
-
-    Args:
-        Question (_type_): _description_
-    """
+    """Integer question"""
 
     def __init__(
         self,
@@ -20,16 +16,15 @@ class IntegerQuestion(Question):
         feedbacks: list[str],
         imgpath: Optional[str] = None,
     ):
-        """_summary_
+        """Initializes integer question
 
         Args:
-            title (str): _description_
-            bodytext (str): _description_
-            correct_answer (tuple[int, int]): _description_
-            feedbacks (list[str]): _description_
-            imgpath (Optional[str], optional): _description_. Defaults to None.
+            title (str): The title of the question
+            bodytext (str): The body text of the question
+            correct_answer tuple[int, int]: The range in which the answer is correct
+            feedbacks (list[str]): The feedbacks to the answers. Needs to have 3 elements: [right answer, too small answer, too big answer]
+            imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
-        # the correct integer should be in the range between the first and second int, given as a tuple
         # feedbacks is as follows: [feedback for right answer, feedback for too small answer, feedback for too large answer]
         assert correct_answer[0] <= correct_answer[1]
         assert len(feedbacks) == 3
