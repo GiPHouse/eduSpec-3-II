@@ -15,11 +15,8 @@ class QuestionDrawer:
         """
         with st.container():
             st.title(current_question.title)
-            if current_question.imgpath:
-                st.image(current_question.imgpath)
+            current_question.drawImage()
             st.text(current_question.bodytext)
-            st.title("this is a test")
-
             # depending on question we have an input field or smth
 
             user_input = current_question.drawYourself()
