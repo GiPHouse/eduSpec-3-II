@@ -38,6 +38,8 @@ class IntegerQuestion(Question):
         print(self.bodytext)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
+        self.widget_key = "number_input"
+        self.default = 0
 
     def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
         """checks if input is correct
@@ -68,10 +70,18 @@ class IntegerQuestion(Question):
         pass
 
     def drawYourself(self) -> int:
-        """creates the number input field
+        """Question draws itself
 
         Returns:
-            int: number input from user
+            int: returns the user input
         """
-        number = st.number_input("enter the right number:", step=1, value=0)
+        if self.widget_key not in st.session_state:
+            st.session_state[self.widget_key] = self.default
+
+        number = st.number_input(
+            "enter the right number:",
+            step=1,
+            placeholder="",
+            key=self.widget_key,
+        )
         return number

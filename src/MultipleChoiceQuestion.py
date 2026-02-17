@@ -35,6 +35,8 @@ class MultipleChoiceQuestion(Question):
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
+        self.widget_key = "multiple_choice"
+        self.default = None
 
     def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
         """Returns whether an answer is correct and the feedback given.
@@ -65,7 +67,12 @@ class MultipleChoiceQuestion(Question):
             int: _description_
         """
         # Options (Radio in streamlit)
-        selected_option = st.radio("Pick one", self.answers, index=None)
+        if self.widget_key not in st.session_state:
+            st.session_state[self.widget_key] = self.default
+
+        selected_option = st.radio(
+            "Pick one", self.answers, index=self.default, key=self.widget_key
+        )
         if selected_option is not None:
             selected_index = self.answers.index(selected_option)
             return selected_index
