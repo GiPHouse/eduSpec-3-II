@@ -1,12 +1,7 @@
-import streamlit as st
-import pandas as pd
-
-from MultipleChoiceQuestion import MultipleChoiceQuestion
+from IntegerQuestion import IntegerQuestion
 from QuestionDrawer import QuestionDrawer
 
-st.write("""
-Hello world
-""")
-
-mcq = MultipleChoiceQuestion("title","hi",["aaa","bbb"],0,["true","false"])
-QuestionDrawer.drawQuestion(mcq)
+question = IntegerQuestion(
+    "title", "this is the body text", (10, 20), ["correct", "wrong too small", "wrong too big"]
+)
+QuestionDrawer.drawQuestion(question)

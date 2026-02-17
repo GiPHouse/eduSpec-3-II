@@ -4,35 +4,27 @@ from Question import Question
 
 
 class QuestionDrawer:
-    """QuestionDrawer."""
+    """Public class for displaying questions"""
 
     @staticmethod
     def drawQuestion(current_question: Question) -> None:
-        """_summary_
+        """draws the parts of the question that are the same for all questions
 
         Args:
-            current_question (Question): the question to be drawn
+            current_question (Question): _description_
         """
-        st.title(current_question.title)
-        st.text(current_question.bodytext)
+        with st.container():
+            st.title(current_question.title)
+            if current_question.imgpath:
+                st.image(current_question.imgpath)
+            st.text(current_question.bodytext)
+            st.title("this is a test")
 
-        if getattr(current_question, "imgpath", None):
-            st.image(current_question.imgpath, width="stretch")
+            # depending on question we have an input field or smth
+            user_input = current_question.drawYourself()
+            if st.button("Submit Answer", key="submit button"):
+                feedback = current_question.verifyAndFeedback(user_input)
+                st.write(feedback)
 
-        user_input = current_question.drawYourself()
-        if st.button("Submit Answer", key="submit_button"):
-            is_correct, feedback = current_question.verifyAndFeedback(user_input)
-            if is_correct:
-                st.markdown(
-                    "<span style='color: green;'>Your answer is correct!</span>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f"<span style='color: green;'>{feedback}</span>", unsafe_allow_html=True
-                )
-            else:
-                st.markdown(
-                    "<span style='color: red;'>Your answer is incorrect!</span>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(f"<span style='color: red;'>{feedback}</span>", unsafe_allow_html=True)
+            # if st.button("Reset"):
+            #     st.rerun()
