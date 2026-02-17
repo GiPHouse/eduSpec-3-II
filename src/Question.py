@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
+import streamlit as st
+
 
 class Question(ABC):
     """The general question class/interface.
@@ -34,3 +36,8 @@ class Question(ABC):
     def drawYourself(self) -> Any:
         """_summary_"""
         pass
+
+    def drawImage(self) -> None:
+        """Draw Image"""
+        if self.imgpath is not None:
+            st.image(self.imgpath)
