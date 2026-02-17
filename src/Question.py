@@ -3,19 +3,19 @@ from typing import Optional
 
 
 class Question(ABC):
-    """_summary_
+    """The general question class/interface.
 
-    Args:
-        ABC (_type_): _description_
+    This contains both base attributes shared between question types,
+    and a few interface functions that are unique to each.
     """
 
     def __init__(self, title: str, bodytext: str, imgpath: Optional[str] = None):
-        """_summary_
+        """Initialises a Question instance. DO NOT USE THE QUESTION CLASS DIRECTLY.
 
         Args:
-            title (str): _description_
-            bodytext (str): _description_
-            imgpath (Optional[str], optional): _description_. Defaults to None.
+            title (str): The title of the question.
+            bodytext (str): The body text of the question.
+            imgpath (Optional[str], optional): Path to the image used for the question. Defaults to None.
         """
         self.title = title
         self.bodytext = bodytext
@@ -23,13 +23,12 @@ class Question(ABC):
 
     @abstractmethod
     def verifyAndFeedback(self) -> None:
-        """_summary_"""
+        """Interface template. Returns whether an answer is correct and the feedback given."""
         pass
 
     @abstractmethod
     def feedback(self) -> None:
-        """_summary_"""
-        pass
+        """Interface template. Returns the feedback for an answer."""
 
     @abstractmethod
     def drawYourself(self) -> None:

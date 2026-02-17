@@ -4,11 +4,7 @@ from Question import Question
 
 
 class MultipleChoiceQuestion(Question):
-    """_summary_
-
-    Args:
-        Question (_type_): _description_
-    """
+    """Multiple-choice questions."""
 
     def __init__(
         self,
@@ -19,14 +15,14 @@ class MultipleChoiceQuestion(Question):
         feedbacks: list[str],
         imgpath: Optional[str] = None,
     ):
-        """_summary_
+        """Initialises a new multiple-choice question
 
         Args:
-            title (str): _description_
-            bodytext (str): _description_
-            answers (list[str]): _description_
-            correct_answer (int): _description_
-            feedbacks (list[str]): _description_
+            title (str): The title of the questio
+            bodytext (str): The body text of the question
+            answers (list[str]): The possible answers
+            correct_answer (int): The correct answer, as an index to the answers list
+            feedbacks (list[str]): The feedbacks to the answers. Needs to be the same length as answers.
             imgpath (Optional[str], optional): _description_. Defaults to None.
         """
         assert len(answers) == len(feedbacks)
@@ -39,23 +35,23 @@ class MultipleChoiceQuestion(Question):
         self.feedbacks = feedbacks
 
     def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
-        """_summary_
+        """Returns whether an answer is correct and the feedback given.
 
         Args:
-            user_input (int): _description_
+            user_input (int): The chosen answer, as index to the answers.
 
         Returns:
-            (bool, str): _description_
+            tuple[bool, str]: Whether the answer was correct, and the feedback.
         """
         return ((self.correct_answer == user_input), self.feedback(user_input))
 
     def feedback(self, user_input: int) -> str:
-        """_summary_
+        """Returns the feedback for an answer.
 
         Args:
-            user_input int: _description_
+            user_input (_type_): The chosen answer, as index to the answers.
 
         Returns:
-            str: _description_
+            str: The feedback for the chosen answer.
         """
         return self.feedbacks[user_input]

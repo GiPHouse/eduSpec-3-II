@@ -4,7 +4,7 @@ from Question import Question
 
 
 class QuestionDrawer:
-    """_summary_"""
+    """Public class for displaying questions"""
 
     @staticmethod
     def drawQuestion(current_question: Question) -> None:
