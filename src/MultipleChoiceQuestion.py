@@ -1,5 +1,7 @@
 from typing import Optional
 
+import streamlit as st
+
 from Question import Question
 
 
@@ -55,3 +57,15 @@ class MultipleChoiceQuestion(Question):
             str: The feedback for the chosen answer.
         """
         return self.feedbacks[user_input]
+
+    def drawYourself(self) -> int:
+        """_summary_
+
+        Returns:
+            int: _description_
+        """
+        # Options (Radio in streamlit)
+        selected_option = st.radio("Pick one", self.answers, index=None)
+        if selected_option is not None:
+            selected_index = self.answers.index(selected_option)
+            return selected_index
