@@ -29,4 +29,8 @@ class Question(ABC):
     @abstractmethod
     def feedback(self) -> None:
         """Interface template. Returns the feedback for an answer."""
+
+    @abstractmethod
+    def drawYourself(self) -> None:
+        """_summary_"""
         pass
