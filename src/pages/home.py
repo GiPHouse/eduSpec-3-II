@@ -1,5 +1,6 @@
 import streamlit as st
-from components.navigation import showNavbar, hideSidebar
+
+from components.navigation import hideSidebar, showNavbar
 
 showNavbar()
 hideSidebar()

@@ -1,5 +1,6 @@
 import streamlit as st
-from components.navigation import showNavbar, showIrSidebar
+
+from components.navigation import showIrSidebar, showNavbar
 
 showNavbar()
 st.title("Infrared Spectroscopy \n Theory")

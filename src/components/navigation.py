@@ -1,14 +1,13 @@
 import streamlit as st
 
-def initCurrentPageSessionState():
-    """Initializes the session state for the current page
-    """
+
+def initCurrentPageSessionState() -> None:
+    """Initializes the session state for the current page"""
     if "current_page" not in st.session_state:
         st.session_state.current_page = "pages/home.py"
 
-def navbarButton(label: str, page: str):
-    """Creates a button in the navigation bar at the top of the screen.
-    The type of a button changes when the page is active.
+def navbarButton(label: str, page: str) -> None:
+    """Creates a button in the navigation bar at the top of the screen. The type of a button changes when the page is active.
 
     Args:
         label (str): The text that is shown on the button
@@ -20,10 +19,8 @@ def navbarButton(label: str, page: str):
         st.session_state.current_page = page
         st.switch_page(page)
 
-def showNavbar():
-    """ Displays the navigation bar that is at the top of the page.
-    Returns: None
-    """
+def showNavbar() -> None:
+    """Displays the navigation bar that is at the top of the page."""
     initCurrentPageSessionState()
     cols = st.columns([1.5, 1, 1.25, 1, 2, 2, 2])
     with cols[0]:
@@ -41,8 +38,9 @@ def showNavbar():
     with cols[6]:
         navbarButton("About", "pages/about.py")
 
-def hideSidebar():
+def hideSidebar() -> None:
     """Hides the entire sidebar that streamlit automatically makes.
+
     Returns: None
     """
     st.markdown("""
@@ -53,9 +51,9 @@ def hideSidebar():
     </style>
     """, unsafe_allow_html=True)
 
-def removePagesSidebar():
+def removePagesSidebar() -> None:
     """Removes the pages in the sidebar that Streamlit automatically adds to the sidebar.
-    Streamlit automatically adds the pages in the folder /pages to the sidebar navigation.
+
     Returns: None
     """
     st.markdown("""
@@ -66,8 +64,9 @@ def removePagesSidebar():
     </style>
     """, unsafe_allow_html=True)
 
-def sidebar_button(label:str, page:str, indent:int):
+def sidebar_button(label:str, page:str, indent:int) -> None:
     """Creates a button (with indentation) that is shown in the sidebar.
+
     The button is used for navigation between pages.
     The type of the button changes when the page is active.
     
@@ -75,10 +74,10 @@ def sidebar_button(label:str, page:str, indent:int):
         label (str): Text that is shown on the button
         page (str): The relative path to the page to navigate to when the button is pressed.
         indent (int): Indentation level of the button. Higher value increase the left spacing.
+
     Returns:
         None
     """
-
     type_button = "primary" if st.session_state.current_page == page else "secondary"
 
     if indent > 0:
@@ -92,8 +91,9 @@ def sidebar_button(label:str, page:str, indent:int):
             st.session_state.current_page = page
             st.switch_page(page)
 
-def showIrSidebar():
+def showIrSidebar() -> None:
     """Shows the navigation in the sidebar that is on the IR pages.
+    
     The navigation menu expands (shows extra navigation buttons) for certained pages.
 
     Returns:
@@ -133,7 +133,12 @@ def showIrSidebar():
             sidebar_button("Mini Quiz", "pages/ir_spectral_area_d_quiz.py", 2)
     sidebar_button("Infrared Proteus Quiz", "pages/ir_proteus_quiz.py", 0)
 
-def showNmrSidebar(current_page:str=None):
+def showNmrSidebar(current_page:str=None) -> None:
+    """Shows the navigation in the sidebar that is on the NMR pages.
+
+    Returns:
+        None
+    """
     removePagesSidebar()
     st.sidebar.title("¹H-NMR Spectroscopy")
     sidebar_button("Theory", "pages/nmr-h_theory.py", 0)
