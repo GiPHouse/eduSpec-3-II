@@ -66,6 +66,10 @@ class SpectralQuestion(Question):
 
     def drawYourself(self) -> None:
         """The question draws itself to streamlit"""
+        pass
+
+    def drawImage(self) -> None:
+        """We override the drawImage function as a spectral question needs to parse the spectral data"""
         self._parse_jcampdx()
 
         # This is a weird numpy trick so that we can easily create a "stem" plot.
