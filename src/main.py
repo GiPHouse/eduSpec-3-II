@@ -1,6 +1,7 @@
 from IntegerQuestion import IntegerQuestion
 from MultipleChoiceQuestion import MultipleChoiceQuestion
 from QuestionDrawer import QuestionDrawer
+from WordQuestion import WordQuestion
 
 questionint = IntegerQuestion(
     "title",
@@ -9,7 +10,7 @@ questionint = IntegerQuestion(
     ["correct", "wrong too small", "wrong too big"],
     imgpath="../data/test.png",
 )
-QuestionDrawer.drawQuestion(questionint)
+
 
 questionmult = MultipleChoiceQuestion(
     "title",
@@ -19,5 +20,16 @@ questionmult = MultipleChoiceQuestion(
     ["a", "b", "c", "d"],
     imgpath="../data/test.png",
 )
+
+questionstr = WordQuestion(
+    "title",
+    "this is the body text",
+    "answer",
+    ["correct", "wrong"],
+    imgpath="../data/test.png",
+)
+
+QuestionDrawer.drawQuestion(questionstr)
+
 
 # QuestionDrawer.drawQuestion(questionmult)
