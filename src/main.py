@@ -1,6 +1,9 @@
 from IntegerQuestion import IntegerQuestion
 from MultipleChoiceQuestion import MultipleChoiceQuestion
 from QuestionDrawer import QuestionDrawer
+import streamlit as st
+
+st.switch_page("pages/home.py")
 
 questionint = IntegerQuestion(
     "title",
