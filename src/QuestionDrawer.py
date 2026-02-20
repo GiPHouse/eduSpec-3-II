@@ -1,5 +1,3 @@
-"""anan3"""
-
 import streamlit as st
 
 from Question import Question
@@ -17,15 +15,12 @@ class QuestionDrawer:
         """
         with st.container():
             st.title(current_question.title)
-            if current_question.imgpath:
-                st.image(current_question.imgpath)
+            current_question.drawImage()
             st.text(current_question.bodytext)
-
             # depending on question we have an input field or smth
-            user_input = current_question.drawYourself()
 
-            submit_key = f"submit_{current_question.widget_key}"
-            if st.button("Submit Answer", key=submit_key):
+            user_input = current_question.drawYourself()
+            if st.button("Submit Answer", key="submit_button"):
                 if user_input is not None:
                     is_correct, feedback = current_question.verifyAndFeedback(user_input)
                     if is_correct:
@@ -34,8 +29,7 @@ class QuestionDrawer:
                             unsafe_allow_html=True,
                         )
                         st.markdown(
-                            f"<span style='color: green;'>{feedback}</span>",
-                            unsafe_allow_html=True,
+                            f"<span style='color: green;'>{feedback}</span>", unsafe_allow_html=True
                         )
                     else:
                         st.markdown(
@@ -43,13 +37,11 @@ class QuestionDrawer:
                             unsafe_allow_html=True,
                         )
                         st.markdown(
-                            f"<span style='color: red;'>{feedback}</span>",
-                            unsafe_allow_html=True,
+                            f"<span style='color: red;'>{feedback}</span>", unsafe_allow_html=True
                         )
 
             def _reset_callback() -> None:
                 st.session_state[current_question.widget_key] = current_question.default
 
-            reset_key = f"reset_{current_question.widget_key}"
-            if st.button("Reset", key=reset_key, on_click=_reset_callback):
+            if st.button("Reset", on_click=_reset_callback):
                 st.rerun()

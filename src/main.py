@@ -1,23 +1,39 @@
-"""The application itself"""
-
 import streamlit as st
 
+from IntegerQuestion import IntegerQuestion
+from MultipleChoiceQuestion import MultipleChoiceQuestion
 from QuestionDrawer import QuestionDrawer
-from MoleculeDisplay import MoleculeDisplay
-from SpectralQuestion import SpectralQuestion
+from WordQuestion import WordQuestion
 
-st.write("""
-Hello world
-""")
+st.switch_page("pages/home.py")
 
-# mcq = MultipleChoiceQuestion("title","hi",["aaa","bbb"],0,["true","false"])
-# QuestionDrawer.drawQuestion(mcq)
+questionint = IntegerQuestion(
+    "title",
+    "this is the body text",
+    (10, 20),
+    ["correct", "wrong too small", "wrong too big"],
+    imgpath="../data/test.png",
+)
 
-spc = SpectralQuestion("title", "bodytext", "../spectra/easy001/ir.dx")
-figure = QuestionDrawer.drawQuestion(spc)
-# The Question Drawer should actually return the figure and a button, something for us to figure out.
 
-if figure is not None:
-    st.plotly_chart(figure, use_container_width=True)
-else:
-    st.warning("No figure returned for this question type.")
+questionmult = MultipleChoiceQuestion(
+    "title",
+    "this is the body text",
+    ["10", "20", "30", "40"],
+    2,
+    ["a", "b", "c", "d"],
+    imgpath="../data/test.png",
+)
+
+questionstr = WordQuestion(
+    "title",
+    "this is the body text",
+    "answer",
+    ["correct", "wrong"],
+    imgpath="../data/test.png",
+)
+
+QuestionDrawer.drawQuestion(questionstr)
+
+
+# QuestionDrawer.drawQuestion(questionmult)
