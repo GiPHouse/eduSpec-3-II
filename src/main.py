@@ -1,6 +1,3 @@
 import streamlit as st
-import pandas as pd
 
-st.write("""
-Hello world
-""")
+st.switch_page("pages/home.py")
