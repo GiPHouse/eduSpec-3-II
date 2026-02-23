@@ -14,6 +14,8 @@ class QuestionBuilder:
     def questionFromJson(cls, data: str) -> Question:
         """Builds a question from json data.
 
+        Will only work with correct data, otherwise it'll raise errors.
+
         Args:
             data (str): The json string describing the question.
 
@@ -22,7 +24,7 @@ class QuestionBuilder:
             ValueError: When encountering a malformed question.
 
         Returns:
-            Question: The built question. This can be any question subtype, but not the actual interface/parent class.
+            Question: The built question. This can be any question subtype, but will never be the interface/parent `Question` class.
         """
         obj = json.loads(data)
         if not cls.verifyJson(data):

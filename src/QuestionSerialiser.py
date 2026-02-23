@@ -9,13 +9,13 @@ class QuestionSerialiser:
 
     @classmethod
     def questionToJson(cls, question: Question) -> str:
-        """Converts any question to JSON. Do not use the parent Question class.
+        """Converts any question to JSON. Do not use the parent `Question` class.
 
         Args:
             question (Question): The question to convert
 
         Raises:
-            ValueError: Raises a ValueError on an unrecognised question type
+            ValueError: Raises a ValueError on an unrecognised question type (this includes the parent `Question` class)
 
         Returns:
             str: The generated JSON
