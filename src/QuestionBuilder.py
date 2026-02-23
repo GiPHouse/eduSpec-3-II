@@ -155,7 +155,7 @@ class QuestionBuilder:
                 feedbacks = obj.get("feedbacks")
                 if lower_bound is None or upper_bound is None or feedbacks is None:
                     return False
-                if not isinstance(lower_bound, int) or isinstance(upper_bound, int):
+                if not isinstance(lower_bound, int) or not isinstance(upper_bound, int):
                     return False
                 if lower_bound > upper_bound:
                     return False

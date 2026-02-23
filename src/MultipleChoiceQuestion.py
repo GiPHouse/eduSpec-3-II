@@ -67,7 +67,7 @@ class MultipleChoiceQuestion(Question):
         """Question draws itself
 
         Returns:
-            int: returns the user input
+            Optional[int]: returns the user input
         """
         # Options (Radio in streamlit)
         if self.widget_key not in st.session_state:

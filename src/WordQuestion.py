@@ -63,7 +63,7 @@ class WordQuestion(Question):
         """Question draws itself
 
         Returns:
-            str: returns the user input
+            Optional[str]: returns the user input
         """
         if self.widget_key not in st.session_state:
             st.session_state[self.widget_key] = self.default
