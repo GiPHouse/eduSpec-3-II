@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Any, Optional
+
+import streamlit as st
 
 
 class Question(ABC):
@@ -24,11 +26,20 @@ class Question(ABC):
         self.imgpath = imgpath
 
     @abstractmethod
-    def verifyAndFeedback(self) -> None:
+    def verifyAndFeedback(self) -> tuple[bool, str]:
         """Interface template. Returns whether an answer is correct and the feedback given."""
         pass
 
     @abstractmethod
-    def feedback(self) -> None:
+    def feedback(self) -> str:
         """Interface template. Returns the feedback for an answer."""
+
+    @abstractmethod
+    def drawYourself(self) -> Any:
+        """_summary_"""
         pass
+
+    def drawImage(self) -> None:
+        """Draw Image"""
+        if self.imgpath is not None:
+            st.image(self.imgpath)

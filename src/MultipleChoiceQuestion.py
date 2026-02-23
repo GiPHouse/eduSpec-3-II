@@ -1,5 +1,7 @@
 from typing import Optional
 
+import streamlit as st
+
 from Question import Question
 
 
@@ -25,7 +27,7 @@ class MultipleChoiceQuestion(Question):
             answers (list[str]): The possible answers
             correct_answer (int): The correct answer, as an index to the answers list
             feedbacks (list[str]): The feedbacks to the answers. Needs to be the same length as answers.
-            imgpath (Optional[str], optional): _description_. Defaults to None.
+            imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
         assert len(answers) == len(feedbacks)
         assert correct_answer >= 0
@@ -36,6 +38,8 @@ class MultipleChoiceQuestion(Question):
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
+        self.widget_key = "multiple_choice"
+        self.default = None
 
     def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
         """Returns whether an answer is correct and the feedback given.
@@ -58,3 +62,20 @@ class MultipleChoiceQuestion(Question):
             str: The feedback for the chosen answer.
         """
         return self.feedbacks[user_input]
+
+    def drawYourself(self) -> Optional[int]:
+        """Question draws itself
+
+        Returns:
+            int: returns the user input
+        """
+        # Options (Radio in streamlit)
+        if self.widget_key not in st.session_state:
+            st.session_state[self.widget_key] = self.default
+
+        selected_option = st.radio(
+            "Pick one", self.answers, index=self.default, key=self.widget_key
+        )
+        if selected_option is not None:
+            selected_index = self.answers.index(selected_option)
+            return selected_index
