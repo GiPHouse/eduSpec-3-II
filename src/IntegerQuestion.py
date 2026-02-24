@@ -33,7 +33,7 @@ class IntegerQuestion(Question):
         print(self.bodytext)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
-        self.widget_key = "number_input"
+        self.widget_key = f"number_input_{title}"
         self.default = 0
 
     def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
