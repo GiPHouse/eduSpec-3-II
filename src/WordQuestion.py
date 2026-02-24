@@ -3,6 +3,7 @@ from typing import Optional
 import streamlit as st
 
 from Question import Question
+from QuestionDrawer import QuestionDrawer
 
 
 class WordQuestion(Question):
@@ -73,4 +74,6 @@ class WordQuestion(Question):
             value=None,
             key=self.widget_key,
         )
+        if answer:
+            QuestionDrawer.evaluateAnswer(self, answer)
         return answer
