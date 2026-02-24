@@ -29,7 +29,7 @@ class QuestionBuilder:
             Question: The built question. This can be any question subtype, but will never be the interface/parent `Question` class.
         """
         obj = json.loads(data)
-        if not cls.verifyJson(data):
+        if not cls._verifyObject(obj):
             raise ValueError(f"Failed verifying {obj.get('type')} {obj.get('id')}.")
 
         question_type = obj.get("type")
