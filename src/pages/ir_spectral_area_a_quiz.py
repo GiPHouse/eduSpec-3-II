@@ -9,5 +9,5 @@ st.write("Welcome to the IR Spectral Areas A Page!")
 showIrSidebar()
 
 
-quiz = QuizBuilder.buildQuiz("this is a quiz", ["selam"])
+quiz = QuizBuilder.buildQuiz("this is a quiz", ["selam", "int", "word"])
 quiz.drawQuiz()
