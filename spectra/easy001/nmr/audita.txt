@@ -1,0 +1,18 @@
+##TITLE= Audit trail, TOPSPIN		Version 3.0
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= orgchem
+$$ /opt/nmrdata/orgchem/data/sc/nmr/Practicum_EduSpec/62/audita.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2014-11-02 03:45:05.926 +0100>,<orgchem>,<avance501>,<go>,<TOPSPIN 3.0>,
+      <created by zg
+	started at 2014-11-02 03:37:09.557 +0100,
+	POWCHK enabled, PULCHK disabled,
+       configuration hash MD5:
+       80 AD 01 3F F9 F9 9F EF 46 C2 D6 CA C1 F2 A2 25
+       data hash MD5: 64K
+       29 EE 9F 5C 8A 46 93 B5 BF 77 53 DD 7F 66 87 D0>)
+##END=
+
+$$ hash MD5
+$$ C0 56 65 B5 CE 85 EE 6C 69 63 53 B7 04 D8 C7 DB
