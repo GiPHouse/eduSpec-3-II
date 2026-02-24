@@ -1,7 +1,5 @@
 import streamlit as st
 
-from IntegerQuestion import IntegerQuestion
-from MultipleChoiceQuestion import MultipleChoiceQuestion
 from QuestionDrawer import QuestionDrawer
 
 
@@ -11,7 +9,7 @@ class Quiz:
     It picks the right question for the page and makes previous and next button depending on the questions
     """
 
-    def __init__(self) -> None:
+    def __init__(self, name: str, question_list: list[str]) -> None:
         """Initializes a quiz instance.
 
         CURRENTLY WE HARDCODE THE QUESTIONS IN HERE, EVENTUALLY WE WANT THE LIST OF QUESTIONS AS AN ARGUMENT.
@@ -19,9 +17,12 @@ class Quiz:
         if "current_index" not in st.session_state:
             st.session_state["current_index"] = 0
         self.current_index = 0
+        self.question_list = question_list
+        self.name = name
 
         # HERE WE HARDCODE THE LIST OF QUESTIONS, WE EVENTUALLY NEED TO CHANGE THIS
-        self.question_list = [
+        """
+         self.question_list = [
             MultipleChoiceQuestion(
                 "title",
                 "this is the body text",
@@ -46,6 +47,8 @@ class Quiz:
                 imgpath="../data/test.png",
             ),
         ]
+
+        """
 
     def drawPreviousButton(self) -> None:
         """Draws a button to go to the previous question.
