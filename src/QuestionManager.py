@@ -8,6 +8,10 @@ from QuestionSerialiser import QuestionSerialiser
 class QuestionManager:
     """Class for loading questions from/to the file system"""
 
+    # Here to be modified during tests.
+    # DO NOT ACTUALLY EDIT
+    save_location = pathlib.Path("data/questions/")
+
     @classmethod
     def loadQuestion(cls, name: str) -> Question:
         """Loads a question from its name.
@@ -106,7 +110,7 @@ class QuestionManager:
         current_file = pathlib.Path(__file__)
         src_dir = current_file.parent
         base_dir = src_dir.parent
-        data_dir = base_dir.joinpath("data/questions")
+        data_dir = base_dir.joinpath(cls.save_location)
         if not data_dir.exists():
             data_dir.mkdir(parents=True)
         return data_dir
