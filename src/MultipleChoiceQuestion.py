@@ -35,7 +35,7 @@ class MultipleChoiceQuestion(Question):
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
-        self.widget_key = "multiple_choice"
+        self.widget_key = f"multiple_choice_{title}"
         self.default = None
 
     def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
