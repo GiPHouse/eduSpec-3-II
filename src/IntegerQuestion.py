@@ -10,18 +10,20 @@ class IntegerQuestion(Question):
 
     def __init__(
         self,
+        name: str,
         title: str,
         bodytext: str,
-        correct_answer: tuple[int, int],
+        correct_answer: tuple[int | float, int | float],
         feedbacks: list[str],
         imgpath: Optional[str] = None,
     ):
         """Initializes integer question
 
         Args:
+            name (str): The unique name/ID of the question.
             title (str): The title of the question
             bodytext (str): The body text of the question
-            correct_answer tuple[int, int]: The range in which the answer is correct
+            correct_answer (tuple[int|float, int|float]): The range in which the answer is correct
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 3 elements: [right answer, too small answer, too big answer]
             imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
@@ -29,18 +31,18 @@ class IntegerQuestion(Question):
         assert correct_answer[0] <= correct_answer[1]
         assert len(feedbacks) == 3
 
-        super().__init__(title, bodytext, imgpath)
+        super().__init__(name, title, bodytext, imgpath)
         print(self.bodytext)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"number_input_{title}"
         self.default = 0
 
-    def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
+    def verifyAndFeedback(self, user_input: int | float) -> tuple[bool, str]:
         """checks if input is correct
 
         Args:
-            user_input (int): answer of the user
+            user_input (int|float): answer of the user
 
         Returns:
             (bool, str): return a tuple with whether the ansewr is correct and its corresponding feedback
@@ -61,7 +63,7 @@ class IntegerQuestion(Question):
         return (isAnswerCorrect, ReturnFeedback)
 
     def feedback(self) -> None:
-        """does nothing currently"""
+        """Unused, all logic is in `verifyAndFeedback()`"""
         pass
 
     def drawYourself(self) -> int:

@@ -11,14 +11,16 @@ class Question(ABC):
     and a few interface functions that are unique to each.
     """
 
-    def __init__(self, title: str, bodytext: str, imgpath: Optional[str] = None):
+    def __init__(self, name: str, title: str, bodytext: str, imgpath: Optional[str] = None):
         """Initialises a Question instance. DO NOT USE THE QUESTION CLASS DIRECTLY.
 
         Args:
+            name (str): The unique name/ID of the question.
             title (str): The title of the question.
             bodytext (str): The body text of the question.
             imgpath (Optional[str], optional): Path to the image used for the question. Defaults to None.
         """
+        self.name = name
         self.title = title
         self.bodytext = bodytext
         self.imgpath = imgpath

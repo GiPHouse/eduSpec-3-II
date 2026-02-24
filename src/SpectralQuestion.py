@@ -13,6 +13,7 @@ class SpectralQuestion(Question):
 
     def __init__(
         self,
+        name: str,
         title: str,
         bodytext: str,
         imgpath: Optional[str],
@@ -23,18 +24,19 @@ class SpectralQuestion(Question):
         """Function to initialize a spectral question instance
 
         Args:
+            name (str): The unique name/ID of the question.
             title (str): Title of the Question
             bodytext (str): Bodytext, the question itself
             imgpath (Optional[str]): The path that points to the spectral data, to be displayed with the question
         """
-        super().__init__(title, bodytext, imgpath)
+        super().__init__(name, title, bodytext, imgpath)
         self.correct_mz = correct_mz
         self.tolerance = tolerance
         self.feedbacks = feedbacks
         self.widget_key = "spectral_question"
         self.default = None
 
-    def verifyAndFeedback(self, user_input: int) -> str:
+    def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
         """Function that verifies the user input and gives feedback depending on the answer
 
         Args:
@@ -63,8 +65,13 @@ class SpectralQuestion(Question):
         """Parsing logic for JCAMP-DX files.
 
         Returns:
-            tuple[list,list]: X and Y coordinate values, respecitvely.
+            tuple[list,list]: X and Y coordinate values, respectively.
         """
+        # Return on no given file
+        # ! Maybe make imgpath non-optional?
+        if self.imgpath is None:
+            return
+
         with open(self.imgpath, "rb") as f:
             lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]
 

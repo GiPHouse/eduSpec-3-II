@@ -10,6 +10,7 @@ class WordQuestion(Question):
 
     def __init__(
         self,
+        name: str,
         title: str,
         bodytext: str,
         correct_answer: str,
@@ -19,13 +20,14 @@ class WordQuestion(Question):
         """Initializes word question
 
         Args:
+            name (str): The unique name/ID of the question.
             title (str): The title of the question
             bodytext (str): The body text of the question
             correct_answer str: The correct answer as a string
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 2 elements: correct feedback and incorrect feedback
             imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
-        super().__init__(title, bodytext, imgpath)
+        super().__init__(name, title, bodytext, imgpath)
         print(self.bodytext)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
@@ -54,14 +56,14 @@ class WordQuestion(Question):
         return (isAnswerCorrect, ReturnFeedback)
 
     def feedback(self) -> None:
-        """does nothing currently"""
+        """Unused, all logic is in `verifyAndFeedback()`"""
         pass
 
-    def drawYourself(self) -> str:
+    def drawYourself(self) -> Optional[str]:
         """Question draws itself
 
         Returns:
-            str: returns the user input
+            Optional[str]: returns the user input
         """
         if self.widget_key not in st.session_state:
             st.session_state[self.widget_key] = self.default
