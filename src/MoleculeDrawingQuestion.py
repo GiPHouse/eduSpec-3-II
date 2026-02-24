@@ -6,23 +6,41 @@ from typing import Any, Optional
 import streamlit as st
 
 from pages.jsme_component import jsme_component
-from Question import Question
+from WordQuestion import WordQuestion
 
 
 @dataclass(frozen=True)
 class MoleculeDrawingConfig:
-    """dataclass for molecule drawing questions"""
+    """Configuration for a molecule drawing question.
+
+    Attributes:
+    expected_smiles (str):
+        The canonical SMILES string that represents the correct answer.
+        This is used to verify the student's drawing.
+
+    seed_smiles (str):
+        The initial SMILES string loaded into the editor when the question
+        is rendered. Can be empty or an example structure.
+
+    widget_key (str):
+        Unique Streamlit key used to prevent duplicate widget conflicts
+        when multiple molecule editors are rendered on the same page.(could be left empty if
+        only one editor is used per page, but good practice to always set it)
+    """
 
     expected_smiles: str  # what you want them to draw (answer)
     seed_smiles: str  # what editor starts with
     widget_key: str  # unique key for Streamlit widget
 
 
-class MoleculeDrawingQuestion(Question):
-    """MOlecule Drawing Question
+class MoleculeDrawingQuestion(WordQuestion):
+    """A concrete implementation of a Question that allows users to draw a molecule using a JSME editor.
 
-    Args:
-        Question (_type_): _description_
+    The drawn molecule is captured as a SMILES string and compared
+    against an expected SMILES answer for validation.
+
+    Inherits from:
+        Question: Abstract base class defining the question interface.
     """
 
     def __init__(
@@ -32,32 +50,82 @@ class MoleculeDrawingQuestion(Question):
         config: MoleculeDrawingConfig,
         imgpath: Optional[str] = None,
     ):
-        """_summary_
+        """Initializes a MoleculeDrawingQuestion instance.
 
         Args:
-            title (str): _description_
-            bodytext (str): _description_
-            config (MoleculeDrawingConfig): _description_
-            imgpath (Optional[str], optional): _description_. Defaults to None.
-        """
-        super().__init__(title=title, bodytext=bodytext, imgpath=imgpath)
-        self._cfg = config
+        title (str):
+            Title of the question.
 
-        self.widget_key = self._cfg.widget_key
-        self.default = self._cfg.seed_smiles
+        bodytext (str):
+            The main prompt or instruction shown to the student.
+
+        config (MoleculeDrawingConfig):
+            Configuration object containing expected answer,
+            initial editor state, and widget key.
+
+        imgpath (Optional[str], optional):
+            Optional path to an image associated with the question.
+            Defaults to None.
+        """
+        super().__init__(
+            title=title,
+            bodytext=bodytext,
+            imgpath=imgpath,
+            correct_answer=config.expected_smiles.strip(),
+            feedbacks=[
+                f"Correct! Expected {config.expected_smiles.strip()}.",
+                "Incorrect. Check the structure and try again.",
+            ],
+        )
+
+        self.widget_key = config.widget_key
+        self.default = config.seed_smiles
+
+        # internal key used to force-remount the JSME component
+        self._nonce_key = f"{self.widget_key}__jsme_nonce"
+        self._last_seen_key = f"{self.widget_key}__last_seen"
+
+        if self._nonce_key not in st.session_state:
+            st.session_state[self._nonce_key] = 0
+        if self._last_seen_key not in st.session_state:
+            st.session_state[self._last_seen_key] = self.default
 
         # store last drawn value here
         self._latest_smiles: Optional[str] = None
 
     def drawYourself(self) -> Optional[str]:
-        """Draws the editor and returns the current SMILES (or None).
+        """Renders the JSME molecule editor in the Streamlit interface.
 
-        Also stores it so verifyAndFeedback() can access it later.
+        Captures the currently drawn molecule as a SMILES string and
+        stores it internally for later validation.
 
         Returns:
-            Optional[str]: _description_
+            Optional[str]:
+                The drawn SMILES string if available, otherwise None.
         """
-        data = jsme_component(default_smiles=self.default, key=self.widget_key)
+        base_key = self.widget_key  # this is what QuestionDrawer resets
+        default_val = (self.default or "").strip()
+
+        # ensure base_key exists (QuestionDrawer expects it)
+        if base_key not in st.session_state:
+            st.session_state[base_key] = default_val
+
+        # detect reset: base_key changed back to default
+        last_seen = (st.session_state.get(self._last_seen_key) or "").strip()
+        now_seen = (st.session_state.get(base_key) or "").strip()
+
+        if now_seen == default_val and last_seen != default_val:
+            # reset happened -> force remount JSME by changing component key
+            st.session_state[self._nonce_key] += 1
+            self._latest_smiles = None
+
+        st.session_state[self._last_seen_key] = now_seen
+
+        # actual component key changes when nonce changes => editor clears
+        nonce = st.session_state[self._nonce_key]
+        component_key = f"{base_key}__jsme__{nonce}"
+
+        data = jsme_component(default_smiles=self.default, key=component_key)
 
         smiles = ""
         if isinstance(data, dict):
@@ -65,6 +133,11 @@ class MoleculeDrawingQuestion(Question):
 
         if smiles:
             self._latest_smiles = smiles
+
+            # IMPORTANT: write current drawing into base_key
+            # so QuestionDrawer reset flips it back to default, which we can detect
+            st.session_state[base_key] = smiles
+
             st.subheader("Your SMILES")
             st.code(smiles)
             return smiles
@@ -73,27 +146,56 @@ class MoleculeDrawingQuestion(Question):
         st.info("Draw a molecule in the editor, then click Submit Answer.")
         return None
 
-    def verifyAndFeedback(self, *args: Any, **kwargs: Any) -> tuple[bool, str]:
-        """checking the answer.
+    def verifyAndFeedback(
+        self, user_input: Optional[str] = None, *args: Any, **kwargs: Any
+    ) -> tuple[bool, str]:
+        """Validates the submitted molecule against the expected answer.
+
+        The method compares the drawn SMILES string with the expected
+        SMILES stored in the configuration.
 
         Returns:
-            tuple[bool, str]: _description_
+        tuple[bool, str]:
+            A tuple where:
+                - The first value indicates whether the answer is correct.
+                - The second value contains feedback for the user.
         """
-        submitted = self._latest_smiles
-        expected = self._cfg.expected_smiles.strip()
-
+        submitted = (user_input or self._latest_smiles or "").strip()
         if not submitted:
             return False, "No SMILES found. Please draw a molecule first."
 
-        if submitted.strip() == expected:
-            return True, f"Correct! Expected {expected}."
+        # Delegate the actual comparison + feedback selection to WordQuestion
+        ok, msg = super().verifyAndFeedback(submitted)
 
-        return False, f"Incorrect. Expected {expected}, but you drew {submitted}."
+        # Improve the incorrect message to include what they drew + what was expected
+        if not ok:
+            expected = self.correct_answer  # set by WordQuestion
+            return False, f"Incorrect. Expected {expected}, but you drew {submitted}."
+
+        return True, msg
 
     def feedback(self) -> str:
-        """default feedback.
+        """Provides default feedback for incorrect submissions.
 
         Returns:
-            str: _description_
+            str:
+                A generic feedback message encouraging retry.
         """
         return "Try again: make sure the structure matches the target molecule."
+
+    """
+    Template to create a question like this:
+    st.set_page_config(page_title="Molecule Drawing Question")
+
+    q = MoleculeDrawingQuestion(
+        title="Draw ethanol",
+        bodytext="Use the editor to draw ethanol and submit.",
+        config=MoleculeDrawingConfig(
+            expected_smiles="CCO",
+            seed_smiles="",
+            widget_key= "q1",
+        ),
+    )
+
+    QuestionDrawer.drawQuestion(q)
+    """
