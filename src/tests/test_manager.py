@@ -199,7 +199,7 @@ class TestQuestionManager:
         )
 
         mcq_2 = MultipleChoiceQuestion(
-            "question1",
+            "question2",
             "Example Update",
             "here's an updated question",
             ["1", "2", "3"],
@@ -223,3 +223,35 @@ class TestQuestionManager:
         assert QuestionManager.saveQuestion(mcq_1)
         assert QuestionManager.saveQuestion(mcq_2)
         assert QuestionManager.saveQuestion(mcq_3)
+
+        loaded_mcq_1 = QuestionManager.loadQuestion("question1")
+        loaded_mcq_2 = QuestionManager.loadQuestion("question2")
+        loaded_mcq_3 = QuestionManager.loadQuestion("question3")
+
+        assert isinstance(loaded_mcq_1, MultipleChoiceQuestion)
+        assert isinstance(loaded_mcq_2, MultipleChoiceQuestion)
+        assert isinstance(loaded_mcq_3, MultipleChoiceQuestion)
+
+        assert mcq_1.name == loaded_mcq_1.name
+        assert mcq_1.title == loaded_mcq_1.title
+        assert mcq_1.bodytext == loaded_mcq_1.bodytext
+        assert mcq_1.imgpath == loaded_mcq_1.imgpath
+        assert mcq_1.answers == loaded_mcq_1.answers
+        assert mcq_1.feedbacks == loaded_mcq_1.feedbacks
+        assert mcq_1.correct_answer == loaded_mcq_1.correct_answer
+
+        assert mcq_2.name == loaded_mcq_2.name
+        assert mcq_2.title == loaded_mcq_2.title
+        assert mcq_2.bodytext == loaded_mcq_2.bodytext
+        assert mcq_2.imgpath == loaded_mcq_2.imgpath
+        assert mcq_2.answers == loaded_mcq_2.answers
+        assert mcq_2.feedbacks == loaded_mcq_2.feedbacks
+        assert mcq_2.correct_answer == loaded_mcq_2.correct_answer
+
+        assert mcq_3.name == loaded_mcq_3.name
+        assert mcq_3.title == loaded_mcq_3.title
+        assert mcq_3.bodytext == loaded_mcq_3.bodytext
+        assert mcq_3.imgpath == loaded_mcq_3.imgpath
+        assert mcq_3.answers == loaded_mcq_3.answers
+        assert mcq_3.feedbacks == loaded_mcq_3.feedbacks
+        assert mcq_3.correct_answer == loaded_mcq_3.correct_answer
