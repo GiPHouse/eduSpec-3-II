@@ -1,6 +1,6 @@
 import pytest
 
-from ..Question import Question
+from Question import Question
 
 
 def test_createQuestion() -> None:
@@ -9,4 +9,4 @@ def test_createQuestion() -> None:
     Creating a base Question instance should fail with a TypeError
     """
     with pytest.raises(TypeError):
-        question = Question("a", "b")  # noqa: F841
+        question = Question("sampleid", "sampletitle", "samplebodytxt")  # type: ignore # noqa: F841

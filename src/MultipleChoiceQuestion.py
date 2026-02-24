@@ -10,6 +10,7 @@ class MultipleChoiceQuestion(Question):
 
     def __init__(
         self,
+        name: str,
         title: str,
         bodytext: str,
         answers: list[str],
@@ -20,7 +21,8 @@ class MultipleChoiceQuestion(Question):
         """Initialises a new multiple-choice question
 
         Args:
-            title (str): The title of the question
+            name (str): The unique name/ID of the question.
+            title (str): The title of the questio
             bodytext (str): The body text of the question
             answers (list[str]): The possible answers
             correct_answer (int): The correct answer, as an index to the answers list
@@ -28,14 +30,15 @@ class MultipleChoiceQuestion(Question):
             imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
         assert len(answers) == len(feedbacks)
-        assert correct_answer >= 0 and correct_answer < len(answers)
+        assert correct_answer >= 0
+        assert correct_answer < len(answers)
 
-        super().__init__(title, bodytext, imgpath)
+        super().__init__(name, title, bodytext, imgpath)
         print(self.bodytext)
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
-        self.widget_key = "multiple_choice"
+        self.widget_key = f"multiple_choice_{title}"
         self.default = None
 
     def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
@@ -60,11 +63,11 @@ class MultipleChoiceQuestion(Question):
         """
         return self.feedbacks[user_input]
 
-    def drawYourself(self) -> int:
+    def drawYourself(self) -> Optional[int]:
         """Question draws itself
 
         Returns:
-            int: returns the user input
+            Optional[int]: returns the user input
         """
         # Options (Radio in streamlit)
         if self.widget_key not in st.session_state:

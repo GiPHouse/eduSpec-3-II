@@ -1,3 +1,6 @@
 venv/
 __pycache__/
-spectra/
+**/__pycache__/
+*.py[cod]
+spectra/*
+!spectra/easy001
