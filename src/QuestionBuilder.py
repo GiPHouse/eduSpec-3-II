@@ -138,7 +138,9 @@ class QuestionBuilder:
                 answers = obj.get("answers")
                 feedbacks = obj.get("feedbacks")
                 correct_answer = obj.get("correctAnswer")
-                if not answers or not feedbacks or not correct_answer:
+                if not answers or not feedbacks:
+                    return False
+                if correct_answer is None or not isinstance(correct_answer, int):
                     return False
                 if len(answers) < 2:
                     return False
@@ -155,7 +157,9 @@ class QuestionBuilder:
                 feedbacks = obj.get("feedbacks")
                 if lower_bound is None or upper_bound is None or feedbacks is None:
                     return False
-                if not isinstance(lower_bound, int) or not isinstance(upper_bound, int):
+                if not isinstance(lower_bound, (int, float)) or not isinstance(
+                    upper_bound, (int, float)
+                ):
                     return False
                 if lower_bound > upper_bound:
                     return False

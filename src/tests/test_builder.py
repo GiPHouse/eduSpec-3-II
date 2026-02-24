@@ -153,6 +153,29 @@ class TestBuildingIntQ:
         assert intq.correct_answer == correct_intq.correct_answer
         assert intq.feedbacks == correct_intq.feedbacks
 
+    def test_IntQ_3(self) -> None:
+        """Test case for building a standard integer question with float bounds"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": -0.2, "upperBound": 0.3, "feedbacks": ["correct", "too low", "too high"]}"""
+
+        correct_intq = IntegerQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            (-0.2, 0.3),
+            ["correct", "too low", "too high"],
+        )
+
+        intq = QuestionBuilder.questionFromJson(input_data)
+
+        assert isinstance(intq, IntegerQuestion)
+
+        assert intq.name == correct_intq.name
+        assert intq.title == correct_intq.title
+        assert intq.bodytext == correct_intq.bodytext
+        assert intq.imgpath == correct_intq.imgpath
+        assert intq.correct_answer == correct_intq.correct_answer
+        assert intq.feedbacks == correct_intq.feedbacks
+
     def test_faulty_IntQ_1(self) -> None:
         """Test case for building an integer question missing the title attribute"""
         input_data = r"""{"id": "question1", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
