@@ -118,8 +118,23 @@ def AboutPage() -> None:
     st.title("About EduSpec")
 
 # Navigation session state
+query_params = st.query_params
+
 if "current_page" not in st.session_state:
-    st.session_state.current_page = "Home"
+    if "page" in query_params:
+        st.session_state.current_page = query_params["page"]
+    else:
+        st.session_state.current_page = "Home"
+
+def navigate(page: str) -> None:
+    """Navigate to a different page
+
+    Args:
+        page (str): Name of the page you want to navigate to
+    """
+    st.session_state.current_page = page
+    st.query_params["page"] = page      # update url
+    st.rerun()
 
 # Top navigation bar
 def navbarButton(label: str, page: str) -> None:
@@ -127,13 +142,12 @@ def navbarButton(label: str, page: str) -> None:
 
     Args:
         label (str): The text that is shown on the button
-        page (str): The relative path to the page to navigate to when the button is pressed.
+        page (str): Name of the page you want to navigate to
     """
     type_button = "primary" if st.session_state.current_page == page else "secondary"
 
-    if st.button(label, type=type_button):
-        st.session_state.current_page = page
-        st.rerun()
+    if st.button(label, type=type_button, key=page):
+        navigate(page)
 
 def showNavbar() -> None:
     """Displays the navigation bar that is at the top of the page."""
@@ -163,7 +177,7 @@ def sidebarButton(label:str, page:str, indent:int) -> None:
     
     Args:
         label (str): Text that is shown on the button
-        page (str): The relative path to the page to navigate to when the button is pressed.
+        page (str): Name of the page you want to navigate to
         indent (int): Indentation level of the button. Higher value increase the left spacing.
 
     Returns:
@@ -174,13 +188,11 @@ def sidebarButton(label:str, page:str, indent:int) -> None:
     if indent > 0:
         cols = st.sidebar.columns([indent, 20])
         with cols[1]:
-            if st.button(label, type=type_button):
-                st.session_state.current_page = page
-                st.rerun()
+            if st.button(label, type=type_button, key=page):
+                navigate(page)
     else:
-        if st.sidebar.button(label, type=type_button):
-            st.session_state.current_page = page
-            st.rerun()
+        if st.sidebar.button(label, type=type_button, key=page):
+            navigate(page)
 
 def createItemSideBar(items: list, indent:int=0) -> None:
     """Creates an item in the sidebar
@@ -267,13 +279,13 @@ NMR_NAV = [
     {
         "title": "¹H-NMR Spectroscopy",
         "items": [
-            {"label": "Theory1", "page": "H-NMR Theory"}
+            {"label": "Theory", "page": "H-NMR Theory"}
         ],
     },
     {
         "title": "¹³C-NMR Spectroscopy",
         "items": [
-            {"label": "Theory2", "page": "C-NMR Theory"}
+            {"label": "Theory", "page": "C-NMR Theory"}
         ],
     },
 ]
