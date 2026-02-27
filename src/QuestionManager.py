@@ -110,7 +110,7 @@ class QuestionManager:
         current_file = pathlib.Path(__file__)
         src_dir = current_file.parent
         base_dir = src_dir.parent
-        data_dir = base_dir.joinpath(cls.save_location)
+        data_dir = base_dir.joinpath(cls.save_location).resolve()
         if not data_dir.exists():
             data_dir.mkdir(parents=True)
         return data_dir
