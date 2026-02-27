@@ -3,6 +3,7 @@ import json
 from IntegerQuestion import IntegerQuestion
 from MultipleChoiceQuestion import MultipleChoiceQuestion
 from Question import Question
+from SpectralQuestion import SpectralQuestion
 from WordQuestion import WordQuestion
 
 
@@ -79,7 +80,20 @@ class QuestionBuilder:
                     feedbacks=feedbacks,
                     imgpath=imgpath,
                 )
+            case "spectral":
+                correct_answer = obj.get("correctAnswer")
+                feedbacks = obj.get("feedbacks")
+                tolerance = obj.get("tolerance")
 
+                return SpectralQuestion(
+                    name=name,
+                    title=title,
+                    bodytext=bodytext,
+                    correct_answer=float(correct_answer),
+                    feedbacks=feedbacks,
+                    imgpath=imgpath,
+                    tolerance=float(tolerance),
+                )
             case n:
                 raise TypeError(f"Attempted to build unknown or illegal question type: {n}")
 
@@ -174,6 +188,15 @@ class QuestionBuilder:
                 if not correct_answer or not correct_feedback or not incorrect_feedback:
                     return False
                 if not isinstance(correct_answer, str):
+                    return False
+            case "spectral":
+                # A single correct answer (float), tolerance(float), and a feedback list
+                correct_answer = obj.get("correctAnswer")
+                feedbacks = obj.get("feedbacks")
+                tolerance = obj.get("tolerance")
+                if not isinstance(correct_answer, float) or not isinstance(tolerance, float):
+                    return False
+                if not feedbacks:
                     return False
 
             case n:

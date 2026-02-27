@@ -1,5 +1,7 @@
 import pathlib
 
+import streamlit as st
+
 from QuestionBuilder import QuestionBuilder
 from Quiz import Quiz
 
@@ -7,6 +9,7 @@ from Quiz import Quiz
 class QuizBuilder:
     """A class to create a quiz object from question id's, by parsing the corresponding JSON files"""
 
+    @st.cache_data
     @staticmethod
     def buildQuiz(name: str, id_list: list[str]) -> Quiz:
         """_summary_
@@ -18,6 +21,7 @@ class QuizBuilder:
         Returns:
             Quiz: _description_
         """
+        print("I am called")
         question_path = str(pathlib.Path(__file__).parent.parent.resolve()) + "/questions/"
         question_list = []
 
