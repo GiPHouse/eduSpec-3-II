@@ -14,8 +14,8 @@ class QuestionManager:
     # DO NOT ACTUALLY EDIT
     _save_location = pathlib.Path("data/questions/")
 
-    @cache_data
     @classmethod
+    @cache_data
     def loadQuestion(cls, name: str) -> Question:
         """Loads a question from its name.
 

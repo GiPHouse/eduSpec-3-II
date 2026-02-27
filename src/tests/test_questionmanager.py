@@ -1,6 +1,7 @@
 import pathlib
 
 import pytest
+from streamlit import cache_data
 
 from MultipleChoiceQuestion import MultipleChoiceQuestion
 from QuestionManager import QuestionManager
@@ -52,7 +53,7 @@ class TestQuestionManager:
         loaded_mcq = QuestionManager.loadQuestion("question1")
 
         mcq = MultipleChoiceQuestion(
-            "question1",
+            "question2",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -75,7 +76,7 @@ class TestQuestionManager:
         QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq = MultipleChoiceQuestion(
-            "question1",
+            "question3",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -102,7 +103,7 @@ class TestQuestionManager:
         QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq_1 = MultipleChoiceQuestion(
-            "question1",
+            "question4",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -111,7 +112,7 @@ class TestQuestionManager:
         )
 
         mcq_2 = MultipleChoiceQuestion(
-            "question1",
+            "question4",
             "Example Update",
             "here's an updated question",
             ["1", "2", "3"],
@@ -123,6 +124,9 @@ class TestQuestionManager:
         assert QuestionManager.saveQuestion(mcq_1)
 
         assert QuestionManager.updateQuestion(mcq_2)
+
+        # Need to clear cache, not an issue in prod (hopefullly)
+        cache_data.clear()
 
         loaded_mcq = QuestionManager.loadQuestion("question1")
 
@@ -152,7 +156,7 @@ class TestQuestionManager:
         QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq = MultipleChoiceQuestion(
-            "question1",
+            "question5",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -174,7 +178,7 @@ class TestQuestionManager:
         assert not expected_location.exists()
 
         mcq = MultipleChoiceQuestion(
-            "question1",
+            "question6",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -190,7 +194,7 @@ class TestQuestionManager:
         QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq_1 = MultipleChoiceQuestion(
-            "question1",
+            "question7",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -199,7 +203,7 @@ class TestQuestionManager:
         )
 
         mcq_2 = MultipleChoiceQuestion(
-            "question2",
+            "question8",
             "Example Update",
             "here's an updated question",
             ["1", "2", "3"],
@@ -209,7 +213,7 @@ class TestQuestionManager:
         )
 
         mcq_3 = MultipleChoiceQuestion(
-            "question3",
+            "question9",
             "Title 3",
             "third question",
             [
