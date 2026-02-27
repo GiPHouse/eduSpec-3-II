@@ -20,7 +20,7 @@ class QuestionDrawer:
 
             user_input = current_question.drawYourself()
 
-            col1, col2 = st.columns(2, gap=None, width=320)
+            col1, col2 = st.columns(2, gap="small")
             with col1:
                 if st.button("Submit Answer", key="submit_button"):
                     if user_input is not None:

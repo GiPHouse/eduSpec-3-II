@@ -1,39 +1,22 @@
 import streamlit as st
 
-from IntegerQuestion import IntegerQuestion
-from MultipleChoiceQuestion import MultipleChoiceQuestion
+from MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from QuestionDrawer import QuestionDrawer
-from WordQuestion import WordQuestion
 
-st.switch_page("pages/home.py")
+st.set_page_config(page_title="Molecule Drawing Question")
 
-questionint = IntegerQuestion(
-    "title",
-    "this is the body text",
-    (10, 20),
-    ["correct", "wrong too small", "wrong too big"],
-    imgpath="../data/test.png",
+q = MoleculeDrawingQuestion(
+    name="name",
+    title="Draw ethanol",
+    bodytext="Use the editor to draw ethanol and submit.",
+    config=MoleculeDrawingConfig(
+        expected_smiles="CCO",
+        seed_smiles="",
+        widget_key="q1",
+    ),
 )
 
-
-questionmult = MultipleChoiceQuestion(
-    "title",
-    "this is the body text",
-    ["10", "20", "30", "40"],
-    2,
-    ["a", "b", "c", "d"],
-    imgpath="../data/test.png",
-)
-
-questionstr = WordQuestion(
-    "title",
-    "this is the body text",
-    "answer",
-    ["correct", "wrong"],
-    imgpath="../data/test.png",
-)
-
-QuestionDrawer.drawQuestion(questionstr)
+QuestionDrawer.drawQuestion(q)
 
 
 # QuestionDrawer.drawQuestion(questionmult)

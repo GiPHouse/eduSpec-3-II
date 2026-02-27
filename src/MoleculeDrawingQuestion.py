@@ -45,6 +45,7 @@ class MoleculeDrawingQuestion(WordQuestion):
 
     def __init__(
         self,
+        name: str,
         title: str,
         bodytext: str,
         config: MoleculeDrawingConfig,
@@ -68,6 +69,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             Defaults to None.
         """
         super().__init__(
+            name=name,
             title=title,
             bodytext=bodytext,
             imgpath=imgpath,
@@ -138,8 +140,8 @@ class MoleculeDrawingQuestion(WordQuestion):
             # so QuestionDrawer reset flips it back to default, which we can detect
             st.session_state[base_key] = smiles
 
-            st.subheader("Your SMILES")
-            st.code(smiles)
+            # st.subheader("Your SMILES")
+            # st.code(smiles)                #UNCOMMENT TO SEE LIVE SMILES CODE FOR DEBUGGING
             return smiles
 
         self._latest_smiles = None
