@@ -1,0 +1,16 @@
+##TITLE= Parameter file, TOPSPIN		Version 3.0
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 1	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= orgchem
+$$ 2014-11-01 16:37:11.583 +0100  orgchem@avance501
+$$ /opt/topspin3.0/prog/curdir/changer/inmrchanger/Nov01-2014-1425-sc/62/data/nmr/Practicum_EduSpec/62/pdata/1/outd
+$$ process /opt/topspin3.0/prog/mod/xwish3
+##$CURPLOT= <PRF102>
+##$CURPRIN= <$PRF102>
+##$DFORMAT= <normdp>
+##$LAYOUT= <+/1D_H.xwp>
+##$LFORMAT= <normlp>
+##$PFORMAT= <normpl>
+##END=

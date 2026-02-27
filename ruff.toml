@@ -2,8 +2,8 @@ target-version = "py312"
 line-length = 100
 
 [lint]
-select = ["ANN0", "ANN2", "A", "B0", "D1", "D2", "D3", "E4", "E7", "E9", "F", "I0", "SLF0"]
-ignore = ["ANN002", "ANN003", "ANN204", "D100", "D301"]
+select = ["ANN0", "ANN2", "A", "B0", "D1", "D2", "D3", "E4", "E7", "E9", "F", "I0", "PT0", "SLF0"]
+ignore = ["ANN002", "ANN003", "ANN204", "D100", "D301", "PT011"]
 
 [lint.pydocstyle]
 convention = "google"
