@@ -3,6 +3,7 @@ from typing import Optional
 import streamlit as st
 
 from Question import Question
+from QuestionDrawer import QuestionDrawer
 
 
 class IntegerQuestion(Question):
@@ -81,4 +82,6 @@ class IntegerQuestion(Question):
             placeholder="",
             key=self.widget_key,
         )
+        if number:
+            QuestionDrawer.evaluateAnswer(self, number)
         return number
