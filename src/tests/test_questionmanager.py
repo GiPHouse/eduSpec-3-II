@@ -12,13 +12,13 @@ class TestQuestionManager:
 
     def test_SaveLocation(self, tmp_path: pathlib.Path) -> None:
         """Test case for changing the question manager's save location"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         assert QuestionManager._getQuestionDir() == tmp_path  # noqa: SLF001
 
     def test_SavingMCQ(self, tmp_path: pathlib.Path) -> None:
         """Test case for saving a multiple-choice question"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq = MultipleChoiceQuestion(
             "question1",
@@ -41,7 +41,7 @@ class TestQuestionManager:
 
     def test_LoadMCQ(self, tmp_path: pathlib.Path) -> None:
         """Test case for loading a multiple-choice question"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         location = tmp_path.joinpath("question1.json")
         location.touch()
@@ -72,7 +72,7 @@ class TestQuestionManager:
 
     def test_CycleMCQ(self, tmp_path: pathlib.Path) -> None:
         """Test case for saving then loading a multiple-choice question"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq = MultipleChoiceQuestion(
             "question1",
@@ -99,7 +99,7 @@ class TestQuestionManager:
 
     def test_UpdateMCQ(self, tmp_path: pathlib.Path) -> None:
         """Test case for updating a multiple-choice question"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq_1 = MultipleChoiceQuestion(
             "question1",
@@ -138,7 +138,7 @@ class TestQuestionManager:
 
     def test_LoadMCQ_nonexistent(self, tmp_path: pathlib.Path) -> None:
         """Test case for loading a non-existent multiple-choice question"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         expected_location = tmp_path.joinpath("doesnotexist.json")
 
@@ -149,7 +149,7 @@ class TestQuestionManager:
 
     def test_SaveMCQ_duplicate(self, tmp_path: pathlib.Path) -> None:
         """Test case for saving a multiple-choice question twice"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq = MultipleChoiceQuestion(
             "question1",
@@ -167,7 +167,7 @@ class TestQuestionManager:
 
     def test_UpdateMCQ_nonexistent(self, tmp_path: pathlib.Path) -> None:
         """Test case for updating a non-existent multiple-choice question"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         expected_location = tmp_path.joinpath("doesnotexist.json")
 
@@ -187,7 +187,7 @@ class TestQuestionManager:
 
     def test_CycleMCQ_multiple(self, tmp_path: pathlib.Path) -> None:
         """Test case for cycling multiple multiple-choice questions"""
-        QuestionManager.save_location = tmp_path
+        QuestionManager._save_location = tmp_path  # noqa: SLF001
 
         mcq_1 = MultipleChoiceQuestion(
             "question1",
