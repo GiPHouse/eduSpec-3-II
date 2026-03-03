@@ -7,7 +7,7 @@ class TestWordQuestion:
     """Tests for the model of word questions"""
 
     @pytest.fixture
-    def wq() -> WordQuestion:
+    def wq(self) -> WordQuestion:
         """Fixture for creating a WordQuestion instance for testing"""
         return WordQuestion(
             name="question1",
@@ -17,11 +17,11 @@ class TestWordQuestion:
             feedbacks=["correct", "incorrect"],
         )
 
-    def test_verify_correct(wq: WordQuestion) -> None:
+    def test_verify_correct(self, wq: WordQuestion) -> None:
         """Test case for correct answer"""
         assert wq.verifyAndFeedback("correct answer") == (True, "correct")
 
-    def test_verify_incorrect(wq: WordQuestion) -> None:
+    def test_verify_incorrect(self, wq: WordQuestion) -> None:
         """Test case for incorrect answer"""
         assert wq.verifyAndFeedback("wrong") == (False, "incorrect")
 
