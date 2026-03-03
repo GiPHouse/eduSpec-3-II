@@ -22,7 +22,7 @@ class QuizBuilder:
 
         Raises:
             TypeError: When encountering an unrecognised question type.
-            ValueError: When encountering a malformed question or quiz.
+            ValueError: When encountering a malformed quiz or question.
 
         Returns:
             Quiz: The built quiz, with all built questions inside.

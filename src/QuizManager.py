@@ -14,8 +14,8 @@ class QuizManager:
     # DO NOT ACTUALLY EDIT
     _save_location = pathlib.Path("data/quizzes/")
 
-    @cache_data
     @classmethod
+    @cache_data
     def loadQuiz(cls, name: str) -> Quiz:
         """Loads a quiz from its name.
 

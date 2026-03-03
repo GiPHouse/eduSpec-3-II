@@ -20,6 +20,7 @@ class TestQuestionManager:
     def test_SavingMCQ(self, tmp_path: pathlib.Path) -> None:
         """Test case for saving a multiple-choice question"""
         QuestionManager._save_location = tmp_path  # noqa: SLF001
+        cache_data.clear()
 
         mcq = MultipleChoiceQuestion(
             "question1",
@@ -43,6 +44,7 @@ class TestQuestionManager:
     def test_LoadMCQ(self, tmp_path: pathlib.Path) -> None:
         """Test case for loading a multiple-choice question"""
         QuestionManager._save_location = tmp_path  # noqa: SLF001
+        cache_data.clear()
 
         location = tmp_path.joinpath("question1.json")
         location.touch()
@@ -53,7 +55,7 @@ class TestQuestionManager:
         loaded_mcq = QuestionManager.loadQuestion("question1")
 
         mcq = MultipleChoiceQuestion(
-            "question2",
+            "question1",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -74,9 +76,10 @@ class TestQuestionManager:
     def test_CycleMCQ(self, tmp_path: pathlib.Path) -> None:
         """Test case for saving then loading a multiple-choice question"""
         QuestionManager._save_location = tmp_path  # noqa: SLF001
+        cache_data.clear()
 
         mcq = MultipleChoiceQuestion(
-            "question3",
+            "question1",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -101,9 +104,10 @@ class TestQuestionManager:
     def test_UpdateMCQ(self, tmp_path: pathlib.Path) -> None:
         """Test case for updating a multiple-choice question"""
         QuestionManager._save_location = tmp_path  # noqa: SLF001
+        cache_data.clear()
 
         mcq_1 = MultipleChoiceQuestion(
-            "question4",
+            "question1",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -112,7 +116,7 @@ class TestQuestionManager:
         )
 
         mcq_2 = MultipleChoiceQuestion(
-            "question4",
+            "question1",
             "Example Update",
             "here's an updated question",
             ["1", "2", "3"],
@@ -124,9 +128,6 @@ class TestQuestionManager:
         assert QuestionManager.saveQuestion(mcq_1)
 
         assert QuestionManager.updateQuestion(mcq_2)
-
-        # Need to clear cache, not an issue in prod (hopefullly)
-        cache_data.clear()
 
         loaded_mcq = QuestionManager.loadQuestion("question1")
 
@@ -143,6 +144,7 @@ class TestQuestionManager:
     def test_LoadMCQ_nonexistent(self, tmp_path: pathlib.Path) -> None:
         """Test case for loading a non-existent multiple-choice question"""
         QuestionManager._save_location = tmp_path  # noqa: SLF001
+        cache_data.clear()
 
         expected_location = tmp_path.joinpath("doesnotexist.json")
 
@@ -154,9 +156,10 @@ class TestQuestionManager:
     def test_SaveMCQ_duplicate(self, tmp_path: pathlib.Path) -> None:
         """Test case for saving a multiple-choice question twice"""
         QuestionManager._save_location = tmp_path  # noqa: SLF001
+        cache_data.clear()
 
         mcq = MultipleChoiceQuestion(
-            "question5",
+            "question1",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -172,13 +175,14 @@ class TestQuestionManager:
     def test_UpdateMCQ_nonexistent(self, tmp_path: pathlib.Path) -> None:
         """Test case for updating a non-existent multiple-choice question"""
         QuestionManager._save_location = tmp_path  # noqa: SLF001
+        cache_data.clear()
 
         expected_location = tmp_path.joinpath("doesnotexist.json")
 
         assert not expected_location.exists()
 
         mcq = MultipleChoiceQuestion(
-            "question6",
+            "question1",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -192,9 +196,10 @@ class TestQuestionManager:
     def test_CycleMCQ_multiple(self, tmp_path: pathlib.Path) -> None:
         """Test case for cycling multiple multiple-choice questions"""
         QuestionManager._save_location = tmp_path  # noqa: SLF001
+        cache_data.clear()
 
         mcq_1 = MultipleChoiceQuestion(
-            "question7",
+            "question1",
             "Example Question",
             "here's a question",
             ["a", "b", "c"],
@@ -203,7 +208,7 @@ class TestQuestionManager:
         )
 
         mcq_2 = MultipleChoiceQuestion(
-            "question8",
+            "question2",
             "Example Update",
             "here's an updated question",
             ["1", "2", "3"],
@@ -213,7 +218,7 @@ class TestQuestionManager:
         )
 
         mcq_3 = MultipleChoiceQuestion(
-            "question9",
+            "question3",
             "Title 3",
             "third question",
             [
