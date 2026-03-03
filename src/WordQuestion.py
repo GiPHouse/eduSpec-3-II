@@ -73,5 +73,5 @@ class WordQuestion(Question):
             value=None,
             key=self.widget_key,
         )
-        if answer:
+        if answer is not None and answer.strip() != "":
             QuestionDrawer.evaluateAnswer(self, answer)
