@@ -2,3 +2,4 @@ streamlit
 pytest
 jcamp
 plotly
+selenium>=4.20
