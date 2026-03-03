@@ -34,7 +34,6 @@ class MultipleChoiceQuestion(Question):
         assert correct_answer < len(answers)
 
         super().__init__(name, title, bodytext, imgpath)
-        print(self.bodytext)
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks

@@ -3,6 +3,7 @@ from typing import Optional
 import streamlit as st
 
 from Question import Question
+from QuestionDrawer import QuestionDrawer
 
 
 class WordQuestion(Question):
@@ -28,10 +29,9 @@ class WordQuestion(Question):
             imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
         super().__init__(name, title, bodytext, imgpath)
-        print(self.bodytext)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
-        self.widget_key = "word_input"
+        self.widget_key = f"word_input_{title}"
         self.default = ""
 
     def verifyAndFeedback(self, user_input: str) -> tuple[bool, str]:
@@ -73,4 +73,5 @@ class WordQuestion(Question):
             value=None,
             key=self.widget_key,
         )
-        return answer
+        if answer is not None and answer.strip() != "":
+            QuestionDrawer.evaluateAnswer(self, answer)
