@@ -29,11 +29,8 @@ class IntegerQuestion(Question):
             imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
         # feedbacks is as follows: [feedback for right answer, feedback for too small answer, feedback for too large answer]
-        assert correct_answer[0] <= correct_answer[1]
-        assert len(feedbacks) == 3
 
         super().__init__(name, title, bodytext, imgpath)
-        print(self.bodytext)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"number_input_{title}"
@@ -46,7 +43,7 @@ class IntegerQuestion(Question):
             user_input (int|float): answer of the user
 
         Returns:
-            (bool, str): return a tuple with whether the ansewr is correct and its corresponding feedback
+            (bool, str): return a tuple with whether the answer is correct and its corresponding feedback
         """
         isAnswerCorrect: bool
         ReturnFeedback: str
@@ -78,10 +75,9 @@ class IntegerQuestion(Question):
 
         number = st.number_input(
             "enter the right number:",
+            value=None,
             step=1,
-            placeholder="",
             key=self.widget_key,
         )
         if number:
             QuestionDrawer.evaluateAnswer(self, number)
-        return number
