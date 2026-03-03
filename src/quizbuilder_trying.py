@@ -1,3 +1,4 @@
 from QuizBuilder import QuizBuilder
 
-QuizBuilder.buildQuiz([])
+q = QuizBuilder.buildQuiz("quiz", ["int"])
+q.drawQuiz()
