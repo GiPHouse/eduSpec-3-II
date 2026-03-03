@@ -7,7 +7,7 @@ class TestWordQuestion:
     """Tests for the model of word questions"""
 
     @pytest.fixture
-    def wq(self) -> WordQuestion:
+    def wq() -> WordQuestion:
         """Fixture for creating a WordQuestion instance for testing"""
         return WordQuestion(
             name="question1",
@@ -33,6 +33,7 @@ class TestWordQuestion:
         ],
     )
     def test_verify_variants(
+        self,
         wq: WordQuestion,
         user_input: str,
         expected: tuple[bool, str],
