@@ -46,16 +46,14 @@ class QuestionDrawer:
             current_question.drawImage()
             st.text(current_question.bodytext)
 
-            user_input = current_question.drawYourself()
+            with st.form("form" + current_question.title):
+                user_input = current_question.drawYourself()
 
-            col1, col2 = st.columns(2, gap=None, width=320)
-            with col1:
-                if st.button("Submit Answer", key="submit_button"):
+                if st.form_submit_button("Submit Answer", key="submit_button"):
                     QuestionDrawer.evaluateAnswer(current_question, user_input)
 
             def _reset_callback() -> None:
                 st.session_state[current_question.widget_key] = current_question.default
 
-            with col2:
-                if st.button("Reset", on_click=_reset_callback):
-                    st.rerun()
+            if st.button("Reset", on_click=_reset_callback):
+                st.rerun()

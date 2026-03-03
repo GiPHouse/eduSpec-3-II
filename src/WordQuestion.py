@@ -29,10 +29,9 @@ class WordQuestion(Question):
             imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
         """
         super().__init__(name, title, bodytext, imgpath)
-        print(self.bodytext)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
-        self.widget_key = "word_input"
+        self.widget_key = f"word_input_{title}"
         self.default = ""
 
     def verifyAndFeedback(self, user_input: str) -> tuple[bool, str]:
@@ -76,4 +75,3 @@ class WordQuestion(Question):
         )
         if answer:
             QuestionDrawer.evaluateAnswer(self, answer)
-        return answer
