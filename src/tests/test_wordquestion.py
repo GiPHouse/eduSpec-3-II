@@ -3,20 +3,20 @@ import pytest
 from WordQuestion import WordQuestion
 
 
+@pytest.fixture
+def wq() -> WordQuestion:
+    """Fixture for creating a WordQuestion instance for testing"""
+    return WordQuestion(
+        name="question1",
+        title="Example Question",
+        bodytext="here's a question",
+        correct_answer="correct answer",
+        feedbacks=["correct", "incorrect"],
+    )
+
 class TestWordQuestion:
     """Tests for the model of word questions"""
-
-    @pytest.fixture
-    def wq() -> WordQuestion:
-        """Fixture for creating a WordQuestion instance for testing"""
-        return WordQuestion(
-            name="question1",
-            title="Example Question",
-            bodytext="here's a question",
-            correct_answer="correct answer",
-            feedbacks=["correct", "incorrect"],
-        )
-
+    
     def test_verify_correct(self, wq: WordQuestion) -> None:
         """Test case for correct answer"""
         assert wq.verifyAndFeedback("correct answer") == (True, "correct")
