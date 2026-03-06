@@ -1,5 +1,5 @@
 import streamlit as st
-
+from CustomThemes import showThemeSelector, applyTheme, THEMES
 from QuizBuilder import QuizBuilder
 
 
@@ -135,12 +135,21 @@ def UsingEduSpecPage() -> None:
     """Shows the using eduspec page"""
     showNavbar()
     st.title("Using EduSpec")
+   
 
 
 def AboutPage() -> None:
     """Shows the about page"""
     showNavbar()
     st.title("About EduSpec")
+    
+    
+def SettingsPage() -> None:
+    """Shows the Settings page"""
+    showNavbar()
+    st.title("Settings")
+    st.subheader("Theme")
+    showThemeSelector()
 
 
 # Navigation session state
@@ -180,7 +189,11 @@ def navbarButton(label: str, page: str) -> None:
 
 def showNavbar() -> None:
     """Displays the navigation bar that is at the top of the page."""
-    cols = st.columns([1.5, 1, 1.25, 1, 2, 2, 2])
+    if "theme" not in st.session_state:
+        st.session_state["theme"] = "Light"
+    applyTheme(THEMES[st.session_state["theme"]])
+
+    cols = st.columns([1.5, 1, 1.3, 1.25, 2.3, 2, 1.5,1.75])
     with cols[0]:
         navbarButton("Home", "Home")
     with cols[1]:
@@ -195,7 +208,8 @@ def showNavbar() -> None:
         navbarButton("Using Eduspec", "Using EduSpec")
     with cols[6]:
         navbarButton("About", "About")
-
+    with cols[7]:
+        navbarButton("Setting", "Setting")
 
 # Sidebar Navigation
 def sidebarButton(label: str, page: str, indent: int) -> None:
@@ -334,6 +348,8 @@ PAGES = {
     "Combination Exercises": CombinationExercisesPage,
     "Using EduSpec": UsingEduSpecPage,
     "About": AboutPage,
+    "Setting": SettingsPage,  # Add this
+
 }
 
 current_page = st.session_state.current_page

@@ -4,3 +4,5 @@ __pycache__/
 *.py[cod]
 spectra/*
 !spectra/easy001
+.venv/
+.venv311/
