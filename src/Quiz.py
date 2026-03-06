@@ -53,7 +53,7 @@ class Quiz:
         """Draws the elements of the quiz."""
         self.current_index = st.session_state.get("current_index", 0)
         QuestionDrawer.drawQuestion(self.question_list[self.current_index])
-        col1, col2 = st.columns(2, gap=None, width=320)
+        col1, col2 = st.columns(2, gap=None, width=250)
         with col1:
             if self.current_index != 0:
                 self.drawPreviousButton()
