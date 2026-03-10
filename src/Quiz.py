@@ -14,6 +14,7 @@ class Quiz:
             name (str): The unique name/id of the quiz.
             question_list (list[Question]): A list of questions in the quiz.
         """
+        self.name = name
         if "current_index" not in st.session_state:
             st.session_state["current_index"] = 0
         self.current_index = 0
@@ -52,7 +53,6 @@ class Quiz:
                         st.session_state[f"current_index_{self.name}"] = button_index
                         st.rerun()
                 button_index += 1
-        self.name = name
 
     def drawPreviousButton(self) -> None:
         """Draws a button to go to the previous question.
