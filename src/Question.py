@@ -1,7 +1,10 @@
+import os
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 import streamlit as st
+
+from MoleculeDisplay import MoleculeDisplay
 
 
 class Question(ABC):
@@ -42,4 +45,8 @@ class Question(ABC):
     def drawImage(self) -> None:
         """Draw Image"""
         if self.imgpath is not None:
-            st.image(self.imgpath)
+            ext = os.path.splitext(self.imgpath)[1].lower()
+            if ext in [".pdb", ".ent"]:
+                MoleculeDisplay.drawYourself(self.imgpath)
+            else:
+                st.image(self.imgpath)

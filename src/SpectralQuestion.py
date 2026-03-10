@@ -59,7 +59,7 @@ class SpectralQuestion(Question):
         self.correct_answer = correct_answer
         self.tolerance = tolerance
         self.feedbacks = feedbacks
-        self.widget_key = "spectral_question"
+        self.widget_key = f"spectral_question_{name}"
         self.default = None
         self.type = self._detect_type(imgpath)
 
