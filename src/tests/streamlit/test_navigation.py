@@ -3,7 +3,7 @@ from streamlit.testing.v1 import AppTest
 
 def test_navbar_navigation() -> None:
     """Test for the top navigation bar."""
-    at = AppTest.from_file("../navigation.py")
+    at = AppTest.from_file("../../navigation.py")
     at.run()
 
     at.button("IR").click().run()  # Click IR button
@@ -17,7 +17,7 @@ def test_navbar_navigation() -> None:
 
 def test_sidebar_navigation() -> None:
     """Test for the sidebar navigation"""
-    at = AppTest.from_file("../navigation.py")
+    at = AppTest.from_file("../../navigation.py")
     at.run()
 
     at.button("IR").click().run()  # Click IR button
@@ -36,7 +36,7 @@ def test_sidebar_navigation() -> None:
 
 def test_url_direct_load() -> None:
     """Test when the url is loaded"""
-    at = AppTest.from_file("../navigation.py")
+    at = AppTest.from_file("../../navigation.py")
     at.query_params["page"] = ["IR Area B"]
     at.run()
     assert at.session_state["current_page"] == "IR Area B"
