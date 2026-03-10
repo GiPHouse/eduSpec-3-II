@@ -181,7 +181,7 @@ def navbarButton(label: str, page: str) -> None:
         label (str): The text that is shown on the button
         page (str): Name of the page you want to navigate to
     """
-    type_button = "primary" if st.session_state.current_page == page else "secondary"
+    type_button = "primary" if st.session_state.current_page == page else "tertiary"
 
     if st.button(label, type=type_button, key=page):
         navigate(page)
@@ -226,7 +226,7 @@ def sidebarButton(label: str, page: str, indent: int) -> None:
     Returns:
         None
     """
-    type_button = "primary" if st.session_state.current_page == page else "secondary"
+    type_button = "primary" if st.session_state.current_page == page else "tertiary"
 
     if indent > 0:
         cols = st.sidebar.columns([indent, 20])

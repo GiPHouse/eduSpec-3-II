@@ -32,7 +32,7 @@ class TestMCQ:
             ["a: wrong", "b: wrong", "c: wrong"],
         )
 
-        # Case of python being fucked up
+        # Case of python being fucked up. Index -1 is the last entry.
         assert mcq.verifyAndFeedback(-1) == mcq.verifyAndFeedback(2)
 
         with pytest.raises(IndexError):
