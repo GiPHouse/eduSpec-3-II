@@ -2,11 +2,11 @@ import pathlib
 
 from streamlit import cache_data
 
-from IntegerQuestion import IntegerQuestion
-from QuestionManager import QuestionManager
+from managers.QuestionManager import QuestionManager
+from managers.QuizBuilder import QuizBuilder
+from managers.QuizSerialiser import QuizSerialiser
+from questions.IntegerQuestion import IntegerQuestion
 from Quiz import Quiz
-from QuizBuilder import QuizBuilder
-from QuizSerialiser import QuizSerialiser
 
 
 class Test_QuizSerialisationCycle:

@@ -1,7 +1,7 @@
-from IntegerQuestion import IntegerQuestion
-from MultipleChoiceQuestion import MultipleChoiceQuestion
-from QuestionSerialiser import QuestionSerialiser
-from WordQuestion import WordQuestion
+from managers.QuestionSerialiser import QuestionSerialiser
+from questions.IntegerQuestion import IntegerQuestion
+from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
+from questions.WordQuestion import WordQuestion
 
 
 class TestSerialisationMCQ:

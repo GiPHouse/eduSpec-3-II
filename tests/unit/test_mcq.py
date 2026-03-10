@@ -1,6 +1,6 @@
 import pytest
 
-from MultipleChoiceQuestion import MultipleChoiceQuestion
+from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 
 
 class TestMCQ:

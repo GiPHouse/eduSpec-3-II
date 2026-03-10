@@ -2,9 +2,9 @@ import pathlib
 
 from streamlit import cache_data
 
-from Question import Question
-from QuestionBuilder import QuestionBuilder
-from QuestionSerialiser import QuestionSerialiser
+from managers.QuestionBuilder import QuestionBuilder
+from managers.QuestionSerialiser import QuestionSerialiser
+from questions.Question import Question
 
 
 class QuestionManager:
