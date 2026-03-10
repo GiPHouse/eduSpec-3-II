@@ -1,5 +1,6 @@
 import streamlit as st
-from CustomThemes import showThemeSelector, applyTheme, THEMES
+
+from CustomThemes import THEMES, applyTheme, showThemeSelector
 from QuizBuilder import QuizBuilder
 
 
