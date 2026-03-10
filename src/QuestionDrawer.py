@@ -13,7 +13,7 @@ class QuestionDrawer:
             current_question (Question): The question that is aimed to be displayed
             user_input (_type_): user's answer to the question
         """
-        if user_input is not None:
+        if (user_input is not None) or (user_input == 0):
             is_correct, feedback = current_question.verifyAndFeedback(user_input)
             if is_correct:
                 st.markdown(

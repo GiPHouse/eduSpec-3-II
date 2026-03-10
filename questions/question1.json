@@ -1,11 +1,11 @@
 {
-    "id" : "int"  ,
-    "title" : "title2",
+    "id" : "question1",
+    "title" : "title1",
     "bodyText": "this is a bodytext",
     "version": 1,
     "type": "integer",
     "feedbacks":["correct", "too low", "too high"],
     "lowerBound" : 10,
     "upperBound" : 20,
-    "imagePath":"../data/test.png"
+    "imagePath":"./neoNR8.pdb"
 }
