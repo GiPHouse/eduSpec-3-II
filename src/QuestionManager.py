@@ -1,5 +1,7 @@
 import pathlib
 
+from streamlit import cache_data
+
 from Question import Question
 from QuestionBuilder import QuestionBuilder
 from QuestionSerialiser import QuestionSerialiser
@@ -10,9 +12,10 @@ class QuestionManager:
 
     # Here to be modified during tests.
     # DO NOT ACTUALLY EDIT
-    save_location = pathlib.Path("data/questions/")
+    _save_location = pathlib.Path("data/questions/")
 
     @classmethod
+    @cache_data
     def loadQuestion(cls, name: str) -> Question:
         """Loads a question from its name.
 
@@ -25,7 +28,7 @@ class QuestionManager:
             ValueError: When building a malformed question.
 
         Returns:
-            Optional[Question]: The question. Will be None if it doesn't exist or fails to read.
+            Question: The question.
         """
         if not cls.questionExists(name):
             raise FileNotFoundError(f"Question {name} does not exist!")
@@ -110,7 +113,7 @@ class QuestionManager:
         current_file = pathlib.Path(__file__)
         src_dir = current_file.parent
         base_dir = src_dir.parent
-        data_dir = base_dir.joinpath(cls.save_location).resolve()
+        data_dir = base_dir.joinpath(cls._save_location).resolve()
         if not data_dir.exists():
             data_dir.mkdir(parents=True)
         return data_dir

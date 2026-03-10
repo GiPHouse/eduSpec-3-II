@@ -1,33 +1,52 @@
-import pathlib
+import json
 
-import streamlit as st
-
-from QuestionBuilder import QuestionBuilder
+from QuestionManager import QuestionManager
 from Quiz import Quiz
 
 
 class QuizBuilder:
-    """A class to create a quiz object from question id's, by parsing the corresponding JSON files"""
+    """Builder class for quizzes.
 
-    @st.cache_data
+    This will take in json and build quizzes instantiated with questions
+    """
+
     @staticmethod
-    def buildQuiz(name: str, id_list: list[str]) -> Quiz:
-        """_summary_
+    def quizFromJson(data: str) -> Quiz:
+        """Builds a quiz from json data.
+
+        Will only work with correct data, otherwise it'll raise errors.
+        This will also load and build all questions within the quiz.
 
         Args:
-            name (str): _description_
-            id_list (list[str]): _description_
+            data (str): The json string describing the quiz.
+
+        Raises:
+            TypeError: When encountering an unrecognised question type.
+            ValueError: When encountering a malformed quiz or question.
 
         Returns:
-            Quiz: _description_
+            Quiz: The built quiz, with all built questions inside.
         """
-        print("I am called")
-        question_path = str(pathlib.Path(__file__).parent.parent.resolve()) + "/questions/"
-        question_list = []
+        obj = json.loads(data)
 
-        for i in id_list:
-            with open(question_path + i + ".json", "r", encoding="utf-8") as file:
-                json_string = file.read()
-                question_list.append(QuestionBuilder.questionFromJson(json_string))
+        name = obj.get("id")
+        question_names = obj.get("questionNames")
 
-        return Quiz(name, question_list)
+        if not name:
+            raise ValueError("Malformed quiz! Missing id.")
+
+        if not question_names:
+            raise ValueError(f"Malformed quiz {id}! Missing questions.")
+
+        questions = []
+
+        for question_name in question_names:
+            try:
+                question = QuestionManager.loadQuestion(question_name)
+                questions.append(question)
+            except FileNotFoundError:
+                raise ValueError(f"Malformed quiz {id}! Question {question_name} does not exist.")
+            except Exception as e:
+                raise e
+
+        return Quiz(name, questions)
