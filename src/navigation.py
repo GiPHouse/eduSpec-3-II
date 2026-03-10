@@ -1,7 +1,7 @@
 import streamlit as st
 
 from CustomThemes import THEMES, applyTheme, showThemeSelector
-from QuizBuilder import QuizBuilder
+from managers.QuizBuilder import QuizBuilder
 
 
 # Page functions
@@ -136,15 +136,14 @@ def UsingEduSpecPage() -> None:
     """Shows the using eduspec page"""
     showNavbar()
     st.title("Using EduSpec")
-   
 
 
 def AboutPage() -> None:
     """Shows the about page"""
     showNavbar()
     st.title("About EduSpec")
-    
-    
+
+
 def SettingsPage() -> None:
     """Shows the Settings page"""
     showNavbar()
@@ -194,7 +193,7 @@ def showNavbar() -> None:
         st.session_state["theme"] = "Light"
     applyTheme(THEMES[st.session_state["theme"]])
 
-    cols = st.columns([1.5, 1, 1.3, 1.25, 2.3, 2, 1.5,1.75])
+    cols = st.columns([1.5, 1, 1.3, 1.25, 2.3, 2, 1.5, 1.75])
     with cols[0]:
         navbarButton("Home", "Home")
     with cols[1]:
@@ -211,6 +210,7 @@ def showNavbar() -> None:
         navbarButton("About", "About")
     with cols[7]:
         navbarButton("Setting", "Setting")
+
 
 # Sidebar Navigation
 def sidebarButton(label: str, page: str, indent: int) -> None:
@@ -350,7 +350,6 @@ PAGES = {
     "Using EduSpec": UsingEduSpecPage,
     "About": AboutPage,
     "Setting": SettingsPage,  # Add this
-
 }
 
 current_page = st.session_state.current_page

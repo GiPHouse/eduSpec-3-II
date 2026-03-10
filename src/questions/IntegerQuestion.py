@@ -2,8 +2,8 @@ from typing import Optional
 
 import streamlit as st
 
-from Question import Question
 from QuestionDrawer import QuestionDrawer
+from questions.Question import Question
 
 
 class IntegerQuestion(Question):

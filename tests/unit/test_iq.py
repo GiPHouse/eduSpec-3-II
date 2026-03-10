@@ -1,4 +1,4 @@
-from IntegerQuestion import IntegerQuestion
+from questions.IntegerQuestion import IntegerQuestion
 
 
 class TestIQ:
@@ -31,14 +31,3 @@ class TestIQ:
         assert iq.verifyAndFeedback(-100) == (False, "wrong, too small")
         assert iq.verifyAndFeedback(-5) == (True, "correct")
         assert iq.verifyAndFeedback(20) == (False, "wrong, too big")
-
-    # def test_
-
-    # # Case of python being fucked up
-    # assert iq.verifyAndFeedback(-1) == iq.verifyAndFeedback(2)
-
-    # with pytest.raises(IndexError):
-    #     assert iq.verifyAndFeedback(3) == (False, "")
-
-    # with pytest.raises(TypeError):
-    #     assert iq.verifyAndFeedback(1.5) == (False, "")  # type: ignore

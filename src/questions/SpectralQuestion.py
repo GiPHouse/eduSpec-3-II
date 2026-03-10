@@ -7,7 +7,7 @@ import numpy as np
 import streamlit as st
 from plotly import graph_objects as go
 
-from Question import Question
+from questions.Question import Question
 
 
 class SpectralType(Enum):

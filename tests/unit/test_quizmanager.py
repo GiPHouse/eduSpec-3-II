@@ -3,10 +3,10 @@ import pathlib
 import pytest
 from streamlit import cache_data
 
-from IntegerQuestion import IntegerQuestion
-from QuestionManager import QuestionManager
+from managers.QuestionManager import QuestionManager
+from managers.QuizManager import QuizManager
+from questions.IntegerQuestion import IntegerQuestion
 from Quiz import Quiz
-from QuizManager import QuizManager
 
 
 class TestQuizManager:

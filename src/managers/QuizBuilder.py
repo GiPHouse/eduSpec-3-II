@@ -1,6 +1,6 @@
 import json
 
-from QuestionManager import QuestionManager
+from managers.QuestionManager import QuestionManager
 from Quiz import Quiz
 
 

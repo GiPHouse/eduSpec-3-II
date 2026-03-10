@@ -2,9 +2,9 @@ import pathlib
 
 from streamlit import cache_data
 
+from managers.QuizBuilder import QuizBuilder
+from managers.QuizSerialiser import QuizSerialiser
 from Quiz import Quiz
-from QuizBuilder import QuizBuilder
-from QuizSerialiser import QuizSerialiser
 
 
 class QuizManager:

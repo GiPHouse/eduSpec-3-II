@@ -2,7 +2,7 @@ from typing import Optional
 
 import streamlit as st
 
-from Question import Question
+from questions.Question import Question
 
 
 class MultipleChoiceQuestion(Question):

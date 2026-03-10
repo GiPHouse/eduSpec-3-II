@@ -1,6 +1,6 @@
 import pytest
 
-from WordQuestion import WordQuestion
+from questions.WordQuestion import WordQuestion
 
 
 @pytest.fixture

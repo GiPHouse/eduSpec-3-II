@@ -1,10 +1,10 @@
 import json
 
-from IntegerQuestion import IntegerQuestion
-from MultipleChoiceQuestion import MultipleChoiceQuestion
-from Question import Question
-from SpectralQuestion import SpectralQuestion
-from WordQuestion import WordQuestion
+from questions.IntegerQuestion import IntegerQuestion
+from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
+from questions.Question import Question
+from questions.SpectralQuestion import SpectralQuestion
+from questions.WordQuestion import WordQuestion
 
 
 class QuestionSerialiser:
@@ -167,6 +167,8 @@ class QuestionSerialiser:
 
         data_out["feedbacks"] = question.feedbacks
         data_out["tolerance"] = question.tolerance
+
+        return json.dumps(data_out)
 
     @classmethod
     def _buildGenericQuestion(cls, question: Question) -> dict:
