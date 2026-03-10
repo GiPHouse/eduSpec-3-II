@@ -41,7 +41,7 @@ class Quiz:
         button_index = 0
         for chunk in chunks:
             cols = st.columns(BUTTONS_PER_ROW)
-            for i, col in enumerate(cols[:len(chunk)]):
+            for _, col in enumerate(cols[:len(chunk)]):
                 with col:
                     button_type = "primary" if button_index == self.current_index else "secondary"
                     if st.button(
