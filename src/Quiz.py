@@ -1,7 +1,7 @@
 import streamlit as st
 
-from Question import Question
 from QuestionDrawer import QuestionDrawer
+from questions.Question import Question
 
 
 class Quiz:
@@ -34,21 +34,21 @@ class Quiz:
         BUTTONS_PER_ROW = 10
 
         chunks = [
-            self.question_list[i:i + BUTTONS_PER_ROW]
+            self.question_list[i : i + BUTTONS_PER_ROW]
             for i in range(0, len(self.question_list), BUTTONS_PER_ROW)
         ]
 
         button_index = 0
         for chunk in chunks:
             cols = st.columns(BUTTONS_PER_ROW)
-            for _, col in enumerate(cols[:len(chunk)]):
+            for _, col in enumerate(cols[: len(chunk)]):
                 with col:
                     button_type = "primary" if button_index == self.current_index else "secondary"
                     if st.button(
                         str(button_index + 1),
                         key=f"question_nav_{self.name}_{button_index}",
                         type=button_type,
-                        width='stretch',
+                        width="stretch",
                     ):
                         st.session_state[f"current_index_{self.name}"] = button_index
                         st.rerun()

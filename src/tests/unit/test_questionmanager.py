@@ -3,9 +3,9 @@ import pathlib
 import pytest
 from streamlit import cache_data
 
-from MultipleChoiceQuestion import MultipleChoiceQuestion
-from QuestionManager import QuestionManager
-from QuestionSerialiser import QuestionSerialiser
+from managers.QuestionManager import QuestionManager
+from managers.QuestionSerialiser import QuestionSerialiser
+from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 
 
 class TestQuestionManager:

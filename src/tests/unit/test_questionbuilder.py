@@ -1,9 +1,9 @@
 import pytest
 
-from IntegerQuestion import IntegerQuestion
-from MultipleChoiceQuestion import MultipleChoiceQuestion
-from QuestionBuilder import QuestionBuilder
-from WordQuestion import WordQuestion
+from managers.QuestionBuilder import QuestionBuilder
+from questions.IntegerQuestion import IntegerQuestion
+from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
+from questions.WordQuestion import WordQuestion
 
 
 class TestBuildingMCQ:

@@ -1,6 +1,6 @@
 import pytest
 
-from Question import Question
+from questions.Question import Question
 
 
 def test_createQuestion() -> None:

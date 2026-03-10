@@ -1,6 +1,6 @@
 import pytest
 
-from WordQuestion import WordQuestion
+from questions.WordQuestion import WordQuestion
 
 
 @pytest.fixture
@@ -14,9 +14,10 @@ def wq() -> WordQuestion:
         feedbacks=["correct", "incorrect"],
     )
 
+
 class TestWordQuestion:
     """Tests for the model of word questions"""
-    
+
     def test_verify_correct(self, wq: WordQuestion) -> None:
         """Test case for correct answer"""
         assert wq.verifyAndFeedback("correct answer") == (True, "correct")

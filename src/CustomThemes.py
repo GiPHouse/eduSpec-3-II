@@ -184,21 +184,21 @@ def showThemeSelector() -> None:
             st.html(
                 f"""
                 <div style="
-                    background-color: {theme['backgroundColor']};
-                    border: 2px solid {'#FF4B4B' if is_active else theme['borderColor']};
+                    background-color: {theme["backgroundColor"]};
+                    border: 2px solid {"#FF4B4B" if is_active else theme["borderColor"]};
                     border-radius: 8px;
                     padding: 8px;
                     text-align: center;
                     margin-bottom: 8px;
                 ">
                     <div style="
-                        background-color: {theme['primaryColor']};
+                        background-color: {theme["primaryColor"]};
                         height: 20px;
                         border-radius: 4px;
                         margin-bottom: 4px;
                     "></div>
                     <div style="
-                        background-color: {theme['secondaryBackgroundColor']};
+                        background-color: {theme["secondaryBackgroundColor"]};
                         height: 20px;
                         border-radius: 4px;
                     "></div>
@@ -208,7 +208,7 @@ def showThemeSelector() -> None:
             if st.button(
                 f"{'✓ ' if is_active else ''}{theme_name}",
                 key=f"theme_btn_{theme_name}",
-                width='stretch',
+                width="stretch",
             ):
                 st.session_state["theme"] = theme_name
                 st.rerun()

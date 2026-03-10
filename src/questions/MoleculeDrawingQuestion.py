@@ -6,7 +6,7 @@ from typing import Any, Optional
 import streamlit as st
 
 from pages.jsme_component import jsme_component
-from WordQuestion import WordQuestion
+from questions.WordQuestion import WordQuestion
 
 
 @dataclass(frozen=True)
