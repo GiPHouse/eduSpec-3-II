@@ -1,44 +1,46 @@
+import pytest
+
 from IntegerQuestion import IntegerQuestion
+
+# Still needs streamlit tests...
+
+
+@pytest.fixture
+def iq() -> IntegerQuestion:
+    """Fixture for creating a IntegerQuestion instance for testing
+
+    Returns:
+        IntegerQuestion: the question
+    """
+    return IntegerQuestion(
+        name="question1",
+        title="exampleQuestion",
+        bodytext="this is the body text of the question",
+        correct_answer=(10, 20),
+        feedbacks=["correct", "wrong, too small", "wrong, too big"],
+    )
 
 
 class TestIQ:
     """Tests for the model of integer questions"""
 
-    def test_correct_answers_are_valid(self) -> None:
+    def test_correct_input(self, iq: IntegerQuestion) -> None:
         """Test case to check if the range of correct answers is valid"""
-        iq = IntegerQuestion(
-            "question1",
-            "Example Question",
-            "here's a question",
-            (10, 12.5),
-            ["correct", "wrong, too small", "wrong, too big"],
-        )
-
-        assert iq.verifyAndFeedback(0) == (False, "wrong, too small")
-        assert iq.verifyAndFeedback(11) == (True, "correct")
-        assert iq.verifyAndFeedback(20) == (False, "wrong, too big")
-
-    def test_negative_numbers(self) -> None:
-        """Test case for answers that are negative"""
-        iq = IntegerQuestion(
-            "question1",
-            "Example Question",
-            "here's a question",
-            (-10, -3),
-            ["correct", "wrong, too small", "wrong, too big"],
-        )
-
         assert iq.verifyAndFeedback(-100) == (False, "wrong, too small")
-        assert iq.verifyAndFeedback(-5) == (True, "correct")
-        assert iq.verifyAndFeedback(20) == (False, "wrong, too big")
+        assert iq.verifyAndFeedback(12) == (True, "correct")
+        assert iq.verifyAndFeedback(21) == (False, "wrong, too big")
 
-    # def test_
+    def test_wrong_input(self, iq: IntegerQuestion) -> None:
+        """Test for type errors
 
-    # # Case of python being fucked up
-    # assert iq.verifyAndFeedback(-1) == iq.verifyAndFeedback(2)
+        Args:
+            iq (IntegerQuestion): the question
+        """
+        with pytest.raises(TypeError):
+            assert iq.verifyAndFeedback("aa") == (False, "")
 
-    # with pytest.raises(IndexError):
-    #     assert iq.verifyAndFeedback(3) == (False, "")
+        # with pytest.raises(TypeError):
+        #     assert iq.verifyAndFeedback(True) == (False, "")
 
-    # with pytest.raises(TypeError):
-    #     assert iq.verifyAndFeedback(1.5) == (False, "")  # type: ignore
+        with pytest.raises(TypeError):
+            assert iq.verifyAndFeedback(["test"]) == (False, "")

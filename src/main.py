@@ -1,13 +1,12 @@
-import streamlit as st
-
 from IntegerQuestion import IntegerQuestion
 from MultipleChoiceQuestion import MultipleChoiceQuestion
 from QuestionDrawer import QuestionDrawer
 from WordQuestion import WordQuestion
 
-st.switch_page("pages/home.py")
+# st.switch_page("pages/home.py")
 
 questionint = IntegerQuestion(
+    "tst",
     "title",
     "this is the body text",
     (10, 20),
@@ -17,6 +16,7 @@ questionint = IntegerQuestion(
 
 
 questionmult = MultipleChoiceQuestion(
+    "tsta",
     "title",
     "this is the body text",
     ["10", "20", "30", "40"],
@@ -26,6 +26,7 @@ questionmult = MultipleChoiceQuestion(
 )
 
 questionstr = WordQuestion(
+    "tsts",
     "title",
     "this is the body text",
     "answer",

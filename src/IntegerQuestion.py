@@ -34,7 +34,7 @@ class IntegerQuestion(Question):
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"number_input_{title}"
-        self.default = 0
+        self.default = None
 
     def verifyAndFeedback(self, user_input: int | float) -> tuple[bool, str]:
         """checks if input is correct
@@ -76,8 +76,8 @@ class IntegerQuestion(Question):
         number = st.number_input(
             "enter the right number:",
             value=None,
-            step=1,
+            step=1 if isinstance(self.correct_answer[0], int) else 0.5,
             key=self.widget_key,
         )
-        if number:
+        if number is not None:
             QuestionDrawer.evaluateAnswer(self, number)

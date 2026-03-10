@@ -46,10 +46,10 @@ class QuestionDrawer:
             current_question.drawImage()
             st.text(current_question.bodytext)
 
-            with st.form("form" + current_question.title):
+            with st.form("form" + current_question.title, enter_to_submit=False):
                 user_input = current_question.drawYourself()
 
-                if st.form_submit_button("Submit Answer", key="submit_button"):
+                if st.form_submit_button("submit_button", key="submit_button"):
                     QuestionDrawer.evaluateAnswer(current_question, user_input)
 
             def _reset_callback() -> None:
