@@ -6,6 +6,6 @@
     "type": "spectral",
     "correctAnswer": 1000.00,
     "feedbacks": ["correct","wrong"],
-    "imagePath": "../spectra/easy001/ir.dx",
+    "imagePath": "../data/nmr.jdx",
     "tolerance":50.00
 }
