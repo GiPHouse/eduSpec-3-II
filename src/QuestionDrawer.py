@@ -6,7 +6,6 @@ from questions.Question import Question
 class QuestionDrawer:
     """Public class for displaying questions"""
 
-    @staticmethod
     def evaluateAnswer(current_question: Question, user_input: any) -> None:
         """Evaluates the answer after submitting it
 
@@ -47,11 +46,10 @@ class QuestionDrawer:
             current_question.drawImage()
             st.text(current_question.bodytext)
 
-            user_input = current_question.drawYourself()
-
-            with st.form("form" + current_question.title):
-                if user_input is not None:
-                    if st.form_submit_button("Submit Answer", key="submit_button_form"):
+            with st.form("form" + current_question.title, enter_to_submit=False):
+                user_input = current_question.drawYourself()
+                if st.form_submit_button("Submit Answer", key="submit_button_form"):
+                    if user_input is not None:
                         QuestionDrawer.evaluateAnswer(current_question, user_input)
 
             def _reset_callback() -> None:
