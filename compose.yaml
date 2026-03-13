@@ -1,0 +1,19 @@
+services:
+  eduspec:
+    image: eduspec
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 0s
+    volumes:
+      - data:/data
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8501:8501
+
+volumes:
+  data:
