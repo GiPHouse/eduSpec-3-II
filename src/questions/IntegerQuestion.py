@@ -64,12 +64,8 @@ class IntegerQuestion(Question):
         """Unused, all logic is in `verifyAndFeedback()`"""
         pass
 
-    def drawYourself(self) -> int:
-        """Question draws itself
-
-        Returns:
-            int: returns the user input
-        """
+    def drawYourself(self) -> None:
+        """Question draws itself"""
         if self.widget_key not in st.session_state:
             st.session_state[self.widget_key] = self.default
 

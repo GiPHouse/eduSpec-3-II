@@ -1,7 +1,5 @@
 import pathlib
 
-from streamlit import cache_data
-
 from managers.QuestionBuilder import QuestionBuilder
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.Question import Question
@@ -15,7 +13,7 @@ class QuestionManager:
     _save_location = pathlib.Path("data/questions/")
 
     @classmethod
-    @cache_data
+    # @cache_data
     def loadQuestion(cls, name: str) -> Question:
         """Loads a question from its name.
 
@@ -111,7 +109,8 @@ class QuestionManager:
             pathlib.Path: The question directory path
         """
         current_file = pathlib.Path(__file__)
-        src_dir = current_file.parent
+        manager_dir = current_file.parent
+        src_dir = manager_dir.parent
         base_dir = src_dir.parent
         data_dir = base_dir.joinpath(cls._save_location).resolve()
         if not data_dir.exists():
