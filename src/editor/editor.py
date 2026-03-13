@@ -12,7 +12,7 @@ def determine_output_path(uploaded_file: UploadedFile) -> str:
     Returns:
         str: returns the output path
     """
-    output_path = "../data/"
+    output_path = "../editor_test/"
     if uploaded_file.type == ".dx" or uploaded_file.type == ".jdx":
         output_path += "spectra/"
     elif uploaded_file.type == ".pdb" or uploaded_file.type == ".mol":
