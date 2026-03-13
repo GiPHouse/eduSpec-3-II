@@ -6,3 +6,4 @@ spectra/*
 !spectra/easy001
 # JSME (GWT) debug mapping output
 src/pages/jsme_component/frontend/jsme/compilation-mappings.txt
+./vscode
