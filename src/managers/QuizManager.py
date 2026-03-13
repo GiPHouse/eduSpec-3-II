@@ -1,5 +1,7 @@
 import pathlib
 
+from streamlit import cache_data
+
 from managers.QuizBuilder import QuizBuilder
 from managers.QuizSerialiser import QuizSerialiser
 from Quiz import Quiz
@@ -13,7 +15,7 @@ class QuizManager:
     _save_location = pathlib.Path("data/quizzes/")
 
     @classmethod
-    # @cache_data
+    @cache_data
     def loadQuiz(cls, name: str) -> Quiz:
         """Loads a quiz from its name.
 
