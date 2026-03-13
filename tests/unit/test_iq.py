@@ -1,5 +1,6 @@
 import pytest
-from IntegerQuestion import IntegerQuestion
+
+from questions.IntegerQuestion import IntegerQuestion
 
 # Still needs streamlit tests...
 
