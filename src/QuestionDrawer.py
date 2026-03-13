@@ -1,6 +1,6 @@
 import streamlit as st
 
-from Question import Question
+from questions.Question import Question
 
 
 class QuestionDrawer:
@@ -13,7 +13,7 @@ class QuestionDrawer:
             current_question (Question): The question that is aimed to be displayed
             user_input (_type_): user's answer to the question
         """
-        if user_input is not None:
+        if (user_input is not None) or (user_input == 0):
             is_correct, feedback = current_question.verifyAndFeedback(user_input)
             if is_correct:
                 st.markdown(
@@ -49,7 +49,33 @@ class QuestionDrawer:
             with st.form("form" + current_question.title, enter_to_submit=False):
                 user_input = current_question.drawYourself()
 
-                if st.form_submit_button("submit_button", key="submit_button"):
+            col1, col2 = st.columns(2, gap="small")
+            with col1:
+                if st.button("Submit Answer", key="submit_button"):
+                    if user_input is not None:
+                        is_correct, feedback = current_question.verifyAndFeedback(user_input)
+                        if is_correct:
+                            st.markdown(
+                                "<span style='color: green;'>Your answer is correct!</span>",
+                                unsafe_allow_html=True,
+                            )
+                            st.markdown(
+                                f"<span style='color: green;'>{feedback}</span>",
+                                unsafe_allow_html=True,
+                            )
+                        else:
+                            st.markdown(
+                                "<span style='color: red;'>Your answer is incorrect!</span>",
+                                unsafe_allow_html=True,
+                            )
+                            st.markdown(
+                                f"<span style='color: red;'>{feedback}</span>",
+                                unsafe_allow_html=True,
+                            )
+            with st.form("form" + current_question.title):
+                user_input = current_question.drawYourself()
+
+                if st.form_submit_button("Submit Answer", key="submit_button"):
                     QuestionDrawer.evaluateAnswer(current_question, user_input)
 
             def _reset_callback() -> None:
