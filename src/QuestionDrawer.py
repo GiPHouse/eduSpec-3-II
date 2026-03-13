@@ -6,6 +6,7 @@ from questions.Question import Question
 class QuestionDrawer:
     """Public class for displaying questions"""
 
+    @staticmethod
     def evaluateAnswer(current_question: Question, user_input: any) -> None:
         """Evaluates the answer after submitting it
 

@@ -1,7 +1,5 @@
 import pathlib
 
-from streamlit import cache_data
-
 from managers.QuizBuilder import QuizBuilder
 from managers.QuizSerialiser import QuizSerialiser
 from Quiz import Quiz
@@ -15,7 +13,7 @@ class QuizManager:
     _save_location = pathlib.Path("data/quizzes/")
 
     @classmethod
-    @cache_data
+    # @cache_data
     def loadQuiz(cls, name: str) -> Quiz:
         """Loads a quiz from its name.
 
@@ -117,7 +115,8 @@ class QuizManager:
             pathlib.Path: The quiz directory path
         """
         current_file = pathlib.Path(__file__)
-        src_dir = current_file.parent
+        manager_dir = current_file.parent
+        src_dir = manager_dir.parent
         base_dir = src_dir.parent
         data_dir = base_dir.joinpath(cls._save_location).resolve()
         if not data_dir.exists():

@@ -1,3 +1,4 @@
+import time
 from typing import Optional
 
 import streamlit as st
@@ -64,12 +65,8 @@ class IntegerQuestion(Question):
         """Unused, all logic is in `verifyAndFeedback()`"""
         pass
 
-    def drawYourself(self) -> int:
-        """Question draws itself
-
-        Returns:
-            int: returns the user input
-        """
+    def drawYourself(self) -> None:
+        """Question draws itself"""
         if self.widget_key not in st.session_state:
             st.session_state[self.widget_key] = self.default
 
@@ -77,7 +74,7 @@ class IntegerQuestion(Question):
             "enter the right number:",
             value=None,
             step=1,
-            key=self.widget_key,
+            key=self.widget_key + str(time.time()),
         )
         if number is not None:
             QuestionDrawer.evaluateAnswer(self, number)

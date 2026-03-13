@@ -7,5 +7,5 @@
     "feedbacks":["correct", "too low", "too high"],
     "lowerBound" : 10,
     "upperBound" : 20,
-    "imagePath":"./neoNR8.pdb"
+    "imagePath":"../data/molecules/neoNR8.pdb"
 }
