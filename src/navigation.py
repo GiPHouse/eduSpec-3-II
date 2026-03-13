@@ -1,357 +1,180 @@
+import json
+from pathlib import Path
+import sys
+from typing import Any
+
 import streamlit as st
 
+CURRENT_DIR = Path(__file__).resolve().parent
+if str(CURRENT_DIR) not in sys.path:
+    sys.path.append(str(CURRENT_DIR))
+
 from CustomThemes import THEMES, applyTheme, showThemeSelector
-from managers.QuizBuilder import QuizBuilder
+
+NAVIGATION_PATH = CURRENT_DIR.parent / "data" / "navigation.json"
 
 
-# Page functions
-def homePage() -> None:
-    """Shows the home page"""
-    showNavbar()
-    st.title("Welcome to the home page!")
+def load_navigation_config() -> dict[str, Any]:
+    """Load the JSON-backed navigation structure."""
+    with NAVIGATION_PATH.open(encoding="utf-8") as navigation_file:
+        return json.load(navigation_file)
 
 
-def IRPage() -> None:
-    """Shows the IR page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Welcome to the IR page!")
+def flatten_pages(items: list[dict[str, Any]], tab_label: str) -> dict[str, dict[str, str]]:
+    """Create a page lookup for the current tab tree."""
+    pages: dict[str, dict[str, str]] = {}
+
+    for item in items:
+        page = item.get("page")
+        if page:
+            pages[page] = {
+                "label": item["label"],
+                "tab": tab_label,
+                "description": item.get("description", ""),
+            }
+
+        children = item.get("children", [])
+        if children:
+            pages.update(flatten_pages(children, tab_label))
+
+    return pages
 
 
-def IRTheoryPage() -> None:
-    """Shows the IR Theory page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("IR Theory")
+def build_page_index(navigation_config: dict[str, Any]) -> dict[str, dict[str, str]]:
+    """Collect every addressable page from the navigation JSON."""
+    page_index: dict[str, dict[str, str]] = {}
+
+    for tab in navigation_config["tabs"]:
+        page_index.update(flatten_pages([tab], tab["label"]))
+
+    return page_index
 
 
-def IRSpectralAreasPage() -> None:
-    """Shows the IR Spectral Areas page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("IR Spectral Areas")
+def normalise_query_page(page_value: Any) -> str | None:
+    """Normalise Streamlit query param values into a single page string."""
+    if isinstance(page_value, list):
+        return page_value[0] if page_value else None
+
+    if isinstance(page_value, str):
+        return page_value
+
+    return None
 
 
-def IRSpectralAreaAPage() -> None:
-    """Shows the IR Spectral Area A page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Area A (3800 - 3200 cm-1)")
+NAVIGATION_CONFIG = load_navigation_config()
+PAGE_INDEX = build_page_index(NAVIGATION_CONFIG)
+DEFAULT_PAGE = NAVIGATION_CONFIG.get("default_page", "Home")
 
 
-def IRSpectralAreaAQuizPage() -> None:
-    """Shows the IR Spectral Area A Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Mini Quiz Area A")
+def get_requested_page() -> str:
+    """Resolve the requested page from the URL, falling back to the default page."""
+    requested_page = normalise_query_page(st.query_params.get("page"))
+
+    if requested_page in PAGE_INDEX:
+        return requested_page
+
+    return DEFAULT_PAGE
 
 
-def IRSpectralAreaBPage() -> None:
-    """Shows the IR Spectral Area B page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Area B (3200 - 2700 cm-1)")
+def initialise_navigation_state() -> None:
+    """Synchronise session state with the URL search parameter."""
+    requested_page = get_requested_page()
 
+    if "current_page" not in st.session_state:
+        st.session_state.current_page = requested_page
+        return
 
-def IRSpectralAreaBQuizPage() -> None:
-    """Shows the IR Spectral Area B Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Mini Quiz Area B")
-
-
-def IRSpectralAreaCPage() -> None:
-    """Shows the IR Spectral Area C page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Area C (2700 - 200 cm-1)")
-
-
-def IRSpectralAreaCQuizPage() -> None:
-    """Shows the IR Spectral Area C Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Mini Quiz Area C")
-
-
-def IRSpectralAreaDPage() -> None:
-    """Shows the IR Spectral Area D page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Area D (2000 - 1630 cm-1)")
-
-
-def IRSpectralAreaDQuizPage() -> None:
-    """Shows the IR Spectral Area D Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Mini Quiz Area D")
-
-
-def IRProteusQuizPage() -> None:
-    """Shows the IR Proteus Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Infrared Proteus Quiz")
-
-
-def NMRPage() -> None:
-    """Shows the NMR page"""
-    showNavbar()
-    createSidebar(NMR_NAV)
-    st.title("Welcome to the NMR page!")
-
-
-def HNMRTheoryPage() -> None:
-    """Shows the H-NMR Theory page"""
-    showNavbar()
-    createSidebar(NMR_NAV)
-    st.title("H-NMR Theory")
-
-
-def CNMRTHeoryPage() -> None:
-    """Shows the C-NMR Theory page"""
-    showNavbar()
-    createSidebar(NMR_NAV)
-    st.title("CNMR Theory")
-
-
-def MSPage() -> None:
-    """Shows the MS page"""
-    showNavbar()
-    st.title("Mass spectrometry")
-
-
-def CombinationExercisesPage() -> None:
-    """Shows the Combination Exercises page"""
-    showNavbar()
-    st.title("Combination Exercises")
-    q = QuizBuilder.buildQuiz(
-        "quiz", ["question1", "question2", "question3", "question4", "question5"]
-    )
-    q.drawQuiz()
-
-
-def UsingEduSpecPage() -> None:
-    """Shows the using eduspec page"""
-    showNavbar()
-    st.title("Using EduSpec")
-
-
-def AboutPage() -> None:
-    """Shows the about page"""
-    showNavbar()
-    st.title("About EduSpec")
-
-
-def SettingsPage() -> None:
-    """Shows the Settings page"""
-    showNavbar()
-    st.title("Settings")
-    st.subheader("Theme")
-    showThemeSelector()
-
-
-# Navigation session state
-query_params = st.query_params
-
-if "current_page" not in st.session_state:
-    if "page" in query_params:
-        st.session_state.current_page = query_params["page"]
-    else:
-        st.session_state.current_page = "Home"
+    if requested_page != st.session_state.current_page:
+        st.session_state.current_page = requested_page
 
 
 def navigate(page: str) -> None:
-    """Navigate to a different page
+    """Navigate to a different page and keep the URL in sync."""
+    if page not in PAGE_INDEX:
+        return
 
-    Args:
-        page (str): Name of the page you want to navigate to
-    """
     st.session_state.current_page = page
-    st.query_params["page"] = page  # update url
+    st.query_params["page"] = page
     st.rerun()
 
 
-# Top navigation bar
-def navbarButton(label: str, page: str) -> None:
-    """Creates a button in the navigation bar at the top of the screen. The type of a button changes when the page is active.
+def is_branch_active(item: dict[str, Any], current_page: str) -> bool:
+    """Check whether the current page exists in the given branch."""
+    if item.get("page") == current_page:
+        return True
 
-    Args:
-        label (str): The text that is shown on the button
-        page (str): Name of the page you want to navigate to
-    """
-    type_button = "primary" if st.session_state.current_page == page else "tertiary"
+    return any(is_branch_active(child, current_page) for child in item.get("children", []))
 
-    if st.button(label, type=type_button, key=page):
+
+def render_nav_button(label: str, page: str, key_prefix: str) -> None:
+    """Render a navigation button that updates the current page."""
+    button_type = "primary" if st.session_state.current_page == page else "tertiary"
+
+    if st.button(label, type=button_type, key=f"{key_prefix}:{page}"):
         navigate(page)
 
 
-def showNavbar() -> None:
-    """Displays the navigation bar that is at the top of the page."""
-    if "theme" not in st.session_state:
-        st.session_state["theme"] = "Light"
-    applyTheme(THEMES[st.session_state["theme"]])
+def render_navigation_branch(item: dict[str, Any], key_prefix: str) -> None:
+    """Render a nested expander/button branch from the JSON tree."""
+    page = item.get("page")
+    children = item.get("children", [])
 
-    cols = st.columns([1.5, 1, 1.3, 1.25, 2.3, 2, 1.5, 1.75])
-    with cols[0]:
-        navbarButton("Home", "Home")
-    with cols[1]:
-        navbarButton("IR", "IR")
-    with cols[2]:
-        navbarButton("NMR", "NMR")
-    with cols[3]:
-        navbarButton("MS", "MS")
-    with cols[4]:
-        navbarButton("Combination Exercises", "Combination Exercises")
-    with cols[5]:
-        navbarButton("Using Eduspec", "Using EduSpec")
-    with cols[6]:
-        navbarButton("About", "About")
-    with cols[7]:
-        navbarButton("Setting", "Setting")
+    if children:
+        with st.expander(
+            item["label"],
+            expanded=is_branch_active(item, st.session_state.current_page),
+        ):
+            if page:
+                button_label = item.get("button_label", f"Open {item['label']}")
+                render_nav_button(button_label, page, key_prefix)
 
+            for child in children:
+                render_navigation_branch(child, f"{key_prefix}/{item['label']}")
 
-# Sidebar Navigation
-def sidebarButton(label: str, page: str, indent: int) -> None:
-    """Creates a button (with indentation) that is shown in the sidebar.
+        return
 
-    The button is used for navigation between pages.
-    The type of the button changes when the page is active.
-
-    Args:
-        label (str): Text that is shown on the button
-        page (str): Name of the page you want to navigate to
-        indent (int): Indentation level of the button. Higher value increase the left spacing.
-
-    Returns:
-        None
-    """
-    type_button = "primary" if st.session_state.current_page == page else "tertiary"
-
-    if indent > 0:
-        cols = st.sidebar.columns([indent, 20])
-        with cols[1]:
-            if st.button(label, type=type_button, key=page):
-                navigate(page)
-    else:
-        if st.sidebar.button(label, type=type_button, key=page):
-            navigate(page)
+    if page:
+        button_label = item.get("button_label", item["label"])
+        render_nav_button(button_label, page, key_prefix)
 
 
-def createItemSideBar(items: list, indent: int = 0) -> None:
-    """Creates an item in the sidebar
+def show_sidebar_navigation() -> None:
+    """Render all navigation in the sidebar using tabs and nested expanders."""
+    current_page = st.session_state.current_page
+    current_tab = PAGE_INDEX[current_page]["tab"]
+    tab_labels = [tab["label"] for tab in NAVIGATION_CONFIG["tabs"]]
+    tab_containers = st.sidebar.tabs(tab_labels, default=current_tab)
 
-    Args:
-        items (list): items that are in the sidebar
-        indent (int, optional): Indentation of the item in the sidebar. Defaults to 0.
-    """
-    for item in items:
-        page = item["page"]
-        label = item["label"]
-        children = item.get("children", [])
+    for tab_config, tab_container in zip(NAVIGATION_CONFIG["tabs"], tab_containers):
+        with tab_container:
+            if tab_config.get("description"):
+                st.caption(tab_config["description"])
 
-        is_active = st.session_state.current_page == page
+            if tab_config.get("page"):
+                button_label = tab_config.get("button_label", f"Open {tab_config['label']}")
+                render_nav_button(button_label, tab_config["page"], f"tab:{tab_config['label']}")
 
-        child_active = any(
-            st.session_state.current_page == child["page"]
-            or any(
-                st.session_state.current_page == grandchild["page"]
-                for grandchild in child.get("children", [])
-            )
-            for child in children
-        )
-
-        sidebarButton(label, page, indent)
-
-        if children and (is_active or child_active):
-            createItemSideBar(children, indent + 1)
+            for child in tab_config.get("children", []):
+                render_navigation_branch(child, f"tab:{tab_config['label']}")
 
 
-def createSidebar(nav_structure: dict) -> None:
-    """Creates a sidebar based on the input.
+def render_placeholder_page(page: str) -> None:
+    """Render the currently selected page."""
+    page_config = PAGE_INDEX[page]
+    st.title(page_config["label"])
 
-    Args:
-        nav_structure (dict): Structure + title of the sidebar navigation.
-    """
-    for section in nav_structure:
-        st.sidebar.title(section["title"])
-        items = section.get("items", [])
-        createItemSideBar(items)
+    if page_config["description"]:
+        st.caption(page_config["description"])
 
-
-IR_NAV = [
-    {
-        "title": "Infrared Spectroscopy",
-        "items": [
-            {"label": "Theory", "page": "IR Theory"},
-            {
-                "label": "Spectral Areas",
-                "page": "IR Spectral Areas",
-                "children": [
-                    {
-                        "label": "Area A (3800–3200 cm-1)",
-                        "page": "IR Area A",
-                        "children": [{"label": "Mini Quiz", "page": "IR Area A Quiz"}],
-                    },
-                    {
-                        "label": "Area B (3200–2700 cm-1)",
-                        "page": "IR Area B",
-                        "children": [{"label": "Mini Quiz", "page": "IR Area B Quiz"}],
-                    },
-                    {
-                        "label": "Area C (2700–2000 cm-1)",
-                        "page": "IR Area C",
-                        "children": [{"label": "Mini Quiz", "page": "IR Area C Quiz"}],
-                    },
-                    {
-                        "label": "Area D (2000–1630 cm-1)",
-                        "page": "IR Area D",
-                        "children": [{"label": "Mini Quiz", "page": "IR Area D Quiz"}],
-                    },
-                ],
-            },
-            {"label": "Infrared Proteus Quiz", "page": "IR Proteus Quiz"},
-        ],
-    },
-]
-
-NMR_NAV = [
-    {
-        "title": "¹H-NMR Spectroscopy",
-        "items": [{"label": "Theory", "page": "H-NMR Theory"}],
-    },
-    {
-        "title": "¹³C-NMR Spectroscopy",
-        "items": [{"label": "Theory", "page": "C-NMR Theory"}],
-    },
-]
+    if page == "Setting":
+        st.subheader("Theme")
+        showThemeSelector()
 
 
-PAGES = {
-    "Home": homePage,
-    "IR": IRPage,
-    "IR Theory": IRTheoryPage,
-    "IR Spectral Areas": IRSpectralAreasPage,
-    "IR Area A": IRSpectralAreaAPage,
-    "IR Area A Quiz": IRSpectralAreaAQuizPage,
-    "IR Area B": IRSpectralAreaBPage,
-    "IR Area B Quiz": IRSpectralAreaBQuizPage,
-    "IR Area C": IRSpectralAreaCPage,
-    "IR Area C Quiz": IRSpectralAreaCQuizPage,
-    "IR Area D": IRSpectralAreaDPage,
-    "IR Area D Quiz": IRSpectralAreaDQuizPage,
-    "IR Proteus Quiz": IRProteusQuizPage,
-    "NMR": NMRPage,
-    "H-NMR Theory": HNMRTheoryPage,
-    "C-NMR Theory": CNMRTHeoryPage,
-    "MS": MSPage,
-    "Combination Exercises": CombinationExercisesPage,
-    "Using EduSpec": UsingEduSpecPage,
-    "About": AboutPage,
-    "Setting": SettingsPage,  # Add this
-}
+if "theme" not in st.session_state:
+    st.session_state["theme"] = "Light"
 
-current_page = st.session_state.current_page
-page_function = PAGES[current_page]
-page_function()
+applyTheme(THEMES[st.session_state["theme"]])
+initialise_navigation_state()
+show_sidebar_navigation()
+render_placeholder_page(st.session_state.current_page)

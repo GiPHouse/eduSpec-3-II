@@ -1,0 +1,214 @@
+{
+  "default_page": "Home",
+  "tabs": [
+    {
+      "label": "Home",
+      "page": "Home",
+      "button_label": "Open Home",
+      "description": "General EduSpec pages and app-level settings.",
+      "children": [
+        {
+          "label": "Getting Started",
+          "page": "Using EduSpec",
+          "button_label": "Using EduSpec",
+          "children": [
+            {
+              "label": "Quick Start Questions",
+              "page": "Quick Start Questions"
+            }
+          ]
+        },
+        {
+          "label": "About",
+          "page": "About"
+        },
+        {
+          "label": "Settings",
+          "page": "Setting",
+          "button_label": "Open Settings"
+        }
+      ]
+    },
+    {
+      "label": "IR",
+      "page": "IR",
+      "button_label": "Open IR Overview",
+      "description": "Mock IR structure with nested expanders, quiz buttons, and question buttons.",
+      "children": [
+        {
+          "label": "Fundamentals",
+          "page": "IR Fundamentals",
+          "button_label": "Open IR Fundamentals",
+          "children": [
+            {
+              "label": "Theory",
+              "page": "IR Theory"
+            },
+            {
+              "label": "Reference Sheet",
+              "page": "IR Reference Sheet"
+            }
+          ]
+        },
+        {
+          "label": "Spectral Areas",
+          "page": "IR Spectral Areas",
+          "button_label": "Open Spectral Areas",
+          "children": [
+            {
+              "label": "Area A (3800-3200 cm-1)",
+              "page": "IR Area A",
+              "button_label": "Open Area A",
+              "children": [
+                {
+                  "label": "Area A Quiz",
+                  "page": "IR Area A Quiz"
+                },
+                {
+                  "label": "Area A Questions",
+                  "page": "IR Area A Questions"
+                }
+              ]
+            },
+            {
+              "label": "Area B (3200-2700 cm-1)",
+              "page": "IR Area B",
+              "button_label": "Open Area B",
+              "children": [
+                {
+                  "label": "Area B Quiz",
+                  "page": "IR Area B Quiz"
+                },
+                {
+                  "label": "Area B Questions",
+                  "page": "IR Area B Questions"
+                }
+              ]
+            },
+            {
+              "label": "Area C (2700-2000 cm-1)",
+              "page": "IR Area C",
+              "button_label": "Open Area C",
+              "children": [
+                {
+                  "label": "Area C Quiz",
+                  "page": "IR Area C Quiz"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Challenge Set",
+          "page": "IR Challenge Set",
+          "button_label": "Open IR Challenge Set",
+          "children": [
+            {
+              "label": "Unknown Sample 01",
+              "page": "IR Unknown Sample 01"
+            },
+            {
+              "label": "Unknown Sample 02",
+              "page": "IR Unknown Sample 02"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "NMR",
+      "page": "NMR",
+      "button_label": "Open NMR Overview",
+      "description": "Mock NMR navigation with multiple nested sections.",
+      "children": [
+        {
+          "label": "1H NMR",
+          "page": "H-NMR",
+          "button_label": "Open 1H NMR",
+          "children": [
+            {
+              "label": "1H Theory",
+              "page": "H-NMR Theory"
+            },
+            {
+              "label": "Chemical Shift Maps",
+              "page": "H-NMR Chemical Shift Maps",
+              "button_label": "Open Chemical Shift Maps",
+              "children": [
+                {
+                  "label": "Aliphatic Questions",
+                  "page": "H-NMR Aliphatic Questions"
+                },
+                {
+                  "label": "Aromatic Questions",
+                  "page": "H-NMR Aromatic Questions"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "13C NMR",
+          "page": "C-NMR",
+          "button_label": "Open 13C NMR",
+          "children": [
+            {
+              "label": "13C Theory",
+              "page": "C-NMR Theory"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Mass",
+      "page": "Mass",
+      "button_label": "Open Mass Overview",
+      "description": "Mock mass spectrometry navigation.",
+      "children": [
+        {
+          "label": "Mass Theory",
+          "page": "Mass Theory"
+        },
+        {
+          "label": "Fragmentation Patterns",
+          "page": "Mass Fragmentation Patterns",
+          "button_label": "Open Fragmentation Patterns",
+          "children": [
+            {
+              "label": "Molecular Ion Quiz",
+              "page": "Mass Molecular Ion Quiz"
+            },
+            {
+              "label": "Base Peak Questions",
+              "page": "Mass Base Peak Questions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Combined",
+      "page": "Combination Exercises",
+      "button_label": "Open Combined Exercises",
+      "description": "Mock combined practice flow spanning multiple spectroscopy methods.",
+      "children": [
+        {
+          "label": "Guided Sets",
+          "page": "Combination Guided Sets",
+          "button_label": "Open Guided Sets",
+          "children": [
+            {
+              "label": "Easy Combined Quiz",
+              "page": "Easy Combined Quiz"
+            },
+            {
+              "label": "Hard Combined Questions",
+              "page": "Hard Combined Questions"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
