@@ -7,5 +7,5 @@
     "correctFeedback" : "correct",
     "incorrectFeedback" : "incorrect",
     "correctAnswer" : "answer",
-    "imagePath":"../data/test.png"
+    "imagePath":"../data/images/test.png"
 }

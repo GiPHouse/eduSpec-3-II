@@ -7,5 +7,5 @@
     "answers": ["10", "20", "30", "40"],
     "feedbacks":["a", "b", "c", "d"],
     "correctAnswer":2,
-    "imagePath":"../data/test.png"
+    "imagePath":"../data/images/test.png"
 }
