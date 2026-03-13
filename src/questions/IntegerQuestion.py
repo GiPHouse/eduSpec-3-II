@@ -1,4 +1,3 @@
-import time
 from typing import Optional
 
 import streamlit as st
@@ -73,8 +72,8 @@ class IntegerQuestion(Question):
         number = st.number_input(
             "enter the right number:",
             value=None,
-            step=1,
-            key=self.widget_key + str(time.time()),
+            step=1 if isinstance(self.correct_answer[0], int) else 0.5,
+            key=self.widget_key,
         )
         if number is not None:
             QuestionDrawer.evaluateAnswer(self, number)
