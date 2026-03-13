@@ -1,8 +1,7 @@
 import streamlit as st
 
 from CustomThemes import THEMES, applyTheme, showThemeSelector
-from managers.QuestionManager import QuestionManager
-from Quiz import Quiz
+from managers.QuizManager import QuizManager
 
 
 # Page functions
@@ -127,8 +126,7 @@ def CombinationExercisesPage() -> None:
     """Shows the Combination Exercises page"""
     showNavbar()
     st.title("Combination Exercises")
-    # q = QuizManager.loadQuiz("combination1")
-    q = Quiz("combination1", [QuestionManager.loadQuestion("question1")])
+    q = QuizManager.loadQuiz("combination1")
     q.drawQuiz()
 
 
