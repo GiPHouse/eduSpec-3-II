@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 
 import streamlit as st
+
 from CustomThemes import THEMES, applyTheme, showThemeSelector
 
 CURRENT_DIR = Path(__file__).resolve().parent
