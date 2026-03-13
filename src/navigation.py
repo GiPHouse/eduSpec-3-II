@@ -1,17 +1,24 @@
+import importlib.util
 import json
 from pathlib import Path
-import sys
 from typing import Any
 
 import streamlit as st
 
 CURRENT_DIR = Path(__file__).resolve().parent
-if str(CURRENT_DIR) not in sys.path:
-    sys.path.append(str(CURRENT_DIR))
-
-from CustomThemes import THEMES, applyTheme, showThemeSelector
-
+CUSTOM_THEMES_PATH = CURRENT_DIR / "CustomThemes.py"
 NAVIGATION_PATH = CURRENT_DIR.parent / "data" / "navigation.json"
+
+custom_themes_spec = importlib.util.spec_from_file_location("CustomThemes", CUSTOM_THEMES_PATH)
+if custom_themes_spec is None or custom_themes_spec.loader is None:
+    raise ImportError(f"Could not load theme helpers from {CUSTOM_THEMES_PATH}")
+
+custom_themes_module = importlib.util.module_from_spec(custom_themes_spec)
+custom_themes_spec.loader.exec_module(custom_themes_module)
+
+THEMES = custom_themes_module.THEMES
+applyTheme = custom_themes_module.applyTheme
+showThemeSelector = custom_themes_module.showThemeSelector
 
 
 def load_navigation_config() -> dict[str, Any]:
