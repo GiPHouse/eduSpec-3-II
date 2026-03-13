@@ -6,6 +6,6 @@
     "type": "spectral",
     "correctAnswer": 1000.00,
     "feedbacks": ["correct","wrong"],
-    "imagePath": "../data/nmr.jdx",
+    "imagePath": "../data/spectra/nmr.jdx",
     "tolerance":50.00
 }
