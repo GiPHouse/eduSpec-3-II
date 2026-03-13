@@ -1,0 +1,12 @@
+import pytest
+
+from questions.Question import Question
+
+
+def test_createQuestion() -> None:
+    """Test case for the base question.
+
+    Creating a base Question instance should fail with a TypeError
+    """
+    with pytest.raises(TypeError):
+        question = Question("sampleid", "sampletitle", "samplebodytxt")  # type: ignore # noqa: F841

@@ -1,14 +1,11 @@
 import streamlit as st
 
-from Question import Question
 from QuestionDrawer import QuestionDrawer
+from questions.Question import Question
 
 
 class Quiz:
-    """Class to create the elements of a quiz.
-
-    It picks the right question for the page and makes previous and next button depending on the questions
-    """
+    """Class to create the elements of a quiz."""
 
     def __init__(self, name: str, question_list: list[Question]) -> None:
         """Initialises a quiz instance.
@@ -17,11 +14,45 @@ class Quiz:
             name (str): The unique name/id of the quiz.
             question_list (list[Question]): A list of questions in the quiz.
         """
+        self.name = name
         if "current_index" not in st.session_state:
             st.session_state["current_index"] = 0
         self.current_index = 0
         self.question_list = question_list
-        self.name = name
+        # Use quiz name in the key so each quiz has its own index
+        if f"current_index_{self.name}" not in st.session_state:
+            st.session_state[f"current_index_{self.name}"] = 0
+        self.current_index = st.session_state[f"current_index_{self.name}"]
+
+    def drawQuestionNavigator(self) -> None:
+        """Draws numbered boxes at the bottom to navigate between questions."""
+        if not self.question_list:
+            return
+
+        st.divider()
+
+        BUTTONS_PER_ROW = 10
+
+        chunks = [
+            self.question_list[i : i + BUTTONS_PER_ROW]
+            for i in range(0, len(self.question_list), BUTTONS_PER_ROW)
+        ]
+
+        button_index = 0
+        for chunk in chunks:
+            cols = st.columns(BUTTONS_PER_ROW)
+            for _, col in enumerate(cols[: len(chunk)]):
+                with col:
+                    button_type = "primary" if button_index == self.current_index else "secondary"
+                    if st.button(
+                        str(button_index + 1),
+                        key=f"question_nav_{self.name}_{button_index}",
+                        type=button_type,
+                        width="stretch",
+                    ):
+                        st.session_state[f"current_index_{self.name}"] = button_index
+                        st.rerun()
+                button_index += 1
 
     def drawPreviousButton(self) -> None:
         """Draws a button to go to the previous question.
@@ -51,13 +82,7 @@ class Quiz:
 
     def drawQuiz(self) -> None:
         """Draws the elements of the quiz."""
-        self.current_index = st.session_state.get("current_index", 0)
-        QuestionDrawer.drawQuestion(self.question_list[self.current_index])
-        col1, col2 = st.columns(2, gap=None, width=250)
-        with col1:
-            if self.current_index != 0:
-                self.drawPreviousButton()
-
-        with col2:
-            if self.current_index != (len(self.question_list) - 1):
-                self.drawNextButton()
+        self.current_index = st.session_state.get(f"current_index_{self.name}", 0)
+        safe_index = min(self.current_index, len(self.question_list) - 1)
+        QuestionDrawer.drawQuestion(self.question_list[safe_index])
+        self.drawQuestionNavigator()
