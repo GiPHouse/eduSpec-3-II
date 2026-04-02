@@ -16,23 +16,9 @@ class QuestionDrawer:
         if (user_input is not None) or (user_input == 0):
             is_correct, feedback = current_question.verifyAndFeedback(user_input)
             if is_correct:
-                st.markdown(
-                    "<span style='color: green;'>Your answer is correct!</span>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f"<span style='color: green;'>{feedback}</span>",
-                    unsafe_allow_html=True,
-                )
+                st.success(f"Your answer is correct!  \n {feedback}")
             else:
-                st.markdown(
-                    "<span style='color: red;'>Your answer is incorrect!</span>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f"<span style='color: red;'>{feedback}</span>",
-                    unsafe_allow_html=True,
-                )
+                st.error(f"Your answer is incorrect!  \n {feedback}")
 
     @staticmethod
     def drawQuestion(current_question: Question) -> None:
