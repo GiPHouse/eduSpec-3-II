@@ -21,8 +21,8 @@ class QuestionDrawer:
                     unsafe_allow_html=True,
                 )
                 st.markdown(
-                    f"<span style='color: green;'>{feedback}</span>",
-                    unsafe_allow_html=True,
+                    feedback,
+                    unsafe_allow_html=False,
                 )
             else:
                 st.markdown(
@@ -30,8 +30,8 @@ class QuestionDrawer:
                     unsafe_allow_html=True,
                 )
                 st.markdown(
-                    f"<span style='color: red;'>{feedback}</span>",
-                    unsafe_allow_html=True,
+                    feedback,
+                    unsafe_allow_html=False,
                 )
 
     @staticmethod
