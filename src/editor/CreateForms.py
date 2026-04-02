@@ -35,9 +35,13 @@ def createIntegerQuestionForm() -> None:
             st.session_state["last_successful_questionBody"],
             IQ_correct_range,
             [IQ_correct_feedback, IQ_lower_feedback, IQ_higher_feedback],
-            st.session_state["last_successful_file"],
+            st.session_state.get("last_successful_file", None),
         )
-        QuestionManager.saveQuestion(new_question)
+        try:
+            QuestionManager.saveQuestion(new_question)
+            st.success(f"Question {new_question.title} created!")
+        except Exception as e:
+            st.error(f"An error occurred during saving:{e}")
 
 
 def createWordQuestionForm() -> None:
