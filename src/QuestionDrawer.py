@@ -1,6 +1,9 @@
+import os
+
 import streamlit as st
 
 from questions.Question import Question
+from questions.SpectralQuestion import SpectralQuestion
 
 
 class QuestionDrawer:
@@ -21,6 +24,23 @@ class QuestionDrawer:
                 st.error(f"Your answer is incorrect!  \n {feedback}")
 
     @staticmethod
+    @st.fragment  # This is a fragment so the app doesn't rerun when clicking the download button
+    def _drawDownload(current_question: Question) -> None:
+        """Draws the download button for spectral data.
+
+        The check to see if this is a
+        spectral question is done inside the drawQuestion function.
+        The filename for this file is the final component of the pathname of the file to be downloaded
+
+        Args:
+            current_question (Question): question for which the spectral data is to be downloaded
+        """
+        with open(current_question.imgpath) as f:
+            st.download_button(
+                "Download Spectral Data", f, file_name=os.path.basename(current_question.imgpath)
+            )
+
+    @staticmethod
     def drawQuestion(current_question: Question) -> None:
         """Draws the parts of the question that are the same for all questions
 
@@ -30,6 +50,9 @@ class QuestionDrawer:
         with st.container():
             st.title(current_question.title)
             current_question.drawImage()
+            # Check if we have a spectral question: in that case create a download button with _drawDownload
+            if isinstance(current_question, SpectralQuestion):
+                QuestionDrawer._drawDownload(current_question)
             st.text(current_question.bodytext)
 
             with st.form("form" + current_question.title, enter_to_submit=False):
