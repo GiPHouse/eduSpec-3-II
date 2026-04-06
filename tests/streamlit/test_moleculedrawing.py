@@ -32,6 +32,7 @@ def make_question(
 
 def render_molecule_question() -> None:
     """Render the molecule drawing question in a Streamlit test app."""
+    from QuestionDrawer import QuestionDrawer
     from questions.MoleculeDrawingQuestion import (
         MoleculeDrawingConfig,
         MoleculeDrawingQuestion,
