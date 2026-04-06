@@ -1,6 +1,7 @@
 from managers.QuestionBuilder import QuestionBuilder
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.IntegerQuestion import IntegerQuestion
+from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.WordQuestion import WordQuestion
 
@@ -60,5 +61,22 @@ class TestSerialisationCycle:
         wordq_2 = QuestionBuilder.questionFromJson(json_1)
 
         json_2 = QuestionSerialiser.questionToJson(wordq_2)
+
+        assert json_1 == json_2
+
+    def test_moleculeQ(self) -> None:
+        """Test case for a serialisation cycle of molecule questions"""
+        drawq_1 = MoleculeDrawingQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            MoleculeDrawingConfig("answer", "seed", "key"),
+            ["correct", "wrong"],
+        )
+        json_1 = QuestionSerialiser.questionToJson(drawq_1)
+
+        drawq_2 = QuestionBuilder.questionFromJson(json_1)
+
+        json_2 = QuestionSerialiser.questionToJson(drawq_2)
 
         assert json_1 == json_2
