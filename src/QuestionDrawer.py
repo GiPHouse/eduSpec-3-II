@@ -46,31 +46,31 @@ class QuestionDrawer:
             current_question.drawImage()
             st.text(current_question.bodytext)
 
-            user_input = current_question.drawYourself()
+            # user_input = current_question.drawYourself()
 
-            col1, col2 = st.columns(2, gap="small")
-            with col1:
-                if st.button("Submit Answer", key="submit_button"):
-                    if user_input is not None:
-                        is_correct, feedback = current_question.verifyAndFeedback(user_input)
-                        if is_correct:
-                            st.markdown(
-                                "<span style='color: green;'>Your answer is correct!</span>",
-                                unsafe_allow_html=True,
-                            )
-                            st.markdown(
-                                f"<span style='color: green;'>{feedback}</span>",
-                                unsafe_allow_html=True,
-                            )
-                        else:
-                            st.markdown(
-                                "<span style='color: red;'>Your answer is incorrect!</span>",
-                                unsafe_allow_html=True,
-                            )
-                            st.markdown(
-                                f"<span style='color: red;'>{feedback}</span>",
-                                unsafe_allow_html=True,
-                            )
+            # col1, col2 = st.columns(2, gap="small")
+            # with col1:
+            #     if st.button("Submit Answer", key="submit_button"):
+            #         if user_input is not None:
+            #             is_correct, feedback = current_question.verifyAndFeedback(user_input)
+            #             if is_correct:
+            #                 st.markdown(
+            #                     "<span style='color: green;'>Your answer is correct!</span>",
+            #                     unsafe_allow_html=True,
+            #                 )
+            #                 st.markdown(
+            #                     f"<span style='color: green;'>{feedback}</span>",
+            #                     unsafe_allow_html=True,
+            #                 )
+            #             else:
+            #                 st.markdown(
+            #                     "<span style='color: red;'>Your answer is incorrect!</span>",
+            #                     unsafe_allow_html=True,
+            #                 )
+            #                 st.markdown(
+            #                     f"<span style='color: red;'>{feedback}</span>",
+            #                     unsafe_allow_html=True,
+            #                 )
             with st.form("form" + current_question.title):
                 user_input = current_question.drawYourself()
 
@@ -80,5 +80,5 @@ class QuestionDrawer:
             def _reset_callback() -> None:
                 st.session_state[current_question.widget_key] = current_question.default
 
-            if st.button("Reset", on_click=_reset_callback):
-                st.rerun()
+            st.button("Reset", on_click=_reset_callback)
+            # st.rerun()
