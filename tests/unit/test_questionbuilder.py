@@ -2,6 +2,7 @@ import pytest
 
 from managers.QuestionBuilder import QuestionBuilder
 from questions.IntegerQuestion import IntegerQuestion
+from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.WordQuestion import WordQuestion
 
@@ -267,25 +268,104 @@ class TestBuildingWordQ:
         input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
-            assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
+            assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
 
     def test_faulty_WordQ_2(self) -> None:
         """Test case for building a word question without correctFeedback attribute"""
         input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": "answer", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
-            assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
+            assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
 
     def test_faulty_WordQ_3(self) -> None:
         """Test case for building a word question with non-string correctAnswer"""
         input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": 3, "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
-            assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
+            assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
 
     def test_faulty_WordQ_4(self) -> None:
         """Test case for building a word question with empty correctAnswer"""
         input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
-            assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
+            assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
+
+
+class TestBuildingDrawingQ:
+    """Test cases for building MoleculeDrawingQuestions"""
+
+    def test_WordQ_1(self) -> None:
+        """Test case for building a standard drawing question"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
+
+        correct_drawq = MoleculeDrawingQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            MoleculeDrawingConfig("answer", "seed", "key"),
+            ["correct", "wrong"],
+        )
+
+        drawq = QuestionBuilder.questionFromJson(input_data)
+
+        assert isinstance(drawq, MoleculeDrawingQuestion)
+
+        assert drawq.name == correct_drawq.name
+        assert drawq.title == correct_drawq.title
+        assert drawq.bodytext == correct_drawq.bodytext
+        assert drawq.imgpath == correct_drawq.imgpath
+        assert drawq.correct_answer == correct_drawq.correct_answer
+        assert drawq.feedbacks == correct_drawq.feedbacks
+
+    def test_WordQ_2(self) -> None:
+        """Test case for building a standard word question with image path"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "data/img/image1.png", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": ""}"""
+
+        correct_drawq = MoleculeDrawingQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            MoleculeDrawingConfig("answer", "", ""),
+            ["correct", "wrong"],
+            imgpath="data/img/image1.png",
+        )
+
+        drawq = QuestionBuilder.questionFromJson(input_data)
+
+        assert isinstance(drawq, MoleculeDrawingQuestion)
+
+        assert drawq.name == correct_drawq.name
+        assert drawq.title == correct_drawq.title
+        assert drawq.bodytext == correct_drawq.bodytext
+        assert drawq.imgpath == correct_drawq.imgpath
+        assert drawq.correct_answer == correct_drawq.correct_answer
+        assert drawq.feedbacks == correct_drawq.feedbacks
+
+    def test_faulty_drawQ_1(self) -> None:
+        """Test case for building a drawing question without version attribute"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
+
+        with pytest.raises(ValueError):
+            assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)
+
+    def test_faulty_drawQ_2(self) -> None:
+        """Test case for building a drawing question without defaultAnswer attribute"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
+
+        with pytest.raises(ValueError):
+            assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)
+
+    def test_faulty_drawQ_3(self) -> None:
+        """Test case for building a drawing question with non-string widgetKey"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": 0.3}"""
+
+        with pytest.raises(ValueError):
+            assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)
+
+    def test_faulty_drawQ_4(self) -> None:
+        """Test case for building a drawing question with empty incorrectFeedback"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "", "widgetKey": "key"}"""
+
+        with pytest.raises(ValueError):
+            assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)

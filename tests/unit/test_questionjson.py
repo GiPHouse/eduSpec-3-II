@@ -1,5 +1,6 @@
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.IntegerQuestion import IntegerQuestion
+from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.WordQuestion import WordQuestion
 
@@ -80,4 +81,24 @@ class TestSerialisationWordQ:
         assert (
             j
             == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
+        )
+
+
+class TestSerialisationDrawQ:
+    """Test cases for the serialisation of drawing questions"""
+
+    def test_DrawQ(self) -> None:
+        """Test case for standard drawing question serialisation"""
+        drawq = MoleculeDrawingQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            MoleculeDrawingConfig("answer", "seed", "key"),
+            ["correct", "wrong"],
+        )
+        j = QuestionSerialiser.questionToJson(drawq)
+
+        assert (
+            j
+            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
         )

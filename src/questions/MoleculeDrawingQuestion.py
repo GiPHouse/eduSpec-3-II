@@ -47,6 +47,7 @@ class MoleculeDrawingQuestion(WordQuestion):
         title: str,
         bodytext: str,
         config: MoleculeDrawingConfig,
+        feedbacks: list[str],
         imgpath: Optional[str] = None,
     ):
         """Initializes a MoleculeDrawingQuestion instance.
@@ -62,6 +63,10 @@ class MoleculeDrawingQuestion(WordQuestion):
             Configuration object containing expected answer,
             initial editor state, and widget key.
 
+        feedbacks (list[str]):
+            The feedbacks to the answers.
+            Needs to have 2 elements: correct feedback and incorrect feedback
+
         imgpath (Optional[str], optional):
             Optional path to an image associated with the question.
             Defaults to None.
@@ -72,10 +77,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             bodytext=bodytext,
             imgpath=imgpath,
             correct_answer=config.expected_smiles.strip(),
-            feedbacks=[
-                f"Correct! Expected {config.expected_smiles.strip()}.",
-                "Incorrect. Check the structure and try again.",
-            ],
+            feedbacks=feedbacks,
         )
 
         self.widget_key = config.widget_key
@@ -103,25 +105,25 @@ class MoleculeDrawingQuestion(WordQuestion):
             Optional[str]:
                 The drawn SMILES string if available, otherwise None.
         """
-        base_key = self.widget_key  # this is what QuestionDrawer resets
+        base_key = self.widget_key
         default_val = (self.default or "").strip()
 
-        # ensure base_key exists (QuestionDrawer expects it)
         if base_key not in st.session_state:
             st.session_state[base_key] = default_val
 
-        # detect reset: base_key changed back to default
-        last_seen = (st.session_state.get(self._last_seen_key) or "").strip()
-        now_seen = (st.session_state.get(base_key) or "").strip()
+        previous_base = (st.session_state.get(self._last_seen_key) or "").strip()
+        current_base = (st.session_state.get(base_key) or "").strip()
 
-        if now_seen == default_val and last_seen != default_val:
-            # reset happened -> force remount JSME by changing component key
+        # Only treat it as a reset if the outside state changed
+        # from a non-default value back to the default value.
+        reset_requested = previous_base != default_val and current_base == default_val
+
+        if reset_requested:
             st.session_state[self._nonce_key] += 1
             self._latest_smiles = None
+            st.session_state[self._last_seen_key] = default_val
+            st.rerun()
 
-        st.session_state[self._last_seen_key] = now_seen
-
-        # actual component key changes when nonce changes => editor clears
         nonce = st.session_state[self._nonce_key]
         component_key = f"{base_key}__jsme__{nonce}"
 
@@ -133,16 +135,12 @@ class MoleculeDrawingQuestion(WordQuestion):
 
         if smiles:
             self._latest_smiles = smiles
-
-            # IMPORTANT: write current drawing into base_key
-            # so QuestionDrawer reset flips it back to default, which we can detect
             st.session_state[base_key] = smiles
-
-            # st.subheader("Your SMILES")
-            # st.code(smiles)                #UNCOMMENT TO SEE LIVE SMILES CODE FOR DEBUGGING
+            st.session_state[self._last_seen_key] = smiles
             return smiles
 
         self._latest_smiles = None
+        st.session_state[self._last_seen_key] = current_base
         st.info("Draw a molecule in the editor, then click Submit Answer.")
         return None
 
@@ -165,14 +163,14 @@ class MoleculeDrawingQuestion(WordQuestion):
             return False, "No SMILES found. Please draw a molecule first."
 
         # Delegate the actual comparison + feedback selection to WordQuestion
-        ok, msg = super().verifyAndFeedback(submitted)
+        return super().verifyAndFeedback(submitted)
 
         # Improve the incorrect message to include what they drew + what was expected
-        if not ok:
-            expected = self.correct_answer  # set by WordQuestion
-            return False, f"Incorrect. Expected {expected}, but you drew {submitted}."
+        # if not ok:
+        #     expected = self.correct_answer  # set by WordQuestion
+        #     return False, f"Incorrect. Expected {expected}, but you drew {submitted}."
 
-        return True, msg
+        # return True, msg
 
     def feedback(self) -> str:
         """Provides default feedback for incorrect submissions.
