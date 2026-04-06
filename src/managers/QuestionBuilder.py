@@ -1,6 +1,7 @@
 import json
 
 from questions.IntegerQuestion import IntegerQuestion
+from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.Question import Question
 from questions.SpectralQuestion import SpectralQuestion
@@ -80,6 +81,7 @@ class QuestionBuilder:
                     feedbacks=feedbacks,
                     imgpath=imgpath,
                 )
+
             case "spectral":
                 correct_answer = obj.get("correctAnswer")
                 feedbacks = obj.get("feedbacks")
@@ -94,6 +96,27 @@ class QuestionBuilder:
                     imgpath=imgpath,
                     tolerance=float(tolerance),
                 )
+
+            case "drawing":
+                feedbacks = [obj.get("correctFeedback"), obj.get("incorrectFeedback")]
+                correct_answer = obj.get("correctAnswer")
+                default_answer = obj.get("defaultAnswer")
+                widget_key = obj.get("widgetKey")
+                config = MoleculeDrawingConfig(
+                    expected_smiles=correct_answer,
+                    seed_smiles=default_answer,
+                    widget_key=widget_key,
+                )
+
+                return MoleculeDrawingQuestion(
+                    name=name,
+                    title=title,
+                    bodytext=bodytext,
+                    config=config,
+                    feedbacks=feedbacks,
+                    imgpath=imgpath,
+                )
+
             case n:
                 raise TypeError(f"Attempted to build unknown or illegal question type: {n}")
 
@@ -189,6 +212,7 @@ class QuestionBuilder:
                     return False
                 if not isinstance(correct_answer, str):
                     return False
+
             case "spectral":
                 # A single correct answer (float), tolerance(float), and a feedback list
                 correct_answer = obj.get("correctAnswer")
@@ -197,6 +221,23 @@ class QuestionBuilder:
                 if not isinstance(correct_answer, float) or not isinstance(tolerance, float):
                     return False
                 if not feedbacks:
+                    return False
+
+            case "drawing":
+                # Drawing questions must have the same checks as word
+                # but also a default answer and widget key
+                correct_answer = obj.get("correctAnswer")
+                default_answer = obj.get("defaultAnswer")
+                correct_feedback = obj.get("correctFeedback")
+                incorrect_feedback = obj.get("incorrectFeedback")
+                widget_key = obj.get("widgetKey")
+                if not correct_answer or not correct_feedback or not incorrect_feedback:
+                    return False
+                if (
+                    not isinstance(correct_answer, str)
+                    or not isinstance(default_answer, str)
+                    or not isinstance(widget_key, str)
+                ):
                     return False
 
             case n:
