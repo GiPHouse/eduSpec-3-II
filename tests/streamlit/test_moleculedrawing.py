@@ -1,6 +1,5 @@
 from streamlit.testing.v1 import AppTest
 
-from QuestionDrawer import QuestionDrawer
 from questions.MoleculeDrawingQuestion import (
     MoleculeDrawingConfig,
     MoleculeDrawingQuestion,
