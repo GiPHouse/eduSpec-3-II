@@ -1,5 +1,3 @@
-import os
-
 import streamlit as st
 
 from questions.Question import Question
