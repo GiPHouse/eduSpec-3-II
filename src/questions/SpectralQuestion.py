@@ -127,7 +127,7 @@ class SpectralQuestion(Question):
         """We override the drawImage function as a spectral question needs to parse the spectral data"""
         self._parse_jcampdx()
         selected = st.session_state.get(self.widget_key, self.default)
-        fig = self._build_figure(selected)
+        fig = self.build_figure(selected)
 
         event = st.plotly_chart(
             fig, use_container_width=True, on_select="rerun", key="spectral_chart"
@@ -142,7 +142,7 @@ class SpectralQuestion(Question):
                     st.session_state[self.widget_key] = selected_x
                     st.rerun()
 
-    def _build_figure(self, selected_x: Optional[float] = None) -> go.Figure:
+    def build_figure(self, selected_x: Optional[float] = None) -> go.Figure:
         """Create the Plotly figure for the current spectrum."""
         fig = go.Figure()
 

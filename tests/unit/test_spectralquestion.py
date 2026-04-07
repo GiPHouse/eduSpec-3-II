@@ -17,7 +17,7 @@ def test_ir_figure_draws_selected_peak_line() -> None:
     question.y = np.array([90.0, 35.0, 80.0])
     question.units = "cm^-1"
 
-    fig = question._build_figure(1700.0)
+    fig = question.build_figure(1700.0)
 
     assert len(fig.layout.shapes) == 1
     shape = fig.layout.shapes[0]
@@ -41,6 +41,6 @@ def test_non_ir_figure_does_not_draw_selected_peak_line() -> None:
     question.y = np.array([10.0, 100.0, 30.0])
     question.units = "m/z"
 
-    fig = question._build_figure(43.0)
+    fig = question.build_figure(43.0)
 
     assert len(fig.layout.shapes) == 0
