@@ -1,8 +1,9 @@
+import os
+
 import streamlit as st
 
 from questions.Question import Question
 from questions.SpectralQuestion import SpectralQuestion
-import os
 
 
 class QuestionDrawer:
