@@ -19,6 +19,12 @@ COPY ./src /app
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
 USER appuser
 
-EXPOSE 8501
+# Select the file to run
+# ARG MAIN_FILE=navigation.py
+# ARG PORT=8501
+ENV MAIN_FILE navigation.py
+ENV PORT 8501
+EXPOSE $PORT
 
-CMD [ "streamlit", "run", "/app/navigation.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.headless=TRUE", "--browser.gatherUsageStats=FALSE" ]
+# CMD [ "/bin/sh", "-c", "echo", "${MAIN_FILE}" ]
+CMD [ "/bin/sh", "-c", " exec streamlit run /app/${MAIN_FILE} --server.port=${PORT} --server.address=0.0.0.0 --server.headless=TRUE --browser.gatherUsageStats=FALSE" ]

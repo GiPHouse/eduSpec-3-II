@@ -7,6 +7,8 @@ services:
       timeout: 3s
       retries: 5
       start_period: 0s
+    environment:
+      - DATA_DIR=/data
     volumes:
       - data:/data
     build:
@@ -14,6 +16,15 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - 8501:8501
+
+  eduspec-editor:
+    extends:
+      service: eduspec
+    environment:
+      - MAIN_FILE=editornavigation.py
+      - PORT=8502
+    ports: !override
+      - 8502:8502
 
 volumes:
   data:
