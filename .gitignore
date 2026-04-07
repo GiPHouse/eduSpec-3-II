@@ -9,3 +9,5 @@ src/pages/jsme_component/frontend/jsme/compilation-mappings.txt
 .venv/
 .venv311/
 ./vscode
+.vscode/
+./.vscode/

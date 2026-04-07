@@ -33,7 +33,7 @@ class QuestionDrawer:
             current_question.drawImage()
             # Check if we have a spectral question: in that case create a download button with _drawDownload
             if isinstance(current_question, SpectralQuestion):
-                QuestionDrawer._drawDownload(current_question)
+                QuestionDrawer.drawDownload(current_question)
             st.text(current_question.bodytext)
 
             with st.form("form" + current_question.title, enter_to_submit=False):
