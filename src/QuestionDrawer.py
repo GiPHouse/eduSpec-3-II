@@ -1,6 +1,7 @@
 import streamlit as st
 
 from questions.Question import Question
+from questions.SpectralQuestion import SpectralQuestion
 
 
 class QuestionDrawer:
@@ -30,6 +31,9 @@ class QuestionDrawer:
         with st.container():
             st.title(current_question.title)
             current_question.drawImage()
+            # Check if we have a spectral question: in that case create a download button with _drawDownload
+            if isinstance(current_question, SpectralQuestion):
+                QuestionDrawer._drawDownload(current_question)
             st.text(current_question.bodytext)
 
             with st.form("form" + current_question.title, enter_to_submit=False):
@@ -41,5 +45,5 @@ class QuestionDrawer:
             def _reset_callback() -> None:
                 st.session_state[current_question.widget_key] = current_question.default
 
-            if st.button("Reset", on_click=_reset_callback):
-                st.rerun()
+            st.button("Reset", on_click=_reset_callback)
+            # st.rerun()

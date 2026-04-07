@@ -1,0 +1,1 @@
+{"id": "test_integer_question", "title": "aaaaa", "bodyText": "bbbbb", "imagePath": "", "version": 1, "type": "integer", "lowerBound": -50.0, "upperBound": 50.0, "feedbacks": ["", "", ""]}

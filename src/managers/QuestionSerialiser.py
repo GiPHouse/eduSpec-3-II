@@ -1,6 +1,7 @@
 import json
 
 from questions.IntegerQuestion import IntegerQuestion
+from questions.MoleculeDrawingQuestion import MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.Question import Question
 from questions.SpectralQuestion import SpectralQuestion
@@ -28,6 +29,8 @@ class QuestionSerialiser:
                 return cls._convertMultipleChoiceQuestion(question)
             case IntegerQuestion():
                 return cls._convertIntegerQuestion(question)
+            case MoleculeDrawingQuestion():
+                return cls._convertDrawingQuestion(question)
             case WordQuestion():
                 return cls._convertWordQuestion(question)
             case SpectralQuestion():
@@ -167,6 +170,45 @@ class QuestionSerialiser:
 
         data_out["feedbacks"] = question.feedbacks
         data_out["tolerance"] = question.tolerance
+
+        return json.dumps(data_out)
+
+    @classmethod
+    def _convertDrawingQuestion(cls, question: MoleculeDrawingQuestion) -> str:
+        """Serialises a MoleculeDrawingQuestion to JSON
+
+        Args:
+            question (MoleculeDrawingQuestion): The drawing question to convert
+
+        Returns:
+            str: The generated JSON
+
+           The JSON has the following template:
+            - id (string): The question id
+            - version (number): The saved version
+            - type (string) "multipleChoice": The question type
+            - title (string): The question title
+            - bodyText (string): The question body text
+            - imagePath (string): The image path. Empty if None
+            - correctAnswer (string): The correct answer
+            - defaultAnswer (string): The initial answer given
+            - correctFeedback (string): The feedback given if the answer was correct
+            - incorrectFeedback (string): The feedback given if the answer was incorrect
+            - widgetKey (string): The widget key used for the JSME component
+        """
+        data_out = cls._buildGenericQuestion(question)
+
+        # ! Version number is hardcoded and updated when editing this function or _buildGenericQuestion
+        data_out["version"] = 1
+        data_out["type"] = "drawing"
+
+        data_out["correctAnswer"] = question.correct_answer
+        data_out["defaultAnswer"] = question.default
+
+        data_out["correctFeedback"] = question.feedbacks[0]
+        data_out["incorrectFeedback"] = question.feedbacks[1]
+
+        data_out["widgetKey"] = question.widget_key
 
         return json.dumps(data_out)
 
