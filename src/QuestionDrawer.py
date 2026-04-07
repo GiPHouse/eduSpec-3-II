@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 
 from questions.Question import Question
@@ -47,3 +49,20 @@ class QuestionDrawer:
 
             st.button("Reset", on_click=_reset_callback)
             # st.rerun()
+            
+    @staticmethod
+    @st.fragment  # This is a fragment so the app doesn't rerun when clicking the download button
+    def _drawDownload(current_question: Question) -> None:
+        """Draws the download button for spectral data.
+
+        The check to see if this is a
+        spectral question is done inside the drawQuestion function.
+        The filename for this file is the final component of the pathname of the file to be downloaded
+
+        Args:
+            current_question (Question): question for which the spectral data is to be downloaded
+        """
+        with open(current_question.imgpath) as f:
+            st.download_button(
+                "Download Spectral Data", f, file_name=os.path.basename(current_question.imgpath)
+            )
