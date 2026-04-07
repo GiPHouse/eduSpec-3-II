@@ -207,7 +207,7 @@ def createMultipleChoiceQuestionForm() -> None:
             preview_question(new_question)
 
     else:
-        st.error("Choice cannot must be bigger than 0")
+        st.error("Number of choices must be at least 1.")
     if st.session_state["overwrite_done"]:
         st.session_state["show_question_form"] = False
         st.session_state["question_submitted"] = True
