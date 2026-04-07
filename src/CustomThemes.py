@@ -16,8 +16,8 @@ THEMES = {
         "secondaryBackgroundColor": "#1E1E1E",
         "textColor": "#FFFFFF",
         "buttonColor": "#1DB954",
-        "inputBackground": "#2A2A2A",
-        "borderColor": "#333333",
+        "inputBackground": "#686868",
+        "borderColor": "#727272",
     },
     "Orange": {
         "primaryColor": "#F4845F",
@@ -158,7 +158,43 @@ def applyTheme(theme: dict) -> None:
                 border: 1px solid {theme["borderColor"]};
                 color: {theme["textColor"]};
                 border-radius: 8px;
+            }}    
+                
+             /* Top toolbar */
+            [data-testid="stToolbar"] {{
+                background-color: {theme["backgroundColor"]} !important;
             }}
+
+            /* Top header bar */
+            [data-testid="stHeader"] {{
+                background-color: {theme["backgroundColor"]} !important;
+            }}
+
+            /* Deploy button area */
+            [data-testid="stAppToolbar"] {{
+                background-color: {theme["backgroundColor"]} !important;
+            }}
+
+            /* App decoration line at top */
+            [data-testid="stDecoration"] {{
+                background-color: {theme["backgroundColor"]} !important;
+            
+            }}
+            
+            [data-testid="stExpander"] {{
+                background-color: {theme["secondaryBackgroundColor"]};
+                border: 1px solid {theme["borderColor"]};
+                border-radius: 8px;
+            }}
+            /* Expander header */
+            [data-testid="stExpander"] summary {{
+                background-color: {theme["secondaryBackgroundColor"]} !important;
+                color: {theme["textColor"]} !important;
+                border-radius: 8px;
+            }}
+
+         
+            
         </style>
         """,
     )

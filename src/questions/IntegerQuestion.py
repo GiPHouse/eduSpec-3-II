@@ -64,19 +64,15 @@ class IntegerQuestion(Question):
         """Unused, all logic is in `verifyAndFeedback()`"""
         pass
 
-    def drawYourself(self) -> int:
-        """Question draws itself
-
-        Returns:
-            int: returns the user input
-        """
+    def drawYourself(self) -> None:
+        """Question draws itself"""
         if self.widget_key not in st.session_state:
             st.session_state[self.widget_key] = self.default
 
         number = st.number_input(
             "enter the right number:",
             value=None,
-            step=1,
+            step=1 if isinstance(self.correct_answer[0], int) else 0.5,
             key=self.widget_key,
         )
         if number is not None:

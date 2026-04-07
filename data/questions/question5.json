@@ -6,6 +6,6 @@
     "type": "spectral",
     "correctAnswer": 1000.00,
     "feedbacks": ["correct","wrong"],
-    "imagePath": "../spectra/easy001/ms.dx",
+    "imagePath": "../data/spectra/easy001/ms.dx",
     "tolerance":50.00
 }
