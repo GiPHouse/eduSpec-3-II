@@ -1,4 +1,5 @@
 import pathlib
+from os import environ
 
 from streamlit import cache_data
 
@@ -116,10 +117,14 @@ class QuizManager:
         Returns:
             pathlib.Path: The quiz directory path
         """
-        current_file = pathlib.Path(__file__)
-        manager_dir = current_file.parent
-        src_dir = manager_dir.parent
-        base_dir = src_dir.parent
+        # Hacky fix for containers. Need to solve
+        if environ.get("PATH_FROM_ROOT", None):
+            base_dir = pathlib.Path(environ.get("PATH_FROM_ROOT", "/"))
+        else:
+            current_file = pathlib.Path(__file__)
+            manager_dir = current_file.parent
+            src_dir = manager_dir.parent
+            base_dir = src_dir.parent
         data_dir = base_dir.joinpath(cls._save_location).resolve()
         if not data_dir.exists():
             data_dir.mkdir(parents=True)

@@ -2,9 +2,10 @@ import os
 from enum import Enum
 from pathlib import Path
 
-import CreateForms  # VScode gives a warning for this but I guess it works?
 import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
+
+from editor.CreateForms import decideAndCreateForm
 
 
 def initialize_state() -> None:
@@ -106,6 +107,6 @@ if submitButton:
         st.rerun()
 
 if st.session_state.get("show_question_form") and not st.session_state.get("question_submitted"):
-    CreateForms.decideAndCreateForm()
+    decideAndCreateForm()
 if st.session_state.get("question_submitted"):
     st.success("Question created!")
