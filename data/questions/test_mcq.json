@@ -1,0 +1,1 @@
+{"id": "test_mcq", "title": "aaaaaa", "bodyText": "elif", "imagePath": "../data/images/test.png", "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["yyy", "ddd", "yyy"]}

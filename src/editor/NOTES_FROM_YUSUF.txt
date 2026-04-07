@@ -1,0 +1,4 @@
+When question manager creates a word question, the JSON only captures correctfeedback
+and incorrectfeedback. But the class takes feedbacks as a list, which will be useful when
+we want to implement a mapping between possible answers and feedbacks. So, the JSON structure
+is holding us back from doing that.
