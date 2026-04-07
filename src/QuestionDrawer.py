@@ -64,5 +64,5 @@ class QuestionDrawer:
         """
         with open(current_question.imgpath) as f:
             st.download_button(
-                "Download Spectral Data", f, file_name=os.path.basename(current_question.imgpath)
+                "Download Spectral Data", f, file_name=os.path.basename(current_question.imgpath), icon=":material/file_download:"
             )
