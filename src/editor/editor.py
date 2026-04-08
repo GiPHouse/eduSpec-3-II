@@ -7,7 +7,7 @@ import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 
 
-def initialize_state() -> None:
+def initialize_state(reset: bool = False) -> None:
     """Initializes the session state flags that are used to ensure control flow."""
     defaults = {
         "show_question_form": False,
@@ -20,7 +20,7 @@ def initialize_state() -> None:
     }
 
     for k, v in defaults.items():
-        if k not in st.session_state:
+        if (k not in st.session_state) or reset:
             st.session_state[k] = v
 
 
@@ -34,10 +34,13 @@ def determine_output_path(uploaded_file: UploadedFile) -> str:
     extension = Path(uploaded_file.name).suffix.lower()
     if extension == ".dx" or extension == ".jdx":
         output_path += "spectra/"
+        os.makedirs("../data/spectra", exist_ok=True)
     elif extension == ".pdb" or extension == ".mol":
         output_path += "molecules/"
+        os.makedirs("../data/molecules", exist_ok=True)
     else:
         output_path += "images/"
+        os.makedirs("../data/images", exist_ok=True)
     output_path += f"{uploaded_file.name}"
     return output_path
 
@@ -84,10 +87,12 @@ with st.form("baseform"):
     submitButton = st.form_submit_button()
 
 if submitButton:
-    if not title.strip() or not questionBody.strip():
-        st.error("Title and Question Body are required.")
+    if not title.strip() or not questionBody.strip() or not question_id.strip():
+        st.error("Question ID, Title, Question Body are required.")
     else:
         st.session_state["question_submitted"] = False
+        st.session_state["show_question_form"] = False
+        st.session_state["overwrite_done"] = False
 
         if uploaded_file is not None:
             os.makedirs("../data", exist_ok=True)
@@ -109,3 +114,5 @@ if st.session_state.get("show_question_form") and not st.session_state.get("ques
     CreateForms.decideAndCreateForm()
 if st.session_state.get("question_submitted"):
     st.success("Question created!")
+    initialize_state(reset=True)
+    # st.rerun()
