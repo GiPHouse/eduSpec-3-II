@@ -3,6 +3,7 @@ import pathlib
 import pytest
 from streamlit import cache_data
 
+from managers.BaseManager import BaseManager
 from managers.QuestionManager import QuestionManager
 from managers.QuizManager import QuizManager
 from questions.IntegerQuestion import IntegerQuestion
@@ -12,27 +13,22 @@ from Quiz import Quiz
 class TestQuizManager:
     """Test cases for the quiz manager"""
 
-    @pytest.fixture
-    def tmp_question_path(self, tmp_path: pathlib.Path) -> pathlib.Path:
-        """Creates a temporary question folder"""
-        return tmp_path.joinpath("questions/")
+    # @pytest.fixture
+    # def tmp_question_path(self, tmp_path: pathlib.Path) -> pathlib.Path:
+    #     """Creates a temporary question folder"""
+    #     return tmp_path.joinpath("questions/")
 
-    @pytest.fixture
-    def tmp_quiz_path(self, tmp_path: pathlib.Path) -> pathlib.Path:
-        """Creates a temporary quiz folder"""
-        return tmp_path.joinpath("quizzes/")
+    # @pytest.fixture
+    # def tmp_quiz_path(self, tmp_path: pathlib.Path) -> pathlib.Path:
+    #     """Creates a temporary quiz folder"""
+    #     return tmp_path.joinpath("quizzes/")
 
-    def test_saveLocation(
-        self, tmp_question_path: pathlib.Path, tmp_quiz_path: pathlib.Path
-    ) -> None:
+    def test_saveLocation(self, tmp_path: pathlib.Path) -> None:
         """Test case for changing the save location of both question and quiz managers"""
-        QuestionManager._save_location = tmp_question_path  # noqa: SLF001
-        QuizManager._save_location = tmp_quiz_path  # noqa: SLF001
+        BaseManager._data_dir = tmp_path  # noqa : SLF001
         cache_data.clear()
 
-        assert QuestionManager._getQuestionDir() == tmp_question_path  # noqa: SLF001
-        assert QuizManager._getQuizDir() == tmp_quiz_path  # noqa: SLF001
-        assert tmp_question_path != tmp_quiz_path
+        assert tmp_path == 0
 
     def test_saveQuiz(self, tmp_quiz_path: pathlib.Path) -> None:
         """Test case for saving a simple quiz"""
