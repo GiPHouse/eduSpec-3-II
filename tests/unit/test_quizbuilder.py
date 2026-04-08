@@ -3,6 +3,7 @@ import pathlib
 import pytest
 from streamlit import cache_data
 
+from managers.BaseManager import BaseManager
 from managers.QuestionManager import QuestionManager
 from managers.QuizBuilder import QuizBuilder
 from questions.IntegerQuestion import IntegerQuestion
@@ -14,7 +15,7 @@ class TestQuizBuilder:
 
     def test_quizBuild_1(self, tmp_path: pathlib.Path) -> None:
         """Test case for simple quiz building"""
-        QuestionManager._save_location = tmp_path  # noqa: SLF001
+        BaseManager._data_dir = tmp_path  # noqa : SLF001
         cache_data.clear()
 
         input_data = r"""{"id": "quiz1", "questionNames": ["question1"]}"""
@@ -57,7 +58,7 @@ class TestQuizBuilder:
 
     def test_quizBuild_faulty_3(self, tmp_path: pathlib.Path) -> None:
         """Test case for building a quiz with a non-existent question"""
-        QuestionManager._save_location = tmp_path  # noqa: SLF001
+        BaseManager._data_dir = tmp_path  # noqa : SLF001
         cache_data.clear()
 
         input_data = r"""{"id": "quiz1", "questionNames": ["question1"]}"""
