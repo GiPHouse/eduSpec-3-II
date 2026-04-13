@@ -10,17 +10,18 @@ services:
     environment:
       - DATA_DIR=/data
     volumes:
-      - data:/data:rw
+      - data:/data:r
     build:
       context: .
       dockerfile: ./Dockerfile
-
     ports:
       - 8501:8501
 
   eduspec-editor:
     extends:
       service: eduspec
+    volumes: !override
+      - data:/data:rw
     environment:
       - MAIN_FILE=editornavigation.py
       - PORT=8502
