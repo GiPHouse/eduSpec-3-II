@@ -44,7 +44,7 @@ class QuestionDrawer:
                 def _reset_callback() -> None:
                     st.session_state[current_question.widget_key] = current_question.default
 
-                left_col, right_col = st.columns(2)
+                left_col, right_col = st.columns([2, 1])
 
                 with left_col:
                     submit_clicked = st.form_submit_button(
