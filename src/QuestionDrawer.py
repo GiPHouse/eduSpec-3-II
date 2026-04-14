@@ -35,7 +35,7 @@ class QuestionDrawer:
             current_question.drawImage()
             # Check if we have a spectral question: in that case create a download button with _drawDownload
             if isinstance(current_question, SpectralQuestion):
-                QuestionDrawer.drawDownload(current_question)
+                QuestionDrawer._drawDownload(current_question)
             st.text(current_question.bodytext)
 
             with st.form("form" + current_question.title, enter_to_submit=False):
@@ -49,7 +49,7 @@ class QuestionDrawer:
 
             st.button("Reset", on_click=_reset_callback)
             # st.rerun()
-            
+
     @staticmethod
     @st.fragment  # This is a fragment so the app doesn't rerun when clicking the download button
     def _drawDownload(current_question: Question) -> None:
@@ -64,5 +64,8 @@ class QuestionDrawer:
         """
         with open(current_question.imgpath) as f:
             st.download_button(
-                "Download Spectral Data", f, file_name=os.path.basename(current_question.imgpath), icon=":material/file_download:"
+                "Download Spectral Data",
+                f,
+                file_name=os.path.basename(current_question.imgpath),
+                icon=":material/file_download:",
             )
