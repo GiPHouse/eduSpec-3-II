@@ -62,10 +62,10 @@ class QuestionDrawer:
         Args:
             current_question (Question): question for which the spectral data is to be downloaded
         """
-        with open(current_question.imgpath) as f:
+        with open(current_question.spectralpath, "rb") as f:
             st.download_button(
                 "Download Spectral Data",
                 f,
-                file_name=os.path.basename(current_question.imgpath),
+                file_name=os.path.basename(current_question.spectralpath),
                 icon=":material/file_download:",
             )

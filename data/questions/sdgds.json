@@ -1,1 +1,15 @@
-{"id": "sdgds", "title": "gdsgs", "bodyText": "gdsgs", "imagePath": "", "version": 1, "type": "integer", "lowerBound": -50.0, "upperBound": 50.0, "feedbacks": ["", "", ""]}
+{
+    "id":  "sdgds",
+    "title":  "gdsgs",
+    "bodyText":  "gdsgs",
+    "imagePath":  [],
+    "version":  1,
+    "type":  "integer",
+    "lowerBound":  -50.0,
+    "upperBound":  50.0,
+    "feedbacks":  [
+                      "",
+                      "",
+                      ""
+                  ]
+}

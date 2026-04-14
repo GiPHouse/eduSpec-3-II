@@ -39,9 +39,8 @@ class QuestionBuilder:
         name = obj.get("id")
         title = obj.get("title")
         bodytext = obj.get("bodyText")
-        imgpath = obj.get("imagePath")
-        if len(imgpath) == 0:
-            imgpath = None
+        imgpath = cls._normaliseImagePath(obj.get("imagePath"))
+        spectralpath = obj.get("spectralpath")
 
         match question_type:
             case "multipleChoice":
@@ -94,6 +93,7 @@ class QuestionBuilder:
                     correct_answer=float(correct_answer),
                     feedbacks=feedbacks,
                     imgpath=imgpath,
+                    spectralpath=spectralpath,
                     tolerance=float(tolerance),
                 )
 
@@ -244,3 +244,25 @@ class QuestionBuilder:
                 raise TypeError(f"Attempted to verify unknown or illegal question type: {n}")
 
         return True
+
+    @staticmethod
+    def _normaliseImagePath(image_path: str | list[str] | None) -> list[str] | None:
+        """Converts supported imagePath JSON formats to the internal representation.
+
+        Accepted empty formats are `""`, `[""]`, and `[]`. All of these map to `None`.
+        Non-empty strings are wrapped in a single-item list for consistency.
+        """
+        if image_path is None:
+            return None
+
+        if isinstance(image_path, str):
+            cleaned = image_path.strip()
+            return [cleaned] if cleaned else None
+
+        if isinstance(image_path, list):
+            cleaned = [
+                path.strip() for path in image_path if isinstance(path, str) and path.strip()
+            ]
+            return cleaned or None
+
+        return None

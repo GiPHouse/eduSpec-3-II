@@ -1,11 +1,16 @@
 {
-    "id" : "question4"  ,
-    "title" : "title4",
-    "bodyText": "this is a bodytext",
-    "version": 1,
-    "type": "spectral",
-    "correctAnswer": 1000.00,
-    "feedbacks": ["correct","wrong"],
-    "imagePath": "../data/spectra/easy001/ir.dx",
-    "tolerance":50.00
+    "id":  "question4",
+    "title":  "title4",
+    "bodyText":  "this is a bodytext",
+    "version":  1,
+    "type":  "spectral",
+    "correctAnswer":  1000.00,
+    "feedbacks":  [
+                      "correct",
+                      "wrong"
+                  ],
+    "imagePath":  [
+                      "../data/spectra/easy001/ir.dx"
+                  ],
+    "tolerance":  50.00
 }

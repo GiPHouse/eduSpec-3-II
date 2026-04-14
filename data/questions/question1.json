@@ -1,11 +1,17 @@
 {
-    "id" : "question1",
-    "title" : "title1",
-    "bodyText": "this is a bodytext",
-    "version": 1,
-    "type": "integer",
-    "feedbacks":["correct", "too low", "too high"],
-    "lowerBound" : 10,
-    "upperBound" : 20,
-    "imagePath":"../data/molecules/neoNR8.pdb"
+    "id":  "question1",
+    "title":  "title1",
+    "bodyText":  "this is a bodytext",
+    "version":  1,
+    "type":  "integer",
+    "feedbacks":  [
+                      "correct",
+                      "too low",
+                      "too high"
+                  ],
+    "lowerBound":  10,
+    "upperBound":  20,
+    "imagePath":  [
+                      "../data/molecules/neoNR8.pdb"
+                  ]
 }

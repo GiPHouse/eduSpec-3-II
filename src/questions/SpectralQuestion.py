@@ -42,7 +42,8 @@ class SpectralQuestion(Question):
         name: str,
         title: str,
         bodytext: str,
-        imgpath: Optional[str],
+        imgpath: Optional[list[str]],
+        spectralpath: str,
         correct_answer: float,
         feedbacks: List,
         tolerance: float = 0.5,
@@ -53,15 +54,17 @@ class SpectralQuestion(Question):
             name (str): The unique name/ID of the question.
             title (str): Title of the Question
             bodytext (str): Bodytext, the question itself
-            imgpath (Optional[str]): The path that points to the spectral data, to be displayed with the question
+            imgpath (Optional[list[str]]): The path that points to the spectral data, to be displayed with the question
+            spectralpath (str): The path that points to the spectral data, to be downloaded with the question
         """
         super().__init__(name, title, bodytext, imgpath)
         self.correct_answer = correct_answer
         self.tolerance = tolerance
         self.feedbacks = feedbacks
+        self.spectralpath = spectralpath
         self.widget_key = f"spectral_question_{name}"
         self.default = None
-        self.type = self._detect_type(imgpath)
+        self.type = self._detect_type(spectralpath)
 
     def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
         """Function that verifies the user input and gives feedback depending on the answer
@@ -94,12 +97,7 @@ class SpectralQuestion(Question):
         Returns:
             tuple[list,list]: X and Y coordinate values, respectively.
         """
-        # Return on no given file
-        # ! Maybe make imgpath non-optional?
-        if self.imgpath is None:
-            return
-
-        with open(self.imgpath, "rb") as f:
+        with open(self.spectralpath, "rb") as f:
             lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]
 
         data = jcamp.jcamp_read(lines)
@@ -116,6 +114,7 @@ class SpectralQuestion(Question):
 
     def drawYourself(self) -> None:
         """The question draws itself to streamlit"""
+        self.drawSpectralGraph()
         selected = st.session_state.get(self.widget_key, self.default)
         if selected is not None:
             st.write(f"Selected peak: {selected} {self.type.unit}")
@@ -123,8 +122,8 @@ class SpectralQuestion(Question):
             st.info("Click a peak on the spectrum to select it.")
         return selected
 
-    def drawImage(self) -> None:
-        """We override the drawImage function as a spectral question needs to parse the spectral data"""
+    def drawSpectralGraph(self) -> None:
+        """We override the drawSpectralGraph function as a spectral question needs to parse the spectral data"""
         self._parse_jcampdx()
         selected = st.session_state.get(self.widget_key, self.default)
         fig = self.build_figure(selected)
@@ -191,15 +190,15 @@ class SpectralQuestion(Question):
 
         return fig
 
-    def _detect_type(self, imgpath: str) -> SpectralType:
+    def _detect_type(self, spectralpath: str) -> SpectralType:
 
-        if re.search("^.*ms.*$", imgpath):
+        if re.search("^.*ms.*$", spectralpath):
             return SpectralType.MS
-        elif re.search("^.*ir.*$", imgpath):
+        elif re.search("^.*ir.*$", spectralpath):
             return SpectralType.IR
 
         # This doesn't work right now, up to how client created nmr files
-        elif re.search("^.*nmr.*$", imgpath):
+        elif re.search("^.*nmr.*$", spectralpath):
             return SpectralType.NMR
 
         raise ValueError("Not a proper spectral file is provided")
