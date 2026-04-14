@@ -16,13 +16,13 @@ def createIntegerQuestionForm() -> None:
         IQ_lower_bound = st.number_input(
             "Please input the lower bound of the correct answer",
             value=None,
-            step=1,  # needs to be made modular
+            step=0.5,  # Could be made modular
             key="IntegerQuestion_lower_bound",
         )
         IQ_upper_bound = st.number_input(
             "Please input the upper bound of the correct answer",
             value=None,
-            step=1,  # needs to be made modular
+            step=0.5,  # Could be made modular
             key="IntegerQuestion_upper_bound",
         )
         IQ_correct_feedback = st.text_input(
