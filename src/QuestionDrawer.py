@@ -57,7 +57,7 @@ class QuestionDrawer:
 
                 with right_col:
                     st.form_submit_button(
-                        "Reset Question",
+                        "Reset",
                         on_click=_reset_callback,
                         icon=":material/refresh:",
                         width="stretch",
