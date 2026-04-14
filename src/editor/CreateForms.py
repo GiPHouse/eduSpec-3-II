@@ -13,12 +13,17 @@ from questions.WordQuestion import WordQuestion
 def createIntegerQuestionForm() -> None:
     """Function that creates a form so that user can specify an Integer Question"""
     with st.form("IntegerQuestionForm", enter_to_submit=False):
-        IQ_correct_range = st.slider(
-            "Please choose the correct range",
-            min_value=-1000.0,
-            max_value=1000.0,
-            value=(-50.0, 50.0),
-            key="IntegerQuestion_correct_range",
+        IQ_lower_bound = st.number_input(
+            "Please input the lower bound of the correct answer",
+            value=None,
+            step=1,  # needs to be made modular
+            key="IntegerQuestion_lower_bound",
+        )
+        IQ_upper_bound = st.number_input(
+            "Please input the upper bound of the correct answer",
+            value=None,
+            step=1,  # needs to be made modular
+            key="IntegerQuestion_upper_bound",
         )
         IQ_correct_feedback = st.text_input(
             "Please specify the feedback when the answer is within range",
@@ -44,7 +49,7 @@ def createIntegerQuestionForm() -> None:
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
-            IQ_correct_range,
+            (IQ_lower_bound, IQ_upper_bound),
             [IQ_correct_feedback, IQ_lower_feedback, IQ_higher_feedback],
             st.session_state.get("last_successful_file", None),
         )
@@ -65,7 +70,7 @@ def createIntegerQuestionForm() -> None:
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
-            IQ_correct_range,
+            (IQ_lower_bound, IQ_upper_bound),
             [IQ_correct_feedback, IQ_lower_feedback, IQ_higher_feedback],
             st.session_state.get("last_successful_file", None),
         )
