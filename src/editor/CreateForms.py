@@ -12,7 +12,7 @@ from questions.WordQuestion import WordQuestion
 
 def createIntegerQuestionForm() -> None:
     """Function that creates a form so that user can specify an Integer Question"""
-    with st.form("IntegerQuestionForm"):
+    with st.form("IntegerQuestionForm", enter_to_submit=False):
         IQ_correct_range = st.slider(
             "Please choose the correct range",
             min_value=-1000.0,
@@ -77,7 +77,7 @@ def createIntegerQuestionForm() -> None:
 
 def createWordQuestionForm() -> None:
     """Function that creates a form so that user can specify a Word Question"""
-    with st.form("WordQuestionForm"):
+    with st.form("WordQuestionForm", enter_to_submit=False):
         WQ_correct_answer = st.text_input(
             "Please specify the correct answer", key="WordQuestion_correct_answer"
         )
@@ -148,7 +148,7 @@ def createMultipleChoiceQuestionForm() -> None:
     )
 
     if MCQ_choice_count > 0:
-        with st.form("MultipleChoiceQuestionForm"):
+        with st.form("MultipleChoiceQuestionForm", enter_to_submit=False):
             answers = []
             feedbacks = []
             for i in range(MCQ_choice_count):
@@ -216,7 +216,7 @@ def createMultipleChoiceQuestionForm() -> None:
 
 def createSpectralQuestionForm() -> None:
     """Function that creates a form so that user can specify a Spectral Question"""
-    with st.form("SpectralQuestionForm"):
+    with st.form("SpectralQuestionForm", enter_to_submit=False):
         SQ_correct_answer = st.number_input(
             "Please specify the correct value (This can be the y-value of a peak, regardless of the unit)",
             key="SQ_correct_answer",
@@ -279,7 +279,7 @@ def createSpectralQuestionForm() -> None:
 
 def createDrawingQuestionForm() -> None:
     """Function that creates a form so that user can specify a Molecule Drawing Question"""
-    with st.form("DrawingQuestionForm"):
+    with st.form("DrawingQuestionForm", enter_to_submit=False):
         DQ_correct_answer = st.text_input(
             "Please specify the correct answer in SMILES form", key="DQ_correct"
         )
