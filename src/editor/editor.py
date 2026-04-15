@@ -82,7 +82,12 @@ with st.form("baseform", enter_to_submit=False):
     questionBody = st.text_area(
         "Question Body", placeholder="Put in the body of the question", key="bodyfield"
     )
-    uploaded_file = st.file_uploader("Choose a file")
+    uploaded_file = st.file_uploader(
+        "Choose a file",
+        type=["jpg", "jpeg", "png", "dx", "jdx", "pdb", "mol"],
+        max_upload_size=10,
+        accept_multiple_files=True,
+    )
 
     submitButton = st.form_submit_button()
 
@@ -95,12 +100,14 @@ if submitButton:
         st.session_state["overwrite_done"] = False
 
         if uploaded_file is not None:
-            os.makedirs("../data", exist_ok=True)
-            output_path = determine_output_path(uploaded_file)
-            with open(output_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            st.success(f"File saved to {output_path}")
-            st.session_state["last_successful_file"] = output_path
+            st.session_state["last_successful_file"] = []
+            for newFile in uploaded_file:
+                os.makedirs("../data", exist_ok=True)
+                output_path = determine_output_path(newFile)
+                with open(output_path, "wb") as f:
+                    f.write(newFile.getbuffer())
+                st.success(f"File saved to {output_path}")
+                st.session_state["last_successful_file"].append(output_path)
         st.session_state["last_successful_id"] = question_id
         st.session_state["last_successful_title"] = title
         st.session_state["last_successful_questionBody"] = questionBody
