@@ -1,7 +1,7 @@
 from managers.QuestionManager import QuestionManager
 from QuestionDrawer import QuestionDrawer
 
-q = QuestionManager.loadQuestion("question5")
+q = QuestionManager.loadQuestion("eee")
 
 
 QuestionDrawer.drawQuestion(q)

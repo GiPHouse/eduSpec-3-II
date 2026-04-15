@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 
 from managers.QuestionManager import QuestionManager
@@ -222,6 +224,11 @@ def createMultipleChoiceQuestionForm() -> None:
 def createSpectralQuestionForm() -> None:
     """Function that creates a form so that user can specify a Spectral Question"""
     with st.form("SpectralQuestionForm", enter_to_submit=False):
+        SQ_uploader = st.file_uploader(
+            "choose a spectral file (this is mandatory)",
+            type=["dx", "jdx"],
+            max_upload_size=10,
+        )
         SQ_correct_answer = st.number_input(
             "Please specify the correct value (This can be the y-value of a peak, regardless of the unit)",
             key="SQ_correct_answer",
@@ -245,38 +252,57 @@ def createSpectralQuestionForm() -> None:
         with col2:
             SQpreviousButton = st.form_submit_button(key="SQ_prevbut", label="Preview")
     if SQsubmitButton:
-        new_question = SpectralQuestion(
-            st.session_state["last_successful_id"],
-            st.session_state["last_successful_title"],
-            st.session_state["last_successful_questionBody"],
-            st.session_state.get("last_successful_file", None),
-            SQ_correct_answer,
-            [SQ_correct_feedback, SQ_incorrect_feedback],
-            SQ_tolerance,
-        )
-        try:
-            QuestionManager.saveQuestion(new_question)
+        if SQ_uploader is None:
+            st.error("Please upload a spectral file before submitting.")
+        else:
+            os.makedirs("../data/spectra", exist_ok=True)
+            output_path = "../data/spectra/" + f"{SQ_uploader.name}"
+            with open(output_path, "wb") as f:
+                f.write(SQ_uploader.getbuffer())
+            st.success(f"File saved to {output_path}")
+            st.session_state["last_successful_spectral"] = output_path
+            new_question = SpectralQuestion(
+                st.session_state["last_successful_id"],
+                st.session_state["last_successful_title"],
+                st.session_state["last_successful_questionBody"],
+                st.session_state.get("last_successful_file", None),
+                st.session_state.get("last_successful_spectral"),
+                SQ_correct_answer,
+                [SQ_correct_feedback, SQ_incorrect_feedback],
+                SQ_tolerance,
+            )
+            try:
+                QuestionManager.saveQuestion(new_question)
 
-            st.session_state["show_question_form"] = False
-            st.session_state["question_submitted"] = True
+                st.session_state["show_question_form"] = False
+                st.session_state["question_submitted"] = True
 
-            st.rerun()
-        except FileExistsError:
-            if not st.session_state["overwrite_done"]:
-                handle_same_id(new_question)
-        except Exception as e:
-            st.error(f"An error occurred during saving:{e}")
+                st.rerun()
+            except FileExistsError:
+                if not st.session_state["overwrite_done"]:
+                    handle_same_id(new_question)
+            except Exception as e:
+                st.error(f"An error occurred during saving:{e}")
     if SQpreviousButton:
-        new_question = SpectralQuestion(
-            st.session_state["last_successful_id"],
-            st.session_state["last_successful_title"],
-            st.session_state["last_successful_questionBody"],
-            st.session_state.get("last_successful_file", None),
-            SQ_correct_answer,
-            [SQ_correct_feedback, SQ_incorrect_feedback],
-            SQ_tolerance,
-        )
-        preview_question(new_question)
+        if SQ_uploader is None:
+            st.error("Please upload a spectral file before submitting.")
+        else:
+            os.makedirs("../data/spectra", exist_ok=True)
+            output_path = "../data/spectra/" + f"{SQ_uploader.name}"
+            with open(output_path, "wb") as f:
+                f.write(SQ_uploader.getbuffer())
+            st.session_state["last_successful_spectral"] = output_path
+            new_question = SpectralQuestion(
+                st.session_state["last_successful_id"],
+                st.session_state["last_successful_title"],
+                st.session_state["last_successful_questionBody"],
+                st.session_state.get("last_successful_file", None),
+                st.session_state.get("last_successful_spectral"),
+                SQ_correct_answer,
+                [SQ_correct_feedback, SQ_incorrect_feedback],
+                SQ_tolerance,
+            )
+            preview_question(new_question)
     if st.session_state["overwrite_done"]:
         st.session_state["show_question_form"] = False
         st.session_state["question_submitted"] = True
