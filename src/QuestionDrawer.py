@@ -30,30 +30,35 @@ class QuestionDrawer:
             st.title(current_question.title)
             current_question.drawImage()
             st.text(current_question.bodytext)
-            with st.form("form" + current_question.title, enter_to_submit=False):
-                user_input = current_question.drawYourself()
 
             def _reset_callback() -> None:
                 st.session_state[current_question.widget_key] = current_question.default
 
-            left_col, right_col = st.columns([2, 1])
+            with st.form(
+                "form" + current_question.title,
+                enter_to_submit=False,
+            ):
+                user_input = current_question.drawYourself()
 
-            with left_col:
-                submit_clicked = st.form_submit_button(
-                    "Submit Answer",
-                    key="submit_button_form",
-                    type="primary",
-                    icon=":material/check:",
-                    width="stretch",
-                )
+                left_col, right_col = st.columns([2, 1])
 
-            with right_col:
-                st.form_submit_button(
-                    "Reset",
-                    on_click=_reset_callback,
-                    icon=":material/refresh:",
-                    width="stretch",
-                )
+                with left_col:
+                    submit_clicked = st.form_submit_button(
+                        "Submit Answer",
+                        key=f"submit_button_form_{current_question.name}",
+                        type="primary",
+                        icon=":material/check:",
+                        width="stretch",
+                    )
+
+                with right_col:
+                    st.form_submit_button(
+                        "Reset",
+                        key=f"reset_button_form_{current_question.name}",
+                        on_click=_reset_callback,
+                        icon=":material/refresh:",
+                        width="stretch",
+                    )
 
             if submit_clicked and user_input is not None:
                 QuestionDrawer.evaluateAnswer(current_question, user_input)

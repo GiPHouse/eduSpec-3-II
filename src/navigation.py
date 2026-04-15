@@ -2,7 +2,7 @@ import json
 import os
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 import streamlit as st
 
@@ -63,13 +63,30 @@ def getDefaultQuestion() -> str:
     return ""
 
 
-def resolveQuestion(question: str | None) -> str:
+def _normaliseQuestionValue(question: str | Iterable[str] | None) -> str | None:
+    """Normalise a query/session value to a single question id string."""
+    if question is None:
+        return None
+
+    if isinstance(question, str):
+        return question
+
+    for value in question:
+        if value:
+            return value
+
+    return None
+
+
+def resolveQuestion(question: str | Iterable[str] | None) -> str:
     """Resolve a question id to a valid question."""
-    if question is None or question == "None":
+    normalised_question = _normaliseQuestionValue(question)
+
+    if normalised_question is None or normalised_question == "None":
         return getDefaultQuestion()
 
-    if question in getQuestionRegistry():
-        return question
+    if normalised_question in getQuestionRegistry():
+        return normalised_question
     return getDefaultQuestion()
 
 

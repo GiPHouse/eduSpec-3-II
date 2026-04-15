@@ -126,11 +126,8 @@ class QuestionManager:
         return pathlib.Path(__file__).resolve().parents[2]
 
     @classmethod
-    def _resolveAssetPath(cls, imgpath: str | None) -> str | None:
-        """Resolve a question asset path to an existing file when possible."""
-        if not imgpath:
-            return imgpath
-
+    def _resolveSingleAssetPath(cls, imgpath: str) -> str:
+        """Resolve a single asset path to an existing file when possible."""
         path = pathlib.Path(imgpath)
         if path.is_absolute() and path.exists():
             return str(path)
@@ -158,3 +155,24 @@ class QuestionManager:
             return str(matches[0].resolve())
 
         return imgpath
+
+    @classmethod
+    def _resolveAssetPath(
+        cls, imgpath: str | list[str] | tuple[str, ...] | None
+    ) -> list[str] | None:
+        """Resolve question asset paths to existing files when possible."""
+        if not imgpath:
+            return None
+
+        if isinstance(imgpath, str):
+            cleaned = imgpath.strip()
+            if not cleaned:
+                return None
+            return [cls._resolveSingleAssetPath(cleaned)]
+
+        resolved_paths = [
+            cls._resolveSingleAssetPath(path.strip())
+            for path in imgpath
+            if isinstance(path, str) and path.strip()
+        ]
+        return resolved_paths or None
