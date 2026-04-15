@@ -237,7 +237,7 @@ class QuestionSerialiser:
 
         imagepath = question.imgpath
         if imagepath is None:
-            data_out["imagePath"] = ""
+            data_out["imagePath"] = []
         else:
             data_out["imagePath"] = imagepath
 

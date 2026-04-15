@@ -22,7 +22,7 @@ class TestSerialisationMCQ:
 
         assert (
             j
-            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
+            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
         )
 
     def test_MCQImgPath(self) -> None:
@@ -34,13 +34,13 @@ class TestSerialisationMCQ:
             ["a", "b", "c"],
             1,
             ["a: wrong", "b: correct", "c: wrong"],
-            imgpath="data/img/image1.png",
+            imgpath=["data/img/image1.png"],
         )
         j = QuestionSerialiser.questionToJson(mcq)
 
         assert (
             j
-            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "data/img/image1.png", "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
+            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": ["data/img/image1.png"], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
         )
 
 
@@ -60,7 +60,7 @@ class TestSerialisationIntQ:
 
         assert (
             j
-            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
+            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [], "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
         )
 
 
@@ -80,7 +80,7 @@ class TestSerialisationWordQ:
 
         assert (
             j
-            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
+            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [], "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
         )
 
 
@@ -100,5 +100,5 @@ class TestSerialisationDrawQ:
 
         assert (
             j
-            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
+            == r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
         )

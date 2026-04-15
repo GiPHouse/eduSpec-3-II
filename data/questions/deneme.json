@@ -1,1 +1,1 @@
-{"id": "deneme", "title": "deneme", "bodyText": "deneme2", "imagePath": "../data/spectra/ms.dx", "version": 1, "type": "integer", "lowerBound": -50.0, "upperBound": 50.0, "feedbacks": ["", "", ""]}
+{"id": "deneme", "title": "deneme", "bodyText": "deneme2", "imagePath": ["../data/spectra/ms.dx"], "version": 1, "type": "integer", "lowerBound": -50.0, "upperBound": 50.0, "feedbacks": ["", "", ""]}

@@ -49,7 +49,7 @@ class TestQuestionManager:
         location = tmp_path.joinpath("question1.json")
         location.touch()
         location.write_text(
-            r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
+            r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
         )
 
         loaded_mcq = QuestionManager.loadQuestion("question1")
@@ -122,7 +122,7 @@ class TestQuestionManager:
             ["1", "2", "3"],
             0,
             ["1: correct", "2: wrong", "3: wrong"],
-            imgpath="data/img/test1",
+            imgpath=["data/img/test1"],
         )
 
         assert QuestionManager.saveQuestion(mcq_1)
@@ -214,7 +214,7 @@ class TestQuestionManager:
             ["1", "2", "3"],
             0,
             ["1: correct", "2: wrong", "3: wrong"],
-            imgpath="data/img/test1",
+            imgpath=["data/img/test1"],
         )
 
         mcq_3 = MultipleChoiceQuestion(
