@@ -256,17 +256,13 @@ def createSpectralQuestionForm() -> None:
             st.error("Please upload a spectral file before submitting.")
         else:
             os.makedirs("../data/spectra", exist_ok=True)
-            output_path = "../data/spectra/" + f"{SQ_uploader.name}"
-            with open(output_path, "wb") as f:
-                f.write(SQ_uploader.getbuffer())
-            st.success(f"File saved to {output_path}")
-            st.session_state["last_successful_spectral"] = output_path
+            spectral_path = "../data/spectra/" + f"{SQ_uploader.name}"
             new_question = SpectralQuestion(
                 st.session_state["last_successful_id"],
                 st.session_state["last_successful_title"],
                 st.session_state["last_successful_questionBody"],
                 st.session_state.get("last_successful_file", None),
-                st.session_state.get("last_successful_spectral"),
+                spectral_path,
                 SQ_correct_answer,
                 [SQ_correct_feedback, SQ_incorrect_feedback],
                 SQ_tolerance,
@@ -288,16 +284,13 @@ def createSpectralQuestionForm() -> None:
             st.error("Please upload a spectral file before previewing.")
         else:
             os.makedirs("../data/spectra", exist_ok=True)
-            output_path = "../data/spectra/" + f"{SQ_uploader.name}"
-            with open(output_path, "wb") as f:
-                f.write(SQ_uploader.getbuffer())
-            st.session_state["last_successful_spectral"] = output_path
+            spectral_path = "../data/spectra/" + f"{SQ_uploader.name}"
             new_question = SpectralQuestion(
                 st.session_state["last_successful_id"],
                 st.session_state["last_successful_title"],
                 st.session_state["last_successful_questionBody"],
                 st.session_state.get("last_successful_file", None),
-                st.session_state.get("last_successful_spectral"),
+                spectral_path,
                 SQ_correct_answer,
                 [SQ_correct_feedback, SQ_incorrect_feedback],
                 SQ_tolerance,
