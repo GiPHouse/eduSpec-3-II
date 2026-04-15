@@ -36,19 +36,35 @@ class QuestionDrawer:
             st.text(current_question.bodytext)
             with st.form("form" + current_question.title, enter_to_submit=False):
                 user_input = current_question.drawYourself()
-                if st.form_submit_button("Submit Answer", key="submit_button_form"):
-                    if user_input is not None:
-                        QuestionDrawer.evaluateAnswer(current_question, user_input)
 
             # Check if we have a spectral question: in that case create a download button with _drawDownload
             if isinstance(current_question, SpectralQuestion):
                 QuestionDrawer._drawDownload(current_question)
 
-            def _reset_callback() -> None:
-                st.session_state[current_question.widget_key] = current_question.default
+                def _reset_callback() -> None:
+                    st.session_state[current_question.widget_key] = current_question.default
 
-            st.button("Reset", on_click=_reset_callback)
-            # st.rerun()
+                left_col, right_col = st.columns([2, 1])
+
+                with left_col:
+                    submit_clicked = st.form_submit_button(
+                        "Submit Answer",
+                        key="submit_button_form",
+                        type="primary",
+                        icon=":material/check:",
+                        width="stretch",
+                    )
+
+                with right_col:
+                    st.form_submit_button(
+                        "Reset",
+                        on_click=_reset_callback,
+                        icon=":material/refresh:",
+                        width="stretch",
+                    )
+
+                if submit_clicked and user_input is not None:
+                    QuestionDrawer.evaluateAnswer(current_question, user_input)
 
     @staticmethod
     @st.fragment  # This is a fragment so the app doesn't rerun when clicking the download button
