@@ -39,6 +39,7 @@ class QuestionManager:
         question_data = question_file.read_text()
 
         question = QuestionBuilder.questionFromJson(question_data)
+        question.imgpath = cls._resolveAssetPath(question.imgpath)
         return question
 
     @classmethod
@@ -118,3 +119,60 @@ class QuestionManager:
         if not data_dir.exists():
             data_dir.mkdir(parents=True)
         return data_dir
+
+    @classmethod
+    def _getBaseDir(cls) -> pathlib.Path:
+        """Return the repository root."""
+        return pathlib.Path(__file__).resolve().parents[2]
+
+    @classmethod
+    def _resolveSingleAssetPath(cls, imgpath: str) -> str:
+        """Resolve a single asset path to an existing file when possible."""
+        path = pathlib.Path(imgpath)
+        if path.is_absolute() and path.exists():
+            return str(path)
+
+        base_dir = cls._getBaseDir()
+        question_dir = cls._getQuestionDir()
+        data_root = base_dir / "data"
+
+        candidates = [
+            question_dir / path,
+            base_dir / path,
+            data_root / path,
+            data_root / "images" / path.name,
+            data_root / "molecules" / path.name,
+            data_root / "spectra" / path.name,
+            data_root / "spectra" / path,
+        ]
+
+        for candidate in candidates:
+            if candidate.exists():
+                return str(candidate.resolve())
+
+        matches = list(data_root.rglob(path.name))
+        if len(matches) == 1:
+            return str(matches[0].resolve())
+
+        return imgpath
+
+    @classmethod
+    def _resolveAssetPath(
+        cls, imgpath: str | list[str] | tuple[str, ...] | None
+    ) -> list[str] | None:
+        """Resolve question asset paths to existing files when possible."""
+        if not imgpath:
+            return None
+
+        if isinstance(imgpath, str):
+            cleaned = imgpath.strip()
+            if not cleaned:
+                return None
+            return [cls._resolveSingleAssetPath(cleaned)]
+
+        resolved_paths = [
+            cls._resolveSingleAssetPath(path.strip())
+            for path in imgpath
+            if isinstance(path, str) and path.strip()
+        ]
+        return resolved_paths or None
