@@ -10,7 +10,8 @@
                       "wrong"
                   ],
     "imagePath":  [
-                      "../data/spectra/easy001/ir.dx"
+                      "../data/images/test.png"
                   ],
+    "spectralpath":  "../data/spectra/easy001/ir.dx",
     "tolerance":  50.00
 }
