@@ -1,0 +1,59 @@
+[{
+    "title": "Infrared Spectroscopy",
+    "items": [
+    {
+        "label": "Theory",
+        "page": "IR Theory"
+    },
+    {
+        "label": "Spectral Areas",
+        "page": "IR Spectral Areas",
+        "children": [
+        {
+            "label": "Area A (3800-3200 cm-1)",
+            "page": "IR Area A",
+            "children": [
+            {
+                "label": "Mini Quiz",
+                "page": "IR Area A Quiz"
+            }
+            ]
+        },
+        {
+            "label": "Area B (3200-2700 cm-1)",
+            "page": "IR Area B",
+            "children": [
+            {
+                "label": "Mini Quiz",
+                "page": "IR Area B Quiz"
+            }
+            ]
+        },
+        {
+            "label": "Area C (2700-2000 cm-1)",
+            "page": "IR Area C",
+            "children": [
+            {
+                "label": "Mini Quiz",
+                "page": "IR Area C Quiz"
+            }
+            ]
+        },
+        {
+            "label": "Area D (2000-1630 cm-1)",
+            "page": "IR Area D",
+            "children": [
+            {
+                "label": "Mini Quiz",
+                "page": "IR Area D Quiz"
+            }
+            ]
+        }
+        ]
+    },
+    {
+        "label": "Infrared Proteus Quiz",
+        "page": "IR Proteus Quiz"
+    }
+    ]
+}]

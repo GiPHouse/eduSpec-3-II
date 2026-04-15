@@ -1,0 +1,10 @@
+[
+    { "label": "Home", "page": "Home" },
+    { "label": "IR", "page": "IR" },
+    { "label": "NMR", "page": "NMR" },
+    { "label": "MS", "page": "MS" },
+    { "label": "Combination Exercises", "page": "Combination Exercises"},
+    { "label": "Using EduSpec", "page": "Using EduSpec"},
+    { "label": "About", "page": "About"},
+    { "label": "Settings", "page": "Settings"}
+]

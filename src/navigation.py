@@ -1,165 +1,29 @@
+import json
+from pathlib import Path
+
 import streamlit as st
 
 from CustomThemes import THEMES, applyTheme, showThemeSelector
 from managers.QuizBuilder import QuizBuilder
 
+# Get the absolute path to the data directory
+data_dir = Path(__file__).parent.parent / "data"
 
-# Page functions
-def homePage() -> None:
-    """Shows the home page"""
+# load the top navbar from json
+with open(data_dir / "navigation" / "topnavbar.json", 'r') as file:
+    TOP_NAV_ITEMS = json.load(file)
+
+def initPage() -> None:
+    """Initialize a page"""
+    initTheme()
     showNavbar()
-    st.title("Welcome to the home page!")
 
+def initTheme() -> None:
+    """Initialize and apply the current theme."""
+    if "theme" not in st.session_state:
+        st.session_state["theme"] = "Light"
 
-def IRPage() -> None:
-    """Shows the IR page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Welcome to the IR page!")
-
-
-def IRTheoryPage() -> None:
-    """Shows the IR Theory page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("IR Theory")
-
-
-def IRSpectralAreasPage() -> None:
-    """Shows the IR Spectral Areas page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("IR Spectral Areas")
-
-
-def IRSpectralAreaAPage() -> None:
-    """Shows the IR Spectral Area A page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Area A (3800 - 3200 cm-1)")
-
-
-def IRSpectralAreaAQuizPage() -> None:
-    """Shows the IR Spectral Area A Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Mini Quiz Area A")
-
-
-def IRSpectralAreaBPage() -> None:
-    """Shows the IR Spectral Area B page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Area B (3200 - 2700 cm-1)")
-
-
-def IRSpectralAreaBQuizPage() -> None:
-    """Shows the IR Spectral Area B Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Mini Quiz Area B")
-
-
-def IRSpectralAreaCPage() -> None:
-    """Shows the IR Spectral Area C page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Area C (2700 - 200 cm-1)")
-
-
-def IRSpectralAreaCQuizPage() -> None:
-    """Shows the IR Spectral Area C Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Mini Quiz Area C")
-
-
-def IRSpectralAreaDPage() -> None:
-    """Shows the IR Spectral Area D page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Area D (2000 - 1630 cm-1)")
-
-
-def IRSpectralAreaDQuizPage() -> None:
-    """Shows the IR Spectral Area D Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Mini Quiz Area D")
-
-
-def IRProteusQuizPage() -> None:
-    """Shows the IR Proteus Quiz page"""
-    showNavbar()
-    createSidebar(IR_NAV)
-    st.title("Infrared Proteus Quiz")
-
-
-def NMRPage() -> None:
-    """Shows the NMR page"""
-    showNavbar()
-    createSidebar(NMR_NAV)
-    st.title("Welcome to the NMR page!")
-
-
-def HNMRTheoryPage() -> None:
-    """Shows the H-NMR Theory page"""
-    showNavbar()
-    createSidebar(NMR_NAV)
-    st.title("H-NMR Theory")
-
-
-def CNMRTHeoryPage() -> None:
-    """Shows the C-NMR Theory page"""
-    showNavbar()
-    createSidebar(NMR_NAV)
-    st.title("CNMR Theory")
-
-
-def MSPage() -> None:
-    """Shows the MS page"""
-    showNavbar()
-    st.title("Mass spectrometry")
-
-
-def CombinationExercisesPage() -> None:
-    """Shows the Combination Exercises page"""
-    showNavbar()
-    st.title("Combination Exercises")
-    q = QuizBuilder.buildQuiz(
-        "quiz", ["question1", "question2", "question3", "question4", "question5"]
-    )
-    q.drawQuiz()
-
-
-def UsingEduSpecPage() -> None:
-    """Shows the using eduspec page"""
-    showNavbar()
-    st.title("Using EduSpec")
-
-
-def AboutPage() -> None:
-    """Shows the about page"""
-    showNavbar()
-    st.title("About EduSpec")
-
-
-def SettingsPage() -> None:
-    """Shows the Settings page"""
-    showNavbar()
-    st.title("Settings")
-    st.subheader("Theme")
-    showThemeSelector()
-
-
-# Navigation session state
-query_params = st.query_params
-
-if "current_page" not in st.session_state:
-    if "page" in query_params:
-        st.session_state.current_page = query_params["page"]
-    else:
-        st.session_state.current_page = "Home"
+    applyTheme(THEMES[st.session_state["theme"]])    
 
 
 def navigate(page: str) -> None:
@@ -168,49 +32,47 @@ def navigate(page: str) -> None:
     Args:
         page (str): Name of the page you want to navigate to
     """
+    if page is None or page == "None":
+        page = "Home"
     st.session_state.current_page = page
     st.query_params["page"] = page  # update url
     st.rerun()
 
-
 # Top navigation bar
-def navbarButton(label: str, page: str) -> None:
-    """Creates a button in the navigation bar at the top of the screen. The type of a button changes when the page is active.
-
-    Args:
-        label (str): The text that is shown on the button
-        page (str): Name of the page you want to navigate to
-    """
-    type_button = "primary" if st.session_state.current_page == page else "tertiary"
-
-    if st.button(label, type=type_button, key=page):
-        navigate(page)
-
-
 def showNavbar() -> None:
     """Displays the navigation bar that is at the top of the page."""
-    if "theme" not in st.session_state:
-        st.session_state["theme"] = "Light"
-    applyTheme(THEMES[st.session_state["theme"]])
+    labels = [item["label"] for item in TOP_NAV_ITEMS]
 
-    cols = st.columns([1.5, 1, 1.3, 1.25, 2.3, 2, 1.5, 1.75])
-    with cols[0]:
-        navbarButton("Home", "Home")
-    with cols[1]:
-        navbarButton("IR", "IR")
-    with cols[2]:
-        navbarButton("NMR", "NMR")
-    with cols[3]:
-        navbarButton("MS", "MS")
-    with cols[4]:
-        navbarButton("Combination Exercises", "Combination Exercises")
-    with cols[5]:
-        navbarButton("Using Eduspec", "Using EduSpec")
-    with cols[6]:
-        navbarButton("About", "About")
-    with cols[7]:
-        navbarButton("Setting", "Setting")
+    query_params = st.query_params
 
+    if "navbar" not in st.session_state:
+        if "page" in query_params:
+            page = query_params["page"]
+            first_word = page.split(" ")[0]
+            if page in labels:
+                st.session_state.navbar = page
+            elif first_word in labels: # used for the pages with sidebar
+                st.session_state.navbar = first_word
+            else:
+                st.session_state.navbar = "Home"
+        else:
+            st.session_state.navbar = "Home"
+
+    # show segmented control
+    selected = st.segmented_control(
+        "",
+        labels,
+        selection_mode="single",
+        key="topnavbar",
+        default=st.session_state.navbar
+    )
+
+    # update current page if changed
+    if selected and selected != st.session_state.navbar:
+        st.session_state.current_page = selected
+        st.session_state.navbar = selected
+        st.query_params["page"] = selected  # update url
+        st.rerun() 
 
 # Sidebar Navigation
 def sidebarButton(label: str, page: str, indent: int) -> None:
@@ -278,80 +140,3 @@ def createSidebar(nav_structure: dict) -> None:
         st.sidebar.title(section["title"])
         items = section.get("items", [])
         createItemSideBar(items)
-
-
-IR_NAV = [
-    {
-        "title": "Infrared Spectroscopy",
-        "items": [
-            {"label": "Theory", "page": "IR Theory"},
-            {
-                "label": "Spectral Areas",
-                "page": "IR Spectral Areas",
-                "children": [
-                    {
-                        "label": "Area A (3800–3200 cm-1)",
-                        "page": "IR Area A",
-                        "children": [{"label": "Mini Quiz", "page": "IR Area A Quiz"}],
-                    },
-                    {
-                        "label": "Area B (3200–2700 cm-1)",
-                        "page": "IR Area B",
-                        "children": [{"label": "Mini Quiz", "page": "IR Area B Quiz"}],
-                    },
-                    {
-                        "label": "Area C (2700–2000 cm-1)",
-                        "page": "IR Area C",
-                        "children": [{"label": "Mini Quiz", "page": "IR Area C Quiz"}],
-                    },
-                    {
-                        "label": "Area D (2000–1630 cm-1)",
-                        "page": "IR Area D",
-                        "children": [{"label": "Mini Quiz", "page": "IR Area D Quiz"}],
-                    },
-                ],
-            },
-            {"label": "Infrared Proteus Quiz", "page": "IR Proteus Quiz"},
-        ],
-    },
-]
-
-NMR_NAV = [
-    {
-        "title": "¹H-NMR Spectroscopy",
-        "items": [{"label": "Theory", "page": "H-NMR Theory"}],
-    },
-    {
-        "title": "¹³C-NMR Spectroscopy",
-        "items": [{"label": "Theory", "page": "C-NMR Theory"}],
-    },
-]
-
-
-PAGES = {
-    "Home": homePage,
-    "IR": IRPage,
-    "IR Theory": IRTheoryPage,
-    "IR Spectral Areas": IRSpectralAreasPage,
-    "IR Area A": IRSpectralAreaAPage,
-    "IR Area A Quiz": IRSpectralAreaAQuizPage,
-    "IR Area B": IRSpectralAreaBPage,
-    "IR Area B Quiz": IRSpectralAreaBQuizPage,
-    "IR Area C": IRSpectralAreaCPage,
-    "IR Area C Quiz": IRSpectralAreaCQuizPage,
-    "IR Area D": IRSpectralAreaDPage,
-    "IR Area D Quiz": IRSpectralAreaDQuizPage,
-    "IR Proteus Quiz": IRProteusQuizPage,
-    "NMR": NMRPage,
-    "H-NMR Theory": HNMRTheoryPage,
-    "C-NMR Theory": CNMRTHeoryPage,
-    "MS": MSPage,
-    "Combination Exercises": CombinationExercisesPage,
-    "Using EduSpec": UsingEduSpecPage,
-    "About": AboutPage,
-    "Setting": SettingsPage,  # Add this
-}
-
-current_page = st.session_state.current_page
-page_function = PAGES[current_page]
-page_function()
