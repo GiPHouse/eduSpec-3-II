@@ -1,5 +1,4 @@
-import streamlit as st
-
+from managers.QuestionManager import QuestionManager
 from QuestionDrawer import QuestionDrawer
 from managers.QuestionManager import QuestionManager
 from navigation import initTheme, resolveQuestion, showNavigation

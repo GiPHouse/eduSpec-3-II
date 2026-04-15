@@ -126,18 +126,24 @@ class SpectralQuestion(Question):
     def drawImage(self) -> None:
         """We override the drawImage function as a spectral question needs to parse the spectral data"""
         self._parse_jcampdx()
+        selected = st.session_state.get(self.widget_key, self.default)
+        fig = self.build_figure(selected)
 
-        # This is a weird numpy trick so that we can easily create a "stem" plot.
-        xs = np.empty(self.x.size * 3)
-        ys = np.empty(self.y.size * 3)
+        event = st.plotly_chart(
+            fig, use_container_width=True, on_select="rerun", key="spectral_chart"
+        )
 
-        xs[0::3] = self.x
-        xs[1::3] = self.x
-        xs[2::3] = np.nan
+        if event and event.selection and event.selection.points:
+            selected = event.selection.points[0]
+            point_index = selected.get("point_index")
+            if point_index is not None:
+                selected_x = float(self.x[point_index])
+                if st.session_state.get(self.widget_key) != selected_x:
+                    st.session_state[self.widget_key] = selected_x
+                    st.rerun()
 
-        ys[0::3] = 0
-        ys[1::3] = self.y
-        ys[2::3] = np.nan
+    def build_figure(self, selected_x: Optional[float] = None) -> go.Figure:
+        """Create the Plotly figure for the current spectrum."""
         fig = go.Figure()
 
         if self.type == SpectralType.MS:
@@ -167,6 +173,14 @@ class SpectralQuestion(Question):
                 )
             )
 
+        if self.type == SpectralType.IR and selected_x is not None:
+            fig.add_vline(
+                x=selected_x,
+                line_width=2,
+                line_dash="dash",
+                line_color="#d62728",
+            )
+
         fig.update_layout(
             title=self.title,
             xaxis_title=self.units,
@@ -175,15 +189,7 @@ class SpectralQuestion(Question):
             hovermode="closest",
         )
 
-        event = st.plotly_chart(
-            fig, use_container_width=True, on_select="rerun", key="spectral_chart"
-        )
-
-        if event and event.selection and event.selection.points:
-            selected = event.selection.points[0]
-            point_index = selected.get("point_index")
-            if point_index is not None:
-                st.session_state[self.widget_key] = float(self.x[point_index])
+        return fig
 
     def _detect_type(self, imgpath: str) -> SpectralType:
 

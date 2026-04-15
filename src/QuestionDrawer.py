@@ -1,6 +1,9 @@
+import os
+
 import streamlit as st
 
 from questions.Question import Question
+from questions.SpectralQuestion import SpectralQuestion
 
 
 class QuestionDrawer:
@@ -12,36 +15,64 @@ class QuestionDrawer:
         if (user_input is not None) or (user_input == 0):
             is_correct, feedback = current_question.verifyAndFeedback(user_input)
             if is_correct:
-                st.markdown(
-                    "<span style='color: green;'>Your answer is correct!</span>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f"<span style='color: green;'>{feedback}</span>",
-                    unsafe_allow_html=True,
-                )
+                st.success(f"Your answer is correct!  \n {feedback}")
             else:
-                st.markdown(
-                    "<span style='color: red;'>Your answer is incorrect!</span>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f"<span style='color: red;'>{feedback}</span>",
-                    unsafe_allow_html=True,
-                )
+                st.error(f"Your answer is incorrect!  \n {feedback}")
 
     @staticmethod
     def drawQuestion(current_question: Question) -> None:
         """Draw the selected question."""
         st.title(current_question.title)
         current_question.drawImage()
+            # Check if we have a spectral question: in that case create a download button with _drawDownload
+            if isinstance(current_question, SpectralQuestion):
+                QuestionDrawer._drawDownload(current_question)
         st.text(current_question.bodytext)
 
-        user_input = current_question.drawYourself()
+            with st.form("form" + current_question.title, enter_to_submit=False):
+                user_input = current_question.drawYourself()
 
-        if st.button("Submit Answer", key=f"submit_button_{current_question.name}"):
-            QuestionDrawer.evaluateAnswer(current_question, user_input)
+                def _reset_callback() -> None:
+                    st.session_state[current_question.widget_key] = current_question.default
 
-        if st.button("Reset", key=f"reset_button_{current_question.name}"):
-            st.session_state[current_question.widget_key] = current_question.default
-            st.rerun()
+                left_col, right_col = st.columns([2, 1])
+
+                with left_col:
+                    submit_clicked = st.form_submit_button(
+                        "Submit Answer",
+                        key="submit_button_form",
+                        type="primary",
+                        icon=":material/check:",
+                        width="stretch",
+                    )
+
+                with right_col:
+                    st.form_submit_button(
+                        "Reset",
+                        on_click=_reset_callback,
+                        icon=":material/refresh:",
+                        width="stretch",
+                    )
+
+                if submit_clicked and user_input is not None:
+                    QuestionDrawer.evaluateAnswer(current_question, user_input)
+
+    @staticmethod
+    @st.fragment  # This is a fragment so the app doesn't rerun when clicking the download button
+    def _drawDownload(current_question: Question) -> None:
+        """Draws the download button for spectral data.
+
+        The check to see if this is a
+        spectral question is done inside the drawQuestion function.
+        The filename for this file is the final component of the pathname of the file to be downloaded
+
+        Args:
+            current_question (Question): question for which the spectral data is to be downloaded
+        """
+        with open(current_question.imgpath) as f:
+            st.download_button(
+                "Download Spectral Data",
+                f,
+                file_name=os.path.basename(current_question.imgpath),
+                icon=":material/file_download:",
+            )

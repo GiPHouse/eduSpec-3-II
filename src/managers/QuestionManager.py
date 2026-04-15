@@ -111,11 +111,11 @@ class QuestionManager:
         Returns:
             pathlib.Path: The question directory path
         """
-        save_location = pathlib.Path(cls._save_location)
-        if save_location.is_absolute():
-            data_dir = save_location
-        else:
-            data_dir = cls._getBaseDir().joinpath(save_location).resolve()
+        current_file = pathlib.Path(__file__)
+        manager_dir = current_file.parent
+        src_dir = manager_dir.parent
+        base_dir = src_dir.parent
+        data_dir = base_dir.joinpath(cls._save_location).resolve()
         if not data_dir.exists():
             data_dir.mkdir(parents=True)
         return data_dir

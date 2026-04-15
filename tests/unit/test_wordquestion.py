@@ -41,3 +41,11 @@ class TestWordQuestion:
     ) -> None:
         """Test case for multiple variants of user input"""
         assert wq.verifyAndFeedback(user_input) == expected
+
+    def test_verify_non_string(self, wq: WordQuestion) -> None:
+        """Test case for non-string input."""
+        assert wq.verifyAndFeedback(123) == (False, "incorrect")
+
+        assert wq.verifyAndFeedback(True) == (False, "incorrect")
+
+        assert wq.verifyAndFeedback(["correct answer", "incorrect"]) == (False, "incorrect")
