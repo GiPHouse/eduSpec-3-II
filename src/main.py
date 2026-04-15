@@ -1,7 +1,8 @@
-from managers.QuestionManager import QuestionManager
-from QuestionDrawer import QuestionDrawer
+import streamlit as st
+
 from managers.QuestionManager import QuestionManager
 from navigation import initTheme, resolveQuestion, showNavigation
+from QuestionDrawer import QuestionDrawer
 
 query_params = st.query_params
 requested_question = query_params.get("question")

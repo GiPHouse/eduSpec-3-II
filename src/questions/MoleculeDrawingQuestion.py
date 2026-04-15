@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 import streamlit as st
 
-#from pages.jsme_component import jsme_component
+from jsme_component import jsme_component
 from questions.WordQuestion import WordQuestion
 
 
