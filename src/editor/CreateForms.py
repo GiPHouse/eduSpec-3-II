@@ -285,7 +285,7 @@ def createSpectralQuestionForm() -> None:
                 st.error(f"An error occurred during saving:{e}")
     if SQpreviousButton:
         if SQ_uploader is None:
-            st.error("Please upload a spectral file before submitting.")
+            st.error("Please upload a spectral file before previewing.")
         else:
             os.makedirs("../data/spectra", exist_ok=True)
             output_path = "../data/spectra/" + f"{SQ_uploader.name}"
