@@ -48,7 +48,7 @@ class MoleculeDrawingQuestion(WordQuestion):
         bodytext: str,
         config: MoleculeDrawingConfig,
         feedbacks: list[str],
-        imgpath: Optional[str] = None,
+        imgpath: Optional[list[str]] = None,
     ):
         """Initializes a MoleculeDrawingQuestion instance.
 

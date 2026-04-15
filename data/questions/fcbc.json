@@ -1,1 +1,17 @@
-{"id": "fcbc", "title": "nvcnvc", "bodyText": "nvnc", "imagePath": "", "version": 1, "type": "integer", "lowerBound": -50.0, "upperBound": 50.0, "feedbacks": ["", "", ""]}
+{
+    "id":  "fcbc",
+    "title":  "nvcnvc",
+    "bodyText":  "nvnc",
+    "imagePath":  [
+
+                  ],
+    "version":  1,
+    "type":  "integer",
+    "lowerBound":  -50.0,
+    "upperBound":  50.0,
+    "feedbacks":  [
+                      "",
+                      "",
+                      ""
+                  ]
+}
