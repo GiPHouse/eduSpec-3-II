@@ -12,13 +12,18 @@ from questions.WordQuestion import WordQuestion
 
 def createIntegerQuestionForm() -> None:
     """Function that creates a form so that user can specify an Integer Question"""
-    with st.form("IntegerQuestionForm"):
-        IQ_correct_range = st.slider(
-            "Please choose the correct range",
-            min_value=-1000.0,
-            max_value=1000.0,
-            value=(-50.0, 50.0),
-            key="IntegerQuestion_correct_range",
+    with st.form("IntegerQuestionForm", enter_to_submit=False):
+        IQ_lower_bound = st.number_input(
+            "Please input the lower bound of the correct answer",
+            value=None,
+            step=0.5,  # Could be made modular
+            key="IntegerQuestion_lower_bound",
+        )
+        IQ_upper_bound = st.number_input(
+            "Please input the upper bound of the correct answer",
+            value=None,
+            step=0.5,  # Could be made modular
+            key="IntegerQuestion_upper_bound",
         )
         IQ_correct_feedback = st.text_input(
             "Please specify the feedback when the answer is within range",
@@ -44,7 +49,7 @@ def createIntegerQuestionForm() -> None:
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
-            IQ_correct_range,
+            (IQ_lower_bound, IQ_upper_bound),
             [IQ_correct_feedback, IQ_lower_feedback, IQ_higher_feedback],
             st.session_state.get("last_successful_file", None),
         )
@@ -65,7 +70,7 @@ def createIntegerQuestionForm() -> None:
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
-            IQ_correct_range,
+            (IQ_lower_bound, IQ_upper_bound),
             [IQ_correct_feedback, IQ_lower_feedback, IQ_higher_feedback],
             st.session_state.get("last_successful_file", None),
         )
@@ -77,7 +82,7 @@ def createIntegerQuestionForm() -> None:
 
 def createWordQuestionForm() -> None:
     """Function that creates a form so that user can specify a Word Question"""
-    with st.form("WordQuestionForm"):
+    with st.form("WordQuestionForm", enter_to_submit=False):
         WQ_correct_answer = st.text_input(
             "Please specify the correct answer", key="WordQuestion_correct_answer"
         )
@@ -148,7 +153,7 @@ def createMultipleChoiceQuestionForm() -> None:
     )
 
     if MCQ_choice_count > 0:
-        with st.form("MultipleChoiceQuestionForm"):
+        with st.form("MultipleChoiceQuestionForm", enter_to_submit=False):
             answers = []
             feedbacks = []
             for i in range(MCQ_choice_count):
@@ -216,7 +221,7 @@ def createMultipleChoiceQuestionForm() -> None:
 
 def createSpectralQuestionForm() -> None:
     """Function that creates a form so that user can specify a Spectral Question"""
-    with st.form("SpectralQuestionForm"):
+    with st.form("SpectralQuestionForm", enter_to_submit=False):
         SQ_correct_answer = st.number_input(
             "Please specify the correct value (This can be the y-value of a peak, regardless of the unit)",
             key="SQ_correct_answer",
@@ -279,7 +284,7 @@ def createSpectralQuestionForm() -> None:
 
 def createDrawingQuestionForm() -> None:
     """Function that creates a form so that user can specify a Molecule Drawing Question"""
-    with st.form("DrawingQuestionForm"):
+    with st.form("DrawingQuestionForm", enter_to_submit=False):
         DQ_correct_answer = st.text_input(
             "Please specify the correct answer in SMILES form", key="DQ_correct"
         )

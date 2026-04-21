@@ -14,14 +14,14 @@ class Question(ABC):
     and a few interface functions that are unique to each.
     """
 
-    def __init__(self, name: str, title: str, bodytext: str, imgpath: Optional[str] = None):
+    def __init__(self, name: str, title: str, bodytext: str, imgpath: Optional[list[str]] = None):
         """Initialises a Question instance. DO NOT USE THE QUESTION CLASS DIRECTLY.
 
         Args:
             name (str): The unique name/ID of the question.
             title (str): The title of the question.
             bodytext (str): The body text of the question.
-            imgpath (Optional[str], optional): Path to the image used for the question. Defaults to None.
+            imgpath (Optional[list[str]], optional): Paths to the images used for the question. Defaults to None.
         """
         self.name = name
         self.title = title
@@ -45,8 +45,11 @@ class Question(ABC):
     def drawImage(self) -> None:
         """Draw Image"""
         if self.imgpath is not None:
-            ext = os.path.splitext(self.imgpath)[1].lower()
-            if ext in [".pdb", ".ent"]:
-                MoleculeDisplay.drawYourself(self.imgpath)
-            else:
-                st.image(self.imgpath)
+            for img_path in self.imgpath:
+                if not img_path:
+                    continue
+                ext = os.path.splitext(img_path)[1].lower()
+                if ext in [".pdb", ".ent"]:
+                    MoleculeDisplay.drawYourself(img_path)
+                else:
+                    st.image(img_path)

@@ -1,1 +1,11 @@
-{"id": "test_word_question", "title": "some wprd q", "bodyText": "dsgsdgs", "imagePath": "", "version": 1, "type": "word", "correctAnswer": "sss", "correctFeedback": "c", "incorrectFeedback": "w"}
+{
+    "id":  "test_word_question",
+    "title":  "some wprd q",
+    "bodyText":  "dsgsdgs",
+    "imagePath":  [],
+    "version":  1,
+    "type":  "word",
+    "correctAnswer":  "sss",
+    "correctFeedback":  "c",
+    "incorrectFeedback":  "w"
+}

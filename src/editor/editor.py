@@ -68,7 +68,7 @@ class QuestionType(Enum):
 
 
 initialize_state()
-with st.form("baseform"):
+with st.form("baseform", enter_to_submit=False):
     _options = [t.typestr for t in QuestionType]
     questionType = st.selectbox(
         label="Select the type of the question that you want to create", options=_options

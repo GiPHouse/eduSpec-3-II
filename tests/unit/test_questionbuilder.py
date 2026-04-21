@@ -38,7 +38,7 @@ class TestBuildingMCQ:
 
     def test_MCQ_2(self) -> None:
         """Test case for building a standard multiple-choice question with image path"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "data/img/image1.png", "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": ["data/img/image1.png"], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
 
         correct_mcq = MultipleChoiceQuestion(
             "question1",
@@ -47,7 +47,7 @@ class TestBuildingMCQ:
             ["a", "b", "c"],
             1,
             ["a: wrong", "b: correct", "c: wrong"],
-            imgpath="data/img/image1.png",
+            imgpath=["data/img/image1.png"],
         )
 
         mcq = QuestionBuilder.questionFromJson(input_data)
@@ -109,7 +109,7 @@ class TestBuildingIntQ:
 
     def test_IntQ_1(self) -> None:
         """Test case for building a standard integer question"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
 
         correct_intq = IntegerQuestion(
             "question1",
@@ -132,7 +132,7 @@ class TestBuildingIntQ:
 
     def test_IntQ_2(self) -> None:
         """Test case for building a standard integer question with image path and equal lower and upper bound"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "data/img/image1.png", "version": 1, "type": "integer", "lowerBound": 3, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": ["data/img/image1.png"], "version": 1, "type": "integer", "lowerBound": 3, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
 
         correct_intq = IntegerQuestion(
             "question1",
@@ -140,7 +140,7 @@ class TestBuildingIntQ:
             "here's a question",
             (3, 3),
             ["correct", "too low", "too high"],
-            imgpath="data/img/image1.png",
+            imgpath=["data/img/image1.png"],
         )
 
         intq = QuestionBuilder.questionFromJson(input_data)
@@ -156,7 +156,7 @@ class TestBuildingIntQ:
 
     def test_IntQ_3(self) -> None:
         """Test case for building a standard integer question with float bounds"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": -0.2, "upperBound": 0.3, "feedbacks": ["correct", "too low", "too high"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "integer", "lowerBound": -0.2, "upperBound": 0.3, "feedbacks": ["correct", "too low", "too high"]}"""
 
         correct_intq = IntegerQuestion(
             "question1",
@@ -179,35 +179,35 @@ class TestBuildingIntQ:
 
     def test_faulty_IntQ_1(self) -> None:
         """Test case for building an integer question missing the title attribute"""
-        input_data = r"""{"id": "question1", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
+        input_data = r"""{"id": "question1", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
 
     def test_faulty_IntQ_2(self) -> None:
         """Test case for building an integer question missing the lowerBound attribute"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "integer", "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
 
     def test_faulty_IntQ_3(self) -> None:
         """Test case for building an integer question with a non-integer upperBound attribute"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": 0, "upperBound": "a", "feedbacks": ["correct", "too low", "too high"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "integer", "lowerBound": 0, "upperBound": "a", "feedbacks": ["correct", "too low", "too high"]}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
 
     def test_faulty_IntQ_4(self) -> None:
         """Test case for building an integer question with a higher lower bound than upper bound"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": 6, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "integer", "lowerBound": 6, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
 
     def test_faulty_IntQ_5(self) -> None:
         """Test case for building an integer question with too few feedback options"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low"]}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), IntegerQuestion)
@@ -218,7 +218,7 @@ class TestBuildingWordQ:
 
     def test_WordQ_1(self) -> None:
         """Test case for building a standard integer question"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         correct_wordq = WordQuestion(
             "question1",
@@ -241,7 +241,7 @@ class TestBuildingWordQ:
 
     def test_WordQ_2(self) -> None:
         """Test case for building a standard word question with image path"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "data/img/image1.png", "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": ["data/img/image1.png"], "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         correct_wordq = WordQuestion(
             "question1",
@@ -249,7 +249,7 @@ class TestBuildingWordQ:
             "here's a question",
             "answer",
             ["correct", "wrong"],
-            imgpath="data/img/image1.png",
+            imgpath=["data/img/image1.png"],
         )
 
         wordq = QuestionBuilder.questionFromJson(input_data)
@@ -272,21 +272,21 @@ class TestBuildingWordQ:
 
     def test_faulty_WordQ_2(self) -> None:
         """Test case for building a word question without correctFeedback attribute"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": "answer", "incorrectFeedback": "wrong"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "word", "correctAnswer": "answer", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
 
     def test_faulty_WordQ_3(self) -> None:
         """Test case for building a word question with non-string correctAnswer"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": 3, "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "word", "correctAnswer": 3, "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
 
     def test_faulty_WordQ_4(self) -> None:
         """Test case for building a word question with empty correctAnswer"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "word", "correctAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "word", "correctAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
@@ -297,7 +297,7 @@ class TestBuildingDrawingQ:
 
     def test_WordQ_1(self) -> None:
         """Test case for building a standard drawing question"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
 
         correct_drawq = MoleculeDrawingQuestion(
             "question1",
@@ -320,7 +320,7 @@ class TestBuildingDrawingQ:
 
     def test_WordQ_2(self) -> None:
         """Test case for building a standard word question with image path"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "data/img/image1.png", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": ""}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": ["data/img/image1.png"], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": ""}"""
 
         correct_drawq = MoleculeDrawingQuestion(
             "question1",
@@ -328,7 +328,7 @@ class TestBuildingDrawingQ:
             "here's a question",
             MoleculeDrawingConfig("answer", "", ""),
             ["correct", "wrong"],
-            imgpath="data/img/image1.png",
+            imgpath=["data/img/image1.png"],
         )
 
         drawq = QuestionBuilder.questionFromJson(input_data)
@@ -344,28 +344,28 @@ class TestBuildingDrawingQ:
 
     def test_faulty_drawQ_1(self) -> None:
         """Test case for building a drawing question without version attribute"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)
 
     def test_faulty_drawQ_2(self) -> None:
         """Test case for building a drawing question without defaultAnswer attribute"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "drawing", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)
 
     def test_faulty_drawQ_3(self) -> None:
         """Test case for building a drawing question with non-string widgetKey"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": 0.3}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": 0.3}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)
 
     def test_faulty_drawQ_4(self) -> None:
         """Test case for building a drawing question with empty incorrectFeedback"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": "", "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "", "widgetKey": "key"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [""], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "seed", "correctFeedback": "correct", "incorrectFeedback": "", "widgetKey": "key"}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)
