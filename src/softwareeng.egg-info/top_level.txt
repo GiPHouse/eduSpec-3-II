@@ -3,3 +3,4 @@ editor
 managers
 pages
 questions
+quizzes
