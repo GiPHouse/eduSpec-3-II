@@ -66,7 +66,7 @@ class SpectralQuestion(Question):
         self.default = None
         self.type = self._detect_type(spectralpath)
 
-    def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
+    def verifyAndFeedback(self, user_input: float) -> tuple[bool, str]:
         """Function that verifies the user input and gives feedback depending on the answer
 
         Args:
@@ -78,7 +78,7 @@ class SpectralQuestion(Question):
         is_correct = abs(user_input - self.correct_answer) <= self.tolerance
         return is_correct, self.feedback(user_input)
 
-    def feedback(self, user_input: int) -> str:
+    def feedback(self, user_input: float) -> str:
         """Gives the feedback depending on the user input
 
         Args:

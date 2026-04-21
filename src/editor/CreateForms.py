@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 
 from managers.QuestionManager import QuestionManager
@@ -243,13 +245,16 @@ def createSpectralQuestionForm() -> None:
         with col1:
             SQsubmitButton = st.form_submit_button()
         with col2:
-            SQpreviousButton = st.form_submit_button(key="SQ_prevbut", label="Preview")
+            SQpreviewButton = st.form_submit_button(key="SQ_prevbut", label="Preview")
     if SQsubmitButton:
+        os.makedirs("../data/spectra", exist_ok=True)
+        spectral_path = st.session_state["last_successful_spectral_path"]
         new_question = SpectralQuestion(
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
             st.session_state.get("last_successful_file", None),
+            spectral_path,
             SQ_correct_answer,
             [SQ_correct_feedback, SQ_incorrect_feedback],
             SQ_tolerance,
@@ -266,12 +271,15 @@ def createSpectralQuestionForm() -> None:
                 handle_same_id(new_question)
         except Exception as e:
             st.error(f"An error occurred during saving:{e}")
-    if SQpreviousButton:
+    if SQpreviewButton:
+        os.makedirs("../data/spectra", exist_ok=True)
+        spectral_path = st.session_state["last_successful_spectral_path"]
         new_question = SpectralQuestion(
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
             st.session_state.get("last_successful_file", None),
+            spectral_path,
             SQ_correct_answer,
             [SQ_correct_feedback, SQ_incorrect_feedback],
             SQ_tolerance,
