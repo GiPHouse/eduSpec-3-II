@@ -9,40 +9,44 @@ from questions.SpectralQuestion import SpectralQuestion
 class QuestionDrawer:
     """Public class for displaying questions"""
 
-    def evaluateAnswer(current_question: Question, user_input: any) -> None:
-        """Evaluates the answer after submitting it
-
-        Args:
-            current_question (Question): The question that is aimed to be displayed
-            user_input (_type_): user's answer to the question
-        """
+    @staticmethod
+    def evaluateAnswer(current_question: Question, user_input: any, quiz=None, question_index: int = None) -> None:
+        """Evaluates the answer after submitting it"""
         if (user_input is not None) or (user_input == 0):
             is_correct, feedback = current_question.verifyAndFeedback(user_input)
+            
+            # Record answer if quiz context is provided
+            if quiz is not None and question_index is not None:
+                quiz.recordAnswer(question_index, is_correct)
+            
             if is_correct:
                 st.success(f"Your answer is correct!  \n {feedback}")
             else:
                 st.error(f"Your answer is incorrect!  \n {feedback}")
-
+        
+    
     @staticmethod
-    def drawQuestion(current_question: Question) -> None:
+    def drawQuestion(current_question: Question, quiz=None, question_index: int = None) -> None:
         """Draws the parts of the question that are the same for all questions
 
         Args:
             current_question (Question): The question that is aimed to be displayed
+            quiz: Optional quiz instance for tracking attempts
+            question_index (int): Optional index of the question in the quiz
         """
         with st.container():
             st.title(current_question.title)
             current_question.drawImage()
             # Check if we have a spectral question: in that case create a download button with _drawDownload
             if isinstance(current_question, SpectralQuestion):
-                QuestionDrawer.drawDownload(current_question)
+                QuestionDrawer._drawDownload(current_question)
             st.text(current_question.bodytext)
 
             with st.form("form" + current_question.title, enter_to_submit=False):
                 user_input = current_question.drawYourself()
                 if st.form_submit_button("Submit Answer", key="submit_button_form"):
                     if user_input is not None:
-                        QuestionDrawer.evaluateAnswer(current_question, user_input)
+                        QuestionDrawer.evaluateAnswer(current_question, user_input, quiz, question_index)
 
             def _reset_callback() -> None:
                 st.session_state[current_question.widget_key] = current_question.default

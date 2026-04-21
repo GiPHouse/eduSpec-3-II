@@ -130,7 +130,7 @@ class SpectralQuestion(Question):
         fig = self.build_figure(selected)
 
         event = st.plotly_chart(
-            fig, use_container_width=True, on_select="rerun", key="spectral_chart"
+            fig, width='stretch', on_select="rerun", key="spectral_chart"
         )
 
         if event and event.selection and event.selection.points:
