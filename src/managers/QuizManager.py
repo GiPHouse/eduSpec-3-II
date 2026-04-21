@@ -2,7 +2,7 @@ from pathlib import Path
 
 from streamlit import cache_data
 
-from managers.BaseManager import BaseManager
+from managers.BaseManager import BaseManager, DirectoryStructure
 from managers.QuizBuilder import QuizBuilder
 from managers.QuizSerialiser import QuizSerialiser
 from Quiz import Quiz
@@ -91,3 +91,14 @@ class QuizManager(BaseManager):
         quiz_file = data_dir.joinpath(f"{quiz_name}.json")
         quiz_file.write_text(quiz_data)
         return True
+
+    @classmethod
+    def listQuizzes(cls) -> DirectoryStructure:
+        """Lists all saved quizzes. Ignores subdirectories.
+
+        Returns:
+            DirectoryStructure (list[str]): The found items.
+        """
+        base_dir = cls._getDir()
+
+        return cls._iterDir(base_dir, False)

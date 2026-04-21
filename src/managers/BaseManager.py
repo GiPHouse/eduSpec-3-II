@@ -1,6 +1,8 @@
 import pathlib
 from os import environ
 
+DirectoryStructure = list[str | tuple[str, "DirectoryStructure"]]
+
 
 class BaseManager:
     """Abstract base manager to handle shared methods and serve as template"""
@@ -60,3 +62,41 @@ class BaseManager:
         if not item_dir.exists():
             item_dir.mkdir(parents=True)
         return item_dir
+
+    @classmethod
+    def _iterDir(cls, start: pathlib.Path, enter_subdirs: bool = True) -> DirectoryStructure:
+        """Iterates all the items in a directory
+
+        Args:
+            start (pathlib.Path): The path to start from.
+            enter_subdirs (bool, optional): Whether to enter subdirectories or ignore them. This will return `list[str]` when False. Defaults to False.
+
+        Returns:
+            DirectoryStructure: The items, without file extension.
+                Directories are tuples with the dir name first and the list of items second.
+        """
+        out = []
+        for item in start.iterdir():
+            if item.is_dir():
+                out.append((item.name, cls._iterDir(item)))
+            else:
+                out.append(item.name)
+        return out
+
+    @classmethod
+    def _iterDirFlat(cls, start: pathlib.Path) -> list[str]:
+        """Iterates all the items in a directory, without distinction for subdirectories.
+
+        Args:
+            start (pathlib.Path): The path to start from.
+
+        Returns:
+            list[str]: All the items in the path and its subdirectories, without file extensions.
+        """
+        out = []
+        for item in start.iterdir():
+            if item.is_dir():
+                out.extend(cls._iterDirFlat(item))
+            else:
+                out.append(item.name)
+        return out

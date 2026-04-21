@@ -2,7 +2,7 @@ from pathlib import Path
 
 from streamlit import cache_data
 
-from managers.BaseManager import BaseManager
+from managers.BaseManager import BaseManager, DirectoryStructure
 from managers.QuestionBuilder import QuestionBuilder
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.Question import Question
@@ -85,3 +85,14 @@ class QuestionManager(BaseManager):
         question_file = data_dir.joinpath(f"{question_name}.json")
         question_file.write_text(question_data)
         return True
+
+    @classmethod
+    def listQuestions(cls) -> DirectoryStructure:
+        """Lists all the currently saved questions
+
+        Returns:
+            DirectoryStructure: The question ids. Subdirectories are tuples with the dir name first and list of questions second.
+        """
+        base_dir = cls._getDir()
+
+        return cls._iterDir(base_dir)
