@@ -1,19 +1,34 @@
+from unittest.mock import patch
+
 from streamlit.testing.v1 import AppTest
 
 
 def render_spectral_question() -> None:
     """Render a spectral question in a Streamlit test app."""
+    import numpy as np
+
     from questions.SpectralQuestion import SpectralQuestion
 
     question = SpectralQuestion(
         "ir_question",
         "IR Question",
         "Select the peak",
+        None,
         "data/spectra/ir_sample.jdx",
         1700,
         ["Correct", "Incorrect"],
     )
-    question.drawYourself()
+
+    question.x = np.asarray([1000.0, 1500.0, 1700.0], dtype=float)
+    question.y = np.asarray([20.0, 60.0, 100.0], dtype=float)
+    question.units = "cm^-1"
+
+    with (
+        patch.object(question, "_parse_jcampdx"),
+        patch.object(question, "build_figure", return_value={}),
+        patch("questions.SpectralQuestion.st.plotly_chart", return_value=None),
+    ):
+        question.drawYourself()
 
 
 def all_text_content(at: AppTest) -> str:
