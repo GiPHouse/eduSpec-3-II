@@ -1,11 +1,24 @@
 {
-    "id" : "question2"  ,
-    "title" : "title2",
-    "bodyText": "this is a bodytext",
-    "version": 1,
-    "type": "multipleChoice",
-    "answers": ["10", "20", "30", "40"],
-    "feedbacks":["a", "b", "c", "d"],
-    "correctAnswer":2,
-    "imagePath":"../data/images/test.png"
+    "id":  "question2",
+    "title":  "title2",
+    "bodyText":  "this is a bodytext",
+    "version":  1,
+    "type":  "multipleChoice",
+    "answers":  [
+                    "10",
+                    "20",
+                    "30",
+                    "40"
+                ],
+    "feedbacks":  [
+                      "a",
+                      "b",
+                      "c",
+                      "d"
+                  ],
+    "correctAnswer":  2,
+    "imagePath":  [
+                      "../data/images/test.png",
+                      "../data/images/test.png"
+                  ]
 }
