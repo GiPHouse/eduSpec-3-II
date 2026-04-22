@@ -29,10 +29,20 @@ class QuestionDrawer:
         with st.container():
             st.title(current_question.title)
             current_question.drawImage()
+            # Check if we have a spectral question: in that case create a download button with _drawDownload
             st.text(current_question.bodytext)
+
+            def _handle_reset_drawing_question() -> None:
+                nonce_key = f"{current_question.widget_key}__jsme_nonce"
+                last_seen_key = f"{current_question.widget_key}__last_seen"
+                if nonce_key in st.session_state:
+                    st.session_state[nonce_key] += 1
+                if last_seen_key in st.session_state:
+                    st.session_state[last_seen_key] = current_question.default
 
             def _reset_callback() -> None:
                 st.session_state[current_question.widget_key] = current_question.default
+                _handle_reset_drawing_question()
 
             with st.form(
                 "form" + current_question.title,
