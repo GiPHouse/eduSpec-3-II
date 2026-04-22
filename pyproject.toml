@@ -5,6 +5,30 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "softwareeng"
 version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "streamlit",
+    "pytest",
+    "jcamp",
+    "plotly",
+    "stmol",
+    "py3Dmol==2.0.0.post2",
+    "ipython_genutils",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest]
+pythonpath = ["src/"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ANN0", "ANN2", "A", "B0", "D1", "D2", "D3", "E4", "E7", "E9", "F", "I0", "PT0", "SLF0"]
+ignore = ["ANN002", "ANN003", "ANN204", "D100", "D301", "PT011"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
