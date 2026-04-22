@@ -97,7 +97,7 @@ class SpectralQuestion(Question):
         name: str,
         title: str,
         bodytext: str,
-        imgpath: Optional[list[str]],
+        imgpath: Optional[List[str]],
         spectralpath: str,
         correct_answer: float,
         feedbacks: List[str],
@@ -123,8 +123,8 @@ class SpectralQuestion(Question):
         self.widget_key = f"spectral_question_{name}"
         self.chart_key = f"spectral_chart_{name}"
         self.default = None
-
-        self.type = self._detect_type(imgpath)
+        self.spectralpath = spectralpath
+        self.type = self._detect_type(spectralpath)
 
         self.x: Optional[np.ndarray] = None
         self.y: Optional[np.ndarray] = None
@@ -167,11 +167,11 @@ class SpectralQuestion(Question):
         if self._data_loaded:
             return
 
-        if self.imgpath is None:
+        if self.spectralpath is None:
             raise ValueError("No spectral file provided")
 
         if self.type == SpectralType.NMR:
-            x, y, isotope = load_nmr(self.imgpath)
+            x, y, isotope = load_nmr(self.spectralpath)
             y = (y / np.max(y)) * 100 if np.max(y) > 0 else y
             self.units = f"δ {isotope} / ppm" if isotope else "δ / ppm"
             self.x, self.y = x, y
@@ -179,7 +179,7 @@ class SpectralQuestion(Question):
                 x, y, self.NMR_MAX_DISPLAY_POINTS
             )
         else:
-            x, y, units = load_non_nmr_jcamp(self.imgpath)
+            x, y, units = load_non_nmr_jcamp(self.spectralpath)
             self.x, self.y = x, y
             self.units = units
 
@@ -277,6 +277,7 @@ class SpectralQuestion(Question):
 
     def drawImage(self) -> None:
         """A function to plot the spectral data and get user input"""
+        super().drawImage()
         self._parse_jcampdx()
 
         selected = st.session_state.get(self.widget_key, self.default)
@@ -371,7 +372,6 @@ class SpectralQuestion(Question):
             )
 
         fig.update_layout(
-            title=self.title,
             xaxis_title=self.units,
             yaxis_title=self.type.y_label,
             hovermode="closest",
