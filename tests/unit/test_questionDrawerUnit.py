@@ -28,6 +28,7 @@ class FakeQuestion:
     def __init__(
         self,
         *,
+        name: str = "example_question",
         title: str = "Example Question",
         bodytext: str = "Example body",
         widget_key: str = "widget_key",
@@ -35,6 +36,7 @@ class FakeQuestion:
         user_input: Any = "student answer",
     ) -> None:
         """Initialise the fake question."""
+        self.name = name
         self.title = title
         self.bodytext = bodytext
         self.widget_key = widget_key
@@ -127,24 +129,32 @@ def test_draw_question_renders_common_elements() -> None:
     with (
         patch("QuestionDrawer.st.container", return_value=DummyContext()),
         patch("QuestionDrawer.st.form", return_value=DummyContext()),
+        patch("QuestionDrawer.st.columns", return_value=(DummyContext(), DummyContext())),
         patch("QuestionDrawer.st.title") as mock_title,
         patch("QuestionDrawer.st.text") as mock_text,
-        patch("QuestionDrawer.st.form_submit_button", return_value=False) as mock_submit,
-        patch("QuestionDrawer.st.button") as mock_button,
+        patch("QuestionDrawer.st.form_submit_button", side_effect=[False, False]) as mock_submit,
     ):
         QuestionDrawer.drawQuestion(current_question)
 
-    assert current_question.draw_image_called is True
-    assert mock_title.call_count == 1
-    assert mock_title.call_args.args == ("Example Question",)
-    assert mock_text.call_count == 1
-    assert mock_text.call_args.args == ("Example body",)
-    assert mock_submit.call_count == 1
-    assert mock_submit.call_args.args == ("Submit Answer",)
-    assert mock_submit.call_args.kwargs == {"key": "submit_button_form"}
-    assert mock_button.call_count == 1
-    assert mock_button.call_args.args == ("Reset",)
-    assert "on_click" in mock_button.call_args.kwargs
+        assert current_question.draw_image_called is True
+        mock_title.assert_called_once_with("Example Question")
+        mock_text.assert_called_once_with("Example body")
+
+        assert mock_submit.call_count == 2
+
+        submit_call = mock_submit.call_args_list[0]
+        assert submit_call.args == ("Submit Answer",)
+        assert submit_call.kwargs["key"] == "submit_button_form_example_question"
+        assert submit_call.kwargs["type"] == "primary"
+        assert submit_call.kwargs["icon"] == ":material/check:"
+        assert submit_call.kwargs["width"] == "stretch"
+
+        reset_call = mock_submit.call_args_list[1]
+        assert reset_call.args == ("Reset",)
+        assert reset_call.kwargs["key"] == "reset_button_form_example_question"
+        assert reset_call.kwargs["icon"] == ":material/refresh:"
+        assert reset_call.kwargs["width"] == "stretch"
+        assert "on_click" in reset_call.kwargs
 
 
 def test_draw_question_submit_evaluates_answer_when_input_exists() -> None:
@@ -188,27 +198,21 @@ def test_draw_question_reset_button_callback_restores_default() -> None:
     """drawQuestion reset callback should restore the widget key to the default value."""
     current_question = FakeQuestion(widget_key="reset_key", default="restored")
     fake_session_state: dict[str, Any] = {"reset_key": "changed"}
-    stored_callback: dict[str, Any] = {}
-
-    def fake_button(label: str, on_click: Any) -> None:
-        """Capture the reset callback passed to st.button."""
-        stored_callback["label"] = label
-        stored_callback["callback"] = on_click
-        return None
 
     with (
         patch("QuestionDrawer.st.container", return_value=DummyContext()),
         patch("QuestionDrawer.st.form", return_value=DummyContext()),
+        patch("QuestionDrawer.st.columns", return_value=(DummyContext(), DummyContext())),
         patch("QuestionDrawer.st.title"),
         patch("QuestionDrawer.st.text"),
-        patch("QuestionDrawer.st.form_submit_button", return_value=False),
         patch("QuestionDrawer.st.session_state", fake_session_state),
-        patch("QuestionDrawer.st.button", side_effect=fake_button),
+        patch("QuestionDrawer.st.form_submit_button", side_effect=[False, False]) as mock_submit,
     ):
         QuestionDrawer.drawQuestion(current_question)
 
-        assert stored_callback["label"] == "Reset"
-        stored_callback["callback"]()
+        reset_callback = mock_submit.call_args_list[1].kwargs["on_click"]
+        reset_callback()
+
         assert fake_session_state["reset_key"] == "restored"
 
 
@@ -241,8 +245,8 @@ def test_draw_download_calls_streamlit_download_button(tmp_path: Path) -> None:
     test_file = tmp_path / "spectrum.txt"
     test_file.write_text("example spectral data", encoding="utf-8")
 
-    current_question = Mock()
-    current_question.imgpath = str(test_file)
+    current_question = FakeQuestion()
+    current_question.spectralpath = str(test_file)
 
     with patch("QuestionDrawer.st.download_button") as mock_download_button:
         QuestionDrawer._drawDownload.__wrapped__(current_question)  # noqa: SLF001
