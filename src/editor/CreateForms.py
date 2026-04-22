@@ -47,9 +47,8 @@ def createIntegerQuestionForm() -> None:
             IQPreviewButton = st.form_submit_button(key="prevbut_IQ", label="Preview")
 
     if IQsubmitButton:
-        name = st.session_state["last_successful_dir"] + st.session_state["last_successful_id"]
         new_question = IntegerQuestion(
-            name,
+            st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
             (IQ_lower_bound, IQ_upper_bound),
