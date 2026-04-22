@@ -30,15 +30,7 @@ class QuestionDrawer:
             st.title(current_question.title)
             current_question.drawImage()
             # Check if we have a spectral question: in that case create a download button with _drawDownload
-            if isinstance(current_question, SpectralQuestion):
-                QuestionDrawer._drawDownload(current_question)
             st.text(current_question.bodytext)
-
-            with st.form("form" + current_question.title, enter_to_submit=False):
-                user_input = current_question.drawYourself()
-                if st.form_submit_button("Submit Answer", key="submit_button_form"):
-                    if user_input is not None:
-                        QuestionDrawer.evaluateAnswer(current_question, user_input)
 
             def _handle_reset_drawing_question() -> None:
                 nonce_key = f"{current_question.widget_key}__jsme_nonce"
