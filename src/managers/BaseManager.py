@@ -1,7 +1,12 @@
 import pathlib
 from os import environ
 
-DirectoryStructure = list[str | tuple[str, "DirectoryStructure"]]
+type DirectoryStructure = list[str | tuple[str, "DirectoryStructure"]]
+"""Type for the structure of data directories.
+
+Filenames are stored as strings, directories as a tuple having the directory name first and contents second.
+This is recursive, we essentially start in the second item (contents) of the base directory.
+"""
 
 
 class BaseManager:
@@ -100,3 +105,23 @@ class BaseManager:
             else:
                 out.append(item.name)
         return out
+
+    @classmethod
+    def createDirectory(cls, name: str, path: str = "") -> bool:
+        """Creates a directory within the file
+
+        Args:
+            name (str): The name of the new directory
+            path (str, optional): The parents of the directory, if any. Defaults to "".
+
+        Returns:
+            bool: Whether the dir was succesfully created
+        """
+        base_dir = cls._getDir()
+
+        par_dir = base_dir.joinpath(path).resolve()
+
+        new_dir = par_dir.joinpath(name)
+        new_dir.mkdir(parents=False, exist_ok=False)
+
+        return True
