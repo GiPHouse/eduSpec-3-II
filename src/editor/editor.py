@@ -6,6 +6,9 @@ import CreateForms  # VScode gives a warning for this but I guess it works?
 import streamlit as st
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 
+from managers.BaseManager import DirectoryStructure
+from managers.QuestionManager import QuestionManager
+
 
 def initialize_state(reset: bool = False) -> None:
     """Initializes the session state flags that are used to ensure control flow."""
@@ -45,6 +48,39 @@ def determine_output_path(uploaded_file: UploadedFile) -> str:
     return output_path
 
 
+def generate_directory_structure(structure: DirectoryStructure) -> list[str]:
+    """Generate an overview of the directories based on a DirectoryStructure
+
+    Args:
+        structure (DirectoryStructure): The structure (output of QuestionManager.listQuestions())
+
+    Returns:
+        list[str]: A list of all the subdirectories (includes an empty string for the main questions folder)
+    """
+    out = [""]
+    out.extend(iterate_dir_structure(structure, ""))
+    return out
+
+
+def iterate_dir_structure(structure: DirectoryStructure, parent: str) -> list[str]:
+    """Iterates through a directory and generates subdirectory names. Helper function of `generate_directory_structure`
+
+    Args:
+        structure (DirectoryStructure): The directory to iterate through
+        parent (str): The name of the directory
+
+    Returns:
+        list[str]: A list of all the subdirectories
+    """
+    out = []
+    for i in structure:
+        if isinstance(i, tuple):
+            out.append(f"{parent}{i[0]}/")
+            contents = iterate_dir_structure(i[1], f"{parent}{i[0]}/")
+            out.extend(contents)
+    return out
+
+
 class QuestionType(Enum):
     """Question type enum
 
@@ -73,6 +109,11 @@ with st.form("baseform", enter_to_submit=False):
     questionType = st.selectbox(
         label="Select the type of the question that you want to create", options=_options
     )
+    question_dir = st.selectbox(
+        "Save location",
+        generate_directory_structure(QuestionManager.listQuestions()),
+        format_func=lambda x: f"questions/{x}",
+    )
     question_id = st.text_input(
         "ID (This helps you identify the question)",
         placeholder="Please specify an ID for the question",
@@ -89,7 +130,7 @@ with st.form("baseform", enter_to_submit=False):
         accept_multiple_files=True,
     )
 
-    submitButton = st.form_submit_button()
+    submitButton = st.form_submit_button(label="Next")
 
 if submitButton:
     if (
@@ -125,6 +166,7 @@ if submitButton:
             st.session_state["last_successful_title"] = title
             st.session_state["last_successful_questionBody"] = questionBody
             st.session_state["last_successful_questionType"] = questionType
+            st.session_state["last_successful_dir"] = question_dir
             st.session_state["show_question_form"] = True
             st.success("Form submitted successfully.")
 
