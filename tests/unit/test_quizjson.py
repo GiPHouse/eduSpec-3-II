@@ -27,7 +27,7 @@ class test_QuizSerialisation:
             ["a", "b", "c"],
             1,
             ["a: wrong", "b: correct", "c: wrong"],
-            imgpath="data/questions/yolo.png",
+            imgpath=["data/questions/yolo.png"],
         )
 
         question_2 = IntegerQuestion(

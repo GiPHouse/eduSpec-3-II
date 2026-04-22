@@ -1,0 +1,17 @@
+{
+    "id":  "mcqdeneme",
+    "title":  "dglkjsdg",
+    "bodyText":  "sdlgkjdslgs",
+    "imagePath":  [],
+    "version":  1,
+    "type":  "multipleChoice",
+    "answers":  [
+                    "gdsggdsg",
+                    "aaa"
+                ],
+    "correctAnswer":  0,
+    "feedbacks":  [
+                      "gds",
+                      "bbb"
+                  ]
+}

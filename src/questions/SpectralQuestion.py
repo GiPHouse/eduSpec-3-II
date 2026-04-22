@@ -42,7 +42,8 @@ class SpectralQuestion(Question):
         name: str,
         title: str,
         bodytext: str,
-        imgpath: Optional[str],
+        imgpath: Optional[list[str]],
+        spectralpath: str,
         correct_answer: float,
         feedbacks: List,
         tolerance: float = 0.5,
@@ -53,17 +54,19 @@ class SpectralQuestion(Question):
             name (str): The unique name/ID of the question.
             title (str): Title of the Question
             bodytext (str): Bodytext, the question itself
-            imgpath (Optional[str]): The path that points to the spectral data, to be displayed with the question
+            imgpath (Optional[list[str]]): The path that points to the spectral data, to be displayed with the question
+            spectralpath (str): The path that points to the spectral data, to be downloaded with the question
         """
         super().__init__(name, title, bodytext, imgpath)
         self.correct_answer = correct_answer
         self.tolerance = tolerance
         self.feedbacks = feedbacks
+        self.spectralpath = spectralpath
         self.widget_key = f"spectral_question_{name}"
         self.default = None
-        self.type = self._detect_type(imgpath)
+        self.type = self._detect_type(spectralpath)
 
-    def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
+    def verifyAndFeedback(self, user_input: float) -> tuple[bool, str]:
         """Function that verifies the user input and gives feedback depending on the answer
 
         Args:
@@ -75,7 +78,7 @@ class SpectralQuestion(Question):
         is_correct = abs(user_input - self.correct_answer) <= self.tolerance
         return is_correct, self.feedback(user_input)
 
-    def feedback(self, user_input: int) -> str:
+    def feedback(self, user_input: float) -> str:
         """Gives the feedback depending on the user input
 
         Args:
@@ -94,12 +97,7 @@ class SpectralQuestion(Question):
         Returns:
             tuple[list,list]: X and Y coordinate values, respectively.
         """
-        # Return on no given file
-        # ! Maybe make imgpath non-optional?
-        if self.imgpath is None:
-            return
-
-        with open(self.imgpath, "rb") as f:
+        with open(self.spectralpath, "rb") as f:
             lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]
 
         data = jcamp.jcamp_read(lines)
@@ -116,6 +114,7 @@ class SpectralQuestion(Question):
 
     def drawYourself(self) -> None:
         """The question draws itself to streamlit"""
+        self.drawSpectralGraph()
         selected = st.session_state.get(self.widget_key, self.default)
         if selected is not None:
             st.write(f"Selected peak: {selected} {self.type.unit}")
@@ -123,21 +122,27 @@ class SpectralQuestion(Question):
             st.info("Click a peak on the spectrum to select it.")
         return selected
 
-    def drawImage(self) -> None:
-        """We override the drawImage function as a spectral question needs to parse the spectral data"""
+    def drawSpectralGraph(self) -> None:
+        """We override the drawSpectralGraph function as a spectral question needs to parse the spectral data"""
         self._parse_jcampdx()
+        selected = st.session_state.get(self.widget_key, self.default)
+        fig = self.build_figure(selected)
 
-        # This is a weird numpy trick so that we can easily create a "stem" plot.
-        xs = np.empty(self.x.size * 3)
-        ys = np.empty(self.y.size * 3)
+        event = st.plotly_chart(
+            fig, use_container_width=True, on_select="rerun", key="spectral_chart"
+        )
 
-        xs[0::3] = self.x
-        xs[1::3] = self.x
-        xs[2::3] = np.nan
+        if event and event.selection and event.selection.points:
+            selected = event.selection.points[0]
+            point_index = selected.get("point_index")
+            if point_index is not None:
+                selected_x = float(self.x[point_index])
+                if st.session_state.get(self.widget_key) != selected_x:
+                    st.session_state[self.widget_key] = selected_x
+                    st.rerun()
 
-        ys[0::3] = 0
-        ys[1::3] = self.y
-        ys[2::3] = np.nan
+    def build_figure(self, selected_x: Optional[float] = None) -> go.Figure:
+        """Create the Plotly figure for the current spectrum."""
         fig = go.Figure()
 
         if self.type == SpectralType.MS:
@@ -167,6 +172,14 @@ class SpectralQuestion(Question):
                 )
             )
 
+        if self.type == SpectralType.IR and selected_x is not None:
+            fig.add_vline(
+                x=selected_x,
+                line_width=2,
+                line_dash="dash",
+                line_color="#d62728",
+            )
+
         fig.update_layout(
             title=self.title,
             xaxis_title=self.units,
@@ -175,25 +188,17 @@ class SpectralQuestion(Question):
             hovermode="closest",
         )
 
-        event = st.plotly_chart(
-            fig, use_container_width=True, on_select="rerun", key="spectral_chart"
-        )
+        return fig
 
-        if event and event.selection and event.selection.points:
-            selected = event.selection.points[0]
-            point_index = selected.get("point_index")
-            if point_index is not None:
-                st.session_state[self.widget_key] = float(self.x[point_index])
+    def _detect_type(self, spectralpath: str) -> SpectralType:
 
-    def _detect_type(self, imgpath: str) -> SpectralType:
-
-        if re.search("^.*ms.*$", imgpath):
+        if re.search("^.*ms.*$", spectralpath):
             return SpectralType.MS
-        elif re.search("^.*ir.*$", imgpath):
+        elif re.search("^.*ir.*$", spectralpath):
             return SpectralType.IR
 
         # This doesn't work right now, up to how client created nmr files
-        elif re.search("^.*nmr.*$", imgpath):
+        elif re.search("^.*nmr.*$", spectralpath):
             return SpectralType.NMR
 
         raise ValueError("Not a proper spectral file is provided")

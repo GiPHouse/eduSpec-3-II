@@ -1,8 +1,11 @@
+import os
+
 import streamlit as st
 
 from managers.QuestionManager import QuestionManager
 from QuestionDrawer import QuestionDrawer
 from questions.IntegerQuestion import IntegerQuestion
+from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.Question import Question
 from questions.SpectralQuestion import SpectralQuestion
@@ -10,14 +13,19 @@ from questions.WordQuestion import WordQuestion
 
 
 def createIntegerQuestionForm() -> None:
-    """_summary_"""
-    with st.form("IntegerQuestionForm"):
-        IQ_correct_range = st.slider(
-            "Please choose the correct range",
-            min_value=-1000.0,
-            max_value=1000.0,
-            value=(-50.0, 50.0),
-            key="IntegerQuestion_correct_range",
+    """Function that creates a form so that user can specify an Integer Question"""
+    with st.form("IntegerQuestionForm", enter_to_submit=False):
+        IQ_lower_bound = st.number_input(
+            "Please input the lower bound of the correct answer",
+            value=None,
+            step=0.5,  # Could be made modular
+            key="IntegerQuestion_lower_bound",
+        )
+        IQ_upper_bound = st.number_input(
+            "Please input the upper bound of the correct answer",
+            value=None,
+            step=0.5,  # Could be made modular
+            key="IntegerQuestion_upper_bound",
         )
         IQ_correct_feedback = st.text_input(
             "Please specify the feedback when the answer is within range",
@@ -43,13 +51,13 @@ def createIntegerQuestionForm() -> None:
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
-            IQ_correct_range,
+            (IQ_lower_bound, IQ_upper_bound),
             [IQ_correct_feedback, IQ_lower_feedback, IQ_higher_feedback],
             st.session_state.get("last_successful_file", None),
         )
         try:
             QuestionManager.saveQuestion(new_question)
-            st.success(f"Question {new_question.title} created!")
+
             st.session_state["show_question_form"] = False
             st.session_state["question_submitted"] = True
 
@@ -64,7 +72,7 @@ def createIntegerQuestionForm() -> None:
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
-            IQ_correct_range,
+            (IQ_lower_bound, IQ_upper_bound),
             [IQ_correct_feedback, IQ_lower_feedback, IQ_higher_feedback],
             st.session_state.get("last_successful_file", None),
         )
@@ -75,8 +83,8 @@ def createIntegerQuestionForm() -> None:
 
 
 def createWordQuestionForm() -> None:
-    """_summary_"""
-    with st.form("WordQuestionForm"):
+    """Function that creates a form so that user can specify a Word Question"""
+    with st.form("WordQuestionForm", enter_to_submit=False):
         WQ_correct_answer = st.text_input(
             "Please specify the correct answer", key="WordQuestion_correct_answer"
         )
@@ -104,7 +112,7 @@ def createWordQuestionForm() -> None:
         )
         try:
             QuestionManager.saveQuestion(new_question)
-            st.success(f"Question {new_question.title} created!")
+
             st.session_state["show_question_form"] = False
             st.session_state["question_submitted"] = True
 
@@ -130,7 +138,7 @@ def createWordQuestionForm() -> None:
 
 
 def createMultipleChoiceQuestionForm() -> None:
-    """_summary_"""
+    """Function that creates a form so that user can specify a Multiple Choice Question"""
     MCQ_choice_count = st.number_input(
         "Please specify the number of choices this question offers",
         key="MCQ_choice_count",
@@ -147,7 +155,7 @@ def createMultipleChoiceQuestionForm() -> None:
     )
 
     if MCQ_choice_count > 0:
-        with st.form("MultipleChoiceQuestionForm"):
+        with st.form("MultipleChoiceQuestionForm", enter_to_submit=False):
             answers = []
             feedbacks = []
             for i in range(MCQ_choice_count):
@@ -182,7 +190,7 @@ def createMultipleChoiceQuestionForm() -> None:
             )
             try:
                 QuestionManager.saveQuestion(new_question)
-                st.success(f"Question {new_question.title} created!")
+
                 st.session_state["show_question_form"] = False
                 st.session_state["question_submitted"] = True
 
@@ -214,8 +222,8 @@ def createMultipleChoiceQuestionForm() -> None:
 
 
 def createSpectralQuestionForm() -> None:
-    """_summary_"""
-    with st.form("SpectralQuestionForm"):
+    """Function that creates a form so that user can specify a Spectral Question"""
+    with st.form("SpectralQuestionForm", enter_to_submit=False):
         SQ_correct_answer = st.number_input(
             "Please specify the correct value (This can be the y-value of a peak, regardless of the unit)",
             key="SQ_correct_answer",
@@ -237,20 +245,23 @@ def createSpectralQuestionForm() -> None:
         with col1:
             SQsubmitButton = st.form_submit_button()
         with col2:
-            SQpreviousButton = st.form_submit_button(key="SQ_prevbut", label="Preview")
+            SQpreviewButton = st.form_submit_button(key="SQ_prevbut", label="Preview")
     if SQsubmitButton:
+        os.makedirs("../data/spectra", exist_ok=True)
+        spectral_path = st.session_state["last_successful_spectral_path"]
         new_question = SpectralQuestion(
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
             st.session_state.get("last_successful_file", None),
+            spectral_path,
             SQ_correct_answer,
             [SQ_correct_feedback, SQ_incorrect_feedback],
             SQ_tolerance,
         )
         try:
             QuestionManager.saveQuestion(new_question)
-            st.success(f"Question {new_question.title} created!")
+
             st.session_state["show_question_form"] = False
             st.session_state["question_submitted"] = True
 
@@ -260,12 +271,15 @@ def createSpectralQuestionForm() -> None:
                 handle_same_id(new_question)
         except Exception as e:
             st.error(f"An error occurred during saving:{e}")
-    if SQpreviousButton:
+    if SQpreviewButton:
+        os.makedirs("../data/spectra", exist_ok=True)
+        spectral_path = st.session_state["last_successful_spectral_path"]
         new_question = SpectralQuestion(
             st.session_state["last_successful_id"],
             st.session_state["last_successful_title"],
             st.session_state["last_successful_questionBody"],
             st.session_state.get("last_successful_file", None),
+            spectral_path,
             SQ_correct_answer,
             [SQ_correct_feedback, SQ_incorrect_feedback],
             SQ_tolerance,
@@ -277,12 +291,78 @@ def createSpectralQuestionForm() -> None:
 
 
 def createDrawingQuestionForm() -> None:
-    """_summary_"""
-    st.error("Drawing Questions are not yet supported as they're not supported by managers yet.")
+    """Function that creates a form so that user can specify a Molecule Drawing Question"""
+    with st.form("DrawingQuestionForm", enter_to_submit=False):
+        DQ_correct_answer = st.text_input(
+            "Please specify the correct answer in SMILES form", key="DQ_correct"
+        )
+        DQ_default_answer = st.text_input(
+            "Please specify if you want the students to start from a base molecule, in SMILES form (can be empty)",
+            key="DQ_default",
+        )
+        DQ_correct_feedback = st.text_input(
+            "Please specify the feedback when the answer is correct",
+            key="DQ_correct_feedback",
+        )
+        DQ_wrong_feedback = st.text_input(
+            "Please specify the feedback when the answer is wrong",
+            key="DQ_wrong_feedback",
+        )
+
+        col1, col2 = st.columns(2)
+        with col1:
+            DQsubmitButton = st.form_submit_button()
+        with col2:
+            DQPreviewButton = st.form_submit_button(key="prevbut_DQ", label="Preview")
+
+        if DQsubmitButton:
+            config = MoleculeDrawingConfig(
+                expected_smiles=DQ_correct_answer,
+                seed_smiles=DQ_default_answer,
+                widget_key="dq_default_widget_key",
+            )
+            new_question = MoleculeDrawingQuestion(
+                st.session_state["last_successful_id"],
+                st.session_state["last_successful_title"],
+                st.session_state["last_successful_questionBody"],
+                config=config,
+                feedbacks=[DQ_correct_feedback, DQ_wrong_feedback],
+                imgpath=st.session_state.get("last_successful_file", None),
+            )
+            try:
+                QuestionManager.saveQuestion(new_question)
+
+                st.session_state["show_question_form"] = False
+                st.session_state["question_submitted"] = True
+
+                st.rerun()
+            except FileExistsError:
+                if not st.session_state["overwrite_done"]:
+                    handle_same_id(new_question)
+            except Exception as e:
+                st.error(f"An error occurred during saving:{e}")
+        if DQPreviewButton:
+            config = MoleculeDrawingConfig(
+                expected_smiles=DQ_correct_answer,
+                seed_smiles="C",
+                widget_key="dq_default_widget_key",
+            )
+            new_question = MoleculeDrawingQuestion(
+                st.session_state["last_successful_id"],
+                st.session_state["last_successful_title"],
+                st.session_state["last_successful_questionBody"],
+                config=config,
+                feedbacks=[DQ_correct_feedback, DQ_wrong_feedback],
+                imgpath=st.session_state.get("last_successful_file", None),
+            )
+            preview_question(new_question)
+        if st.session_state["overwrite_done"]:
+            st.session_state["show_question_form"] = False
+            st.session_state["question_submitted"] = True
 
 
 def decideAndCreateForm() -> None:
-    """_summary_"""
+    """A function that maps chosen question types to corresponding forms to create that specific question."""
     # Now, we want to dinamically create a form based on the question type.
     if "last_successful_questionType" in st.session_state:
         match st.session_state["last_successful_questionType"]:
@@ -301,7 +381,7 @@ def decideAndCreateForm() -> None:
             case "Drawing Question":
                 createDrawingQuestionForm()
     else:
-        print("AA")
+        st.error("An error has occurred, the editor cannot interpret this form.")
 
 
 @st.dialog("Preview of described question, press the top-right button to close this menu")
@@ -345,4 +425,6 @@ def handle_same_id(new_question: Question) -> None:
     if overwrite:
         QuestionManager.updateQuestion(new_question)
         st.session_state["overwrite_done"] = True
+        st.session_state["show_question_form"] = False
+        st.session_state["question_submitted"] = True
         st.rerun()
