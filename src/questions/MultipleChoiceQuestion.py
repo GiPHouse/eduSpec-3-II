@@ -16,7 +16,7 @@ class MultipleChoiceQuestion(Question):
         answers: list[str],
         correct_answer: int,
         feedbacks: list[str],
-        imgpath: Optional[str] = None,
+        imgpath: Optional[list[str]] = None,
     ):
         """Initialises a new multiple-choice question
 
@@ -27,7 +27,7 @@ class MultipleChoiceQuestion(Question):
             answers (list[str]): The possible answers
             correct_answer (int): The correct answer, as an index to the answers list
             feedbacks (list[str]): The feedbacks to the answers. Needs to be the same length as answers.
-            imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
+            imgpath (Optional[list[str]], optional): Represents the image if there is one, Defaults to None.
         """
         assert len(answers) == len(feedbacks)
         assert correct_answer >= 0

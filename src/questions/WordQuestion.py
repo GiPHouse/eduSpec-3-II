@@ -15,7 +15,7 @@ class WordQuestion(Question):
         bodytext: str,
         correct_answer: str,
         feedbacks: list[str],
-        imgpath: Optional[str] = None,
+        imgpath: Optional[list[str]] = None,
     ):
         """Initializes word question
 
@@ -25,7 +25,7 @@ class WordQuestion(Question):
             bodytext (str): The body text of the question
             correct_answer str: The correct answer as a string
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 2 elements: correct feedback and incorrect feedback
-            imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
+            imgpath (Optional[list[str]], optional): Represents the image if there is one, Defaults to None.
         """
         super().__init__(name, title, bodytext, imgpath)
         self.correct_answer = correct_answer

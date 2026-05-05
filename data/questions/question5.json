@@ -1,11 +1,17 @@
 {
-    "id" : "question5"  ,
-    "title" : "title5",
-    "bodyText": "this is a bodytext",
-    "version": 1,
-    "type": "spectral",
-    "correctAnswer": 1000.00,
-    "feedbacks": ["correct","wrong"],
-    "imagePath": "../data/spectra/easy001/ms.dx",
-    "tolerance":50.00
+    "id":  "question5",
+    "title":  "title5",
+    "bodyText":  "this is a bodytext",
+    "version":  1,
+    "type":  "spectral",
+    "correctAnswer":  1000.00,
+    "feedbacks":  [
+                      "correct",
+                      "wrong"
+                  ],
+    "imagePath":  [
+                    "../data/images/test.png"
+                  ],
+    "spectralpath":  "../data/spectra/easy001/ms.dx",
+    "tolerance":  50.00
 }

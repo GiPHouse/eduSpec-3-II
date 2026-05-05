@@ -15,7 +15,7 @@ class IntegerQuestion(Question):
         bodytext: str,
         correct_answer: tuple[int | float, int | float],
         feedbacks: list[str],
-        imgpath: Optional[str] = None,
+        imgpath: Optional[list[str]] = None,
     ):
         """Initializes integer question
 
@@ -25,7 +25,7 @@ class IntegerQuestion(Question):
             bodytext (str): The body text of the question
             correct_answer (tuple[int|float, int|float]): The range in which the answer is correct
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 3 elements: [right answer, too small answer, too big answer]
-            imgpath (Optional[str], optional): Represents the image if there is one, Defaults to None.
+            imgpath (Optional[list[str]], optional): Represents the image if there is one, Defaults to None.
         """
         # feedbacks is as follows: [feedback for right answer, feedback for too small answer, feedback for too large answer]
 

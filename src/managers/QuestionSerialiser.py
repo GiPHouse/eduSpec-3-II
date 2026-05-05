@@ -155,7 +155,8 @@ class QuestionSerialiser:
             - type (string) "multipleChoice": The question type
             - title (string): The question title
             - bodyText (string): The question body text
-            - imagePath (string): The image path. Empty if None
+            - imagePath (list[string]): The image path. Empty if None
+            - spectralpath (string): the image path for spectral. Cannot be empty
             - correctAnswer (float): The correct answer.
             - feedbacks (array): The feedbacks given at each stage (correct, wrong or anything that the client specifies)
             - tolerance (float): How off can the user input be from the correct answer.
@@ -165,6 +166,8 @@ class QuestionSerialiser:
         # ! Version number is hardcoded and updated when editing this function or _buildGenericQuestion
         data_out["version"] = 1
         data_out["type"] = "spectral"
+
+        data_out["spectralpath"] = question.spectralpath
 
         data_out["correctAnswer"] = question.correct_answer
 
@@ -237,7 +240,7 @@ class QuestionSerialiser:
 
         imagepath = question.imgpath
         if imagepath is None:
-            data_out["imagePath"] = ""
+            data_out["imagePath"] = []
         else:
             data_out["imagePath"] = imagepath
 
