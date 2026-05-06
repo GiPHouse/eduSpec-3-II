@@ -1,7 +1,7 @@
 from checkers.BaseIntegerChecker import BaseIntegerChecker
 
 
-class IntegerChecker(BaseIntegerChecker):
+class CustomIntegerChecker(BaseIntegerChecker):
     """Default/example integer checker"""
 
     def buildSelf(self, obj: dict) -> None:

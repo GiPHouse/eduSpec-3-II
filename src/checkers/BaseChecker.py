@@ -24,6 +24,7 @@ class BaseChecker(ABC):
     """The base class for all checkers. Implements some basic functions."""
 
     supported_questions = set()
+    _checkerDict: dict[str, type] = {}
 
     @final
     def __init__(self) -> None:
@@ -31,9 +32,39 @@ class BaseChecker(ABC):
 
         To configure a base checker subclass, use `configureAvailableQuestions`
         """
-        self._supported_questions = set()
+        self.configureAvailableQuestions()
 
-    def supports_question(self, question: Question) -> bool:
+    @final
+    def __init_subclass__(cls) -> None:
+        """Adds all subclasses to one central repo"""
+        super().__init_subclass__()
+        name = cls.__name__
+
+        BaseChecker._checkerDict[name] = cls
+
+    @final
+    @classmethod
+    def findChecker(cls, name: str) -> type:
+        """Finds a checker class based on its name.
+
+        To initialise a checker, call `output.build()`
+
+        Args:
+            name (str): The class name of the checker
+
+        Raises:
+            NameError: If the checker doesn't exist.
+
+        Returns:
+            BaseChecker: The checker. Can be any subclass
+        """
+        checker_cls = BaseChecker._checkerDict.get(name)
+        if checker_cls is None:
+            error_string = f"Checker {name} does not exist."
+            raise NameError(error_string)
+        return checker_cls
+
+    def supportsQuestion(self, question: Question) -> bool:
         """Check whether this checker supports checking the given question.
 
         Args:
@@ -72,7 +103,11 @@ class BaseChecker(ABC):
 
     @abstractmethod
     def configureAvailableQuestions(self) -> None:
-        """Add all question types this checker supports."""
+        """Add all question types this checker supports.
+
+        Begin any implementation with `super().configureAvailableQuestions()` or this will not work.
+        """
+        self._supported_questions = set()
 
     @abstractmethod
     def buildSelf(self, obj: dict) -> None:

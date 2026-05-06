@@ -10,6 +10,7 @@ class BaseIntegerChecker(BaseChecker):
     @final
     def configureAvailableQuestions(self) -> None:
         """Configures the checker to support integer questions"""
+        super().configureAvailableQuestions()
         self._supported_questions.add(CheckerTypes.INTEGER)
 
     @abstractmethod
