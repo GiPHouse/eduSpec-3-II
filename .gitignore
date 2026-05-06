@@ -11,3 +11,4 @@ src/pages/jsme_component/frontend/jsme/compilation-mappings.txt
 ./vscode
 .vscode/
 ./.vscode/
+uv.lock

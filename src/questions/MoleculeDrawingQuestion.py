@@ -119,10 +119,10 @@ class MoleculeDrawingQuestion(WordQuestion):
         reset_requested = previous_base != default_val and current_base == default_val
 
         if reset_requested:
-            st.session_state[self._nonce_key] += 1
+            # st.session_state[self._nonce_key] += 1
             self._latest_smiles = None
             st.session_state[self._last_seen_key] = default_val
-            st.rerun()
+            # st.rerun()
 
         nonce = st.session_state[self._nonce_key]
         component_key = f"{base_key}__jsme__{nonce}"
