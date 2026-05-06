@@ -48,7 +48,7 @@ class MoleculeDrawingQuestion(WordQuestion):
         bodytext: str,
         config: MoleculeDrawingConfig,
         feedbacks: list[str],
-        imgpath: Optional[list[str]] = None,
+        figures: Optional[list[dict]] = None,
     ):
         """Initializes a MoleculeDrawingQuestion instance.
 
@@ -67,7 +67,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             The feedbacks to the answers.
             Needs to have 2 elements: correct feedback and incorrect feedback
 
-        imgpath (Optional[str], optional):
+        figures (Optional[dict], optional):
             Optional path to an image associated with the question.
             Defaults to None.
         """
@@ -75,7 +75,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             name=name,
             title=title,
             bodytext=bodytext,
-            imgpath=imgpath,
+            figures=figures,
             correct_answer=config.expected_smiles.strip(),
             feedbacks=feedbacks,
         )
