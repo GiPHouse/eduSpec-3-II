@@ -10,26 +10,36 @@ class QuestionDrawer:
     """Public class for displaying questions."""
 
     @staticmethod
-    def evaluateAnswer(current_question: Question, user_input: any) -> None:
-        """Evaluate the answer after submitting it."""
+    def evaluateAnswer(current_question: Question, user_input: any, quiz=None, question_index: int = None) -> None:
+        """Evaluates the answer after submitting it"""
         if (user_input is not None) or (user_input == 0):
             is_correct, feedback = current_question.verifyAndFeedback(user_input)
+            
+            # Record answer if quiz context is provided
+            if quiz is not None and question_index is not None:
+                quiz.recordAnswer(question_index, is_correct)
+            
             if is_correct:
                 st.success(f"Your answer is correct!  \n {feedback}")
             else:
                 st.error(f"Your answer is incorrect!  \n {feedback}")
-
+        
+    
     @staticmethod
-    def drawQuestion(current_question: Question) -> None:
+    def drawQuestion(current_question: Question, quiz=None, question_index: int = None) -> None:
         """Draws the parts of the question that are the same for all questions
 
         Args:
             current_question (Question): The question that is aimed to be displayed
+            quiz: Optional quiz instance for tracking attempts
+            question_index (int): Optional index of the question in the quiz
         """
         with st.container():
             st.title(current_question.title)
             current_question.drawImage()
             # Check if we have a spectral question: in that case create a download button with _drawDownload
+            if isinstance(current_question, SpectralQuestion):
+                QuestionDrawer._drawDownload(current_question)
             st.text(current_question.bodytext)
 
             def _handle_reset_drawing_question() -> None:
@@ -71,11 +81,12 @@ class QuestionDrawer:
                     )
 
             if submit_clicked and user_input is not None:
-                QuestionDrawer.evaluateAnswer(current_question, user_input)
-
-            # Check if we have a spectral question: in that case create a download button with _drawDownload
-            if isinstance(current_question, SpectralQuestion):
-                QuestionDrawer._drawDownload(current_question)
+                if quiz is not None and question_index is not None:
+                    QuestionDrawer.evaluateAnswer(
+                        current_question, user_input, quiz, question_index
+                    )
+                else:
+                    QuestionDrawer.evaluateAnswer(current_question, user_input)
 
     @staticmethod
     @st.fragment  # This is a fragment so the app doesn't rerun when clicking the download button
