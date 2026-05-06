@@ -23,9 +23,6 @@ def getAvailableQuizzes() -> list[str]:
         return []
     return sorted(path.stem for path in quiz_dir.glob("*.json"))
 
-
-initTheme()
-
 available_quizzes = getAvailableQuizzes()
 quiz_options = [""] + available_quizzes
 current_quiz = st.session_state.get("current_quiz") or ""
