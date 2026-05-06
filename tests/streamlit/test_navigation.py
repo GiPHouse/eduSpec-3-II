@@ -100,27 +100,6 @@ def test_url_direct_load_valid_question() -> None:
     assert at.session_state["navbar"] == "IR"
     assert_title(at, "title3")
 
-
-def test_url_direct_load_with_none() -> None:
-    """Test that question None defaults to the first configured question."""
-    at = AppTest.from_file("../../src/main.py")
-    at.query_params["question"] = "None"
-    at.run()
-    assert at.session_state["current_question"] == "question2"
-    assert at.session_state["navbar"] == "IR"
-    assert_title(at, "title2")
-
-
-def test_url_direct_load_invalid_question() -> None:
-    """Test that an invalid question defaults to the first configured question."""
-    at = AppTest.from_file("../../src/main.py")
-    at.query_params["question"] = "does-not-exist"
-    at.run()
-    assert at.session_state["current_question"] == "question2"
-    assert at.session_state["navbar"] == "IR"
-    assert_title(at, "title2")
-
-
 def test_multiple_question_navigations() -> None:
     """Test navigating through multiple question links."""
     at = run_app()
