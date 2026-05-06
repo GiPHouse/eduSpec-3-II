@@ -12,6 +12,6 @@
     "imagePath":  [
                       "../data/images/test.png"
                   ],
-    "spectralpath":  "../data/spectra/easy001/ir.dx",
+    "spectralpath":  "../data/spectra/easy001/nmr.jdx",
     "tolerance":  50.00
 }
