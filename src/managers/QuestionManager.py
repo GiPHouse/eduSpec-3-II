@@ -39,7 +39,7 @@ class QuestionManager:
         question_data = question_file.read_text()
 
         question = QuestionBuilder.questionFromJson(question_data)
-        question.imgpath = cls._resolveAssetPath(question.imgpath)
+        question.figures = cls._resolveAssetPath(question.figures)
         return question
 
     @classmethod
@@ -126,53 +126,42 @@ class QuestionManager:
         return pathlib.Path(__file__).resolve().parents[2]
 
     @classmethod
-    def _resolveSingleAssetPath(cls, imgpath: str) -> str:
+    def _resolveSingleAssetPath(cls, path: str) -> str:
         """Resolve a single asset path to an existing file when possible."""
-        path = pathlib.Path(imgpath)
-        if path.is_absolute() and path.exists():
-            return str(path)
+        resolved_path = pathlib.Path(path)
+        if resolved_path.is_absolute() and resolved_path.exists():
+            return str(resolved_path)
 
         base_dir = cls._getBaseDir()
         question_dir = cls._getQuestionDir()
         data_root = base_dir / "data"
 
         candidates = [
-            question_dir / path,
-            base_dir / path,
-            data_root / path,
-            data_root / "images" / path.name,
-            data_root / "molecules" / path.name,
-            data_root / "spectra" / path.name,
-            data_root / "spectra" / path,
+            question_dir / resolved_path,
+            base_dir / resolved_path,
+            data_root / resolved_path,
+            data_root / "images" / resolved_path.name,
+            data_root / "molecules" / resolved_path.name,
+            data_root / "spectra" / resolved_path.name,
+            data_root / "spectra" / resolved_path,
         ]
 
         for candidate in candidates:
             if candidate.exists():
                 return str(candidate.resolve())
 
-        matches = list(data_root.rglob(path.name))
+        matches = list(data_root.rglob(resolved_path.name))
         if len(matches) == 1:
             return str(matches[0].resolve())
 
-        return imgpath
+        return resolved_path
 
     @classmethod
-    def _resolveAssetPath(
-        cls, imgpath: str | list[str] | tuple[str, ...] | None
-    ) -> list[str] | None:
+    def _resolveAssetPath(cls, figures: dict | list[dict] | None) -> list[dict] | None:
         """Resolve question asset paths to existing files when possible."""
-        if not imgpath:
+        if not figures:
             return None
 
-        if isinstance(imgpath, str):
-            cleaned = imgpath.strip()
-            if not cleaned:
-                return None
-            return [cls._resolveSingleAssetPath(cleaned)]
-
-        resolved_paths = [
-            cls._resolveSingleAssetPath(path.strip())
-            for path in imgpath
-            if isinstance(path, str) and path.strip()
-        ]
-        return resolved_paths or None
+        for figure in figures:
+            figure["path"] = cls._resolveSingleAssetPath(figure["path"].strip())
+        return figures or None

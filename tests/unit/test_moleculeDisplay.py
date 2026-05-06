@@ -190,9 +190,9 @@ def test_draw_yourself_renders_valid_file(tmp_path: Path) -> None:
         patch("MoleculeDisplay.showmol") as mock_showmol,
         patch("MoleculeDisplay.st.error") as mock_error,
     ):
-        MoleculeDisplay.drawYourself(imgpath=str(pdb_file))
+        MoleculeDisplay.drawYourself(figures=str(pdb_file))
 
-    mock_view_factory.assert_called_once_with(width=800, height=500)
+    mock_view_factory.assert_called_once_with(width=350, height=350)
     fake_view.addModel.assert_called_once_with("VALID PDB", "pdb")
     fake_view.setStyle.assert_called_once_with(
         {},
@@ -202,7 +202,7 @@ def test_draw_yourself_renders_valid_file(tmp_path: Path) -> None:
         },
     )
     fake_view.zoomTo.assert_called_once_with()
-    mock_showmol.assert_called_once_with(fake_view, height=500, width=800)
+    mock_showmol.assert_called_once_with(fake_view, height=350, width=350)
     mock_error.assert_not_called()
 
 
@@ -214,7 +214,7 @@ def test_draw_yourself_shows_error_for_empty_file(tmp_path: Path) -> None:
     empty_file.write_text("", encoding="utf-8")
 
     with patch("MoleculeDisplay.st.error") as mock_error:
-        MoleculeDisplay.drawYourself(imgpath=str(empty_file))
+        MoleculeDisplay.drawYourself(figures=str(empty_file))
 
     mock_error.assert_called_once_with(f"PDB file is empty: {empty_file}")
 
@@ -226,7 +226,7 @@ def test_draw_yourself_shows_error_for_missing_file(tmp_path: Path) -> None:
     missing_file = tmp_path / "missing.pdb"
 
     with patch("MoleculeDisplay.st.error") as mock_error:
-        MoleculeDisplay.drawYourself(imgpath=str(missing_file))
+        MoleculeDisplay.drawYourself(figures=str(missing_file))
 
     mock_error.assert_called_once_with(f"PDB file not found: {missing_file}")
 
@@ -245,6 +245,6 @@ def test_draw_yourself_shows_error_when_rendering_fails(tmp_path: Path) -> None:
         ),
         patch("MoleculeDisplay.st.error") as mock_error,
     ):
-        MoleculeDisplay.drawYourself(imgpath=str(pdb_file))
+        MoleculeDisplay.drawYourself(figures=str(pdb_file))
 
     mock_error.assert_called_once_with("Failed to render molecule: boom")

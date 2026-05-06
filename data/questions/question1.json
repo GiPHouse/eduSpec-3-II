@@ -11,8 +11,10 @@
                   ],
     "lowerBound":  10,
     "upperBound":  20,
-    "imagePath":  [
-                      "../data/images/test.png",
-                      "../data/molecules/neoNR8.pdb"
+    "figures":  [
+                      {
+                        "path": "../data/images/test.png",
+                        "description": "This is a description"
+                      }
                   ]
 }
