@@ -125,7 +125,7 @@ def navigatePage(page: str) -> None:
 def homePage() -> None:
     """render home page"""
     st.title("Live Laugh Learn")
-    st.image("../data/images/maxresdefault.jpg")
+    st.image(str(data_dir / "images" / "maxresdefault.jpg"))
     st.text("In dit huis: maken we geen ruzie, is het altijd gezellig, staat de koffie en thee klaar, staan we voor elkaar klaar")
 
 def settingsPage() -> None:
