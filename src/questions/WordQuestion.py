@@ -2,7 +2,6 @@ from typing import Optional
 
 import streamlit as st
 
-from QuestionDrawer import QuestionDrawer
 from questions.Question import Question
 
 
@@ -74,4 +73,5 @@ class WordQuestion(Question):
             key=self.widget_key,
         )
         if answer is not None and answer.strip() != "":
-            QuestionDrawer.evaluateAnswer(self, answer)
+            return answer
+        return None

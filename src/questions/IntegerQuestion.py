@@ -2,7 +2,6 @@ from typing import Optional
 
 import streamlit as st
 
-from QuestionDrawer import QuestionDrawer
 from questions.Question import Question
 
 
@@ -64,8 +63,12 @@ class IntegerQuestion(Question):
         """Unused, all logic is in `verifyAndFeedback()`"""
         pass
 
-    def drawYourself(self) -> None:
-        """Question draws itself"""
+    def drawYourself(self) -> Optional[int | float]:
+        """Question draws itself
+        
+        Returns:
+            Optional[int | float]: returns the user input
+        """
         if self.widget_key not in st.session_state:
             st.session_state[self.widget_key] = self.default
 
@@ -75,5 +78,4 @@ class IntegerQuestion(Question):
             step=1 if isinstance(self.correct_answer[0], int) else 0.5,
             key=self.widget_key,
         )
-        if number is not None:
-            QuestionDrawer.evaluateAnswer(self, number)
+        return number
