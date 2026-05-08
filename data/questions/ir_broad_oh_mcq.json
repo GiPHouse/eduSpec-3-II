@@ -1,0 +1,26 @@
+{
+  "id": "ir_broad_oh_mcq",
+  "title": "IR: Recognize a Broad O-H Band",
+  "bodyText": "A broad, rounded absorption from roughly 3200 to 3600 cm^-1 is visible. Which functional group best explains it?",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this image would highlight a broad alcohol O-H band, alkyl C-H stretches, and a C-O band in the fingerprint region."
+    }
+  ],
+  "version": 1,
+  "type": "multipleChoice",
+  "answers": [
+    "Alcohol O-H",
+    "Nitrile C=N",
+    "Alkene C=C",
+    "Aromatic C-H only"
+  ],
+  "correctAnswer": 0,
+  "feedbacks": [
+    "Correct: alcohol O-H absorptions are broad and usually appear around 3200-3600 cm^-1.",
+    "A nitrile would be a sharp band near 2250 cm^-1.",
+    "An alkene C=C stretch is much narrower and usually appears near 1640-1680 cm^-1.",
+    "Aromatic C-H bands are not broad in this region."
+  ]
+}

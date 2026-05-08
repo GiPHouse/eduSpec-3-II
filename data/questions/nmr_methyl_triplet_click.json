@@ -1,0 +1,20 @@
+{
+  "id": "nmr_methyl_triplet_click",
+  "title": "NMR: Click the Terminal Methyl Signal",
+  "bodyText": "The 1H NMR spectrum contains an upfield terminal methyl triplet. Click the signal near 0.93 ppm.",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this would show a 1H NMR spectrum for a simple primary alcohol with labeled aliphatic regions."
+    }
+  ],
+  "version": 1,
+  "type": "spectral",
+  "spectralpath": "data/spectra/nmr.jdx",
+  "correctAnswer": 0.933,
+  "feedbacks": [
+    "Correct: the terminal CH3 group appears upfield near 0.93 ppm.",
+    "Not quite. The terminal methyl group is the most upfield major signal, just below 1 ppm."
+  ],
+  "tolerance": 0.04
+}
