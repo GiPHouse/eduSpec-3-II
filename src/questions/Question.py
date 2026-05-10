@@ -19,7 +19,7 @@ class Question(ABC):
         name: str,
         title: str,
         bodytext: str,
-        imgpath: Optional[list[str]] = None,
+        figures: Optional[list[dict]] = None,
         body_format: str = "text",
     ):
         """Initialises a Question instance. DO NOT USE THE QUESTION CLASS DIRECTLY.
@@ -28,7 +28,7 @@ class Question(ABC):
             name (str): The unique name/ID of the question.
             title (str): The title of the question.
             bodytext (str): The body text of the question.
-            imgpath (Optional[list[str]], optional): Paths to the images used for the question. Defaults to None.
+            figures (Optional[list[dict]], optional): Paths to the images used for the question. Defaults to None.
             body_format (str, optional): Whether the body should be shown as normal text or LaTeX.
         """
         if body_format not in ["text", "latex"]:
@@ -37,7 +37,7 @@ class Question(ABC):
         self.name = name
         self.title = title
         self.bodytext = bodytext
-        self.imgpath = imgpath
+        self.figures = figures
         self.body_format = body_format
 
     @abstractmethod
@@ -56,12 +56,26 @@ class Question(ABC):
 
     def drawImage(self) -> None:
         """Draw Image"""
-        if self.imgpath is not None:
-            for img_path in self.imgpath:
-                if not img_path:
+        col_counter = 0
+        col1, col2 = st.columns([1, 1])
+        if self.figures is not None:
+            for figure in self.figures:
+                if not figure:
                     continue
-                ext = os.path.splitext(img_path)[1].lower()
-                if ext in [".pdb", ".ent"]:
-                    MoleculeDisplay.drawYourself(img_path)
+                if col_counter == 0:
+                    with col1:
+                        ext = os.path.splitext(figure["path"])[1].lower()
+                        if ext in [".pdb", ".ent"]:
+                            MoleculeDisplay.drawYourself(figure["path"])
+                        else:
+                            st.image(figure["path"], use_container_width=True)
+                        st.markdown(figure["description"])
                 else:
-                    st.image(img_path)
+                    with col2:
+                        ext = os.path.splitext(figure["path"])[1].lower()
+                        if ext in [".pdb", ".ent"]:
+                            MoleculeDisplay.drawYourself(figure["path"])
+                        else:
+                            st.image(figure["path"], use_container_width=True)
+                        st.markdown(figure["description"])
+                col_counter = (col_counter + 1) % 2

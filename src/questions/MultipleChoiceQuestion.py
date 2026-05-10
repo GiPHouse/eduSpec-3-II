@@ -16,7 +16,7 @@ class MultipleChoiceQuestion(Question):
         answers: list[str],
         correct_answer: int,
         feedbacks: list[str],
-        imgpath: Optional[list[str]] = None,
+        figures: Optional[list[dict]] = None,
         body_format: str = "text",
     ):
         """Initialises a new multiple-choice question
@@ -28,13 +28,13 @@ class MultipleChoiceQuestion(Question):
             answers (list[str]): The possible answers
             correct_answer (int): The correct answer, as an index to the answers list
             feedbacks (list[str]): The feedbacks to the answers. Needs to be the same length as answers.
-            imgpath (Optional[list[str]], optional): Represents the image if there is one, Defaults to None.
+            figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
         """
         assert len(answers) == len(feedbacks)
         assert correct_answer >= 0
         assert correct_answer < len(answers)
 
-        super().__init__(name, title, bodytext, imgpath, body_format)
+        super().__init__(name, title, bodytext, figures, body_format)
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks

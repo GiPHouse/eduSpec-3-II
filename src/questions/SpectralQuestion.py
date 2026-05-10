@@ -14,29 +14,29 @@ from questions.Question import Question
 
 
 @st.cache_data
-def load_nmr(imgpath: str) -> None:
+def load_nmr(figures: str) -> None:
     """Just a function to wrap external loadJCAMP with st.cache_data
 
     Args:
-        imgpath (str): the path to the spectral data
+        figures (str): the path to the spectral data
 
     Returns:
         None: None
     """
-    return loadJCAMP(imgpath)
+    return loadJCAMP(figures)
 
 
 @st.cache_data
-def load_non_nmr_jcamp(imgpath: str) -> Tuple[np.ndarray, np.ndarray, str]:
+def load_non_nmr_jcamp(figures: str) -> Tuple[np.ndarray, np.ndarray, str]:
     """A function to load non_nmr data.
 
     Args:
-        imgpath (str): Path to the spectral data
+        figures (str): Path to the spectral data
 
     Returns:
         Tuple[np.ndarray, np.ndarray, str]: The x and y axes of the data alongiside the unit as a string
     """
-    with open(imgpath, "rb") as f:
+    with open(figures, "rb") as f:
         lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]
 
     data = jcamp.jcamp_read(lines)
@@ -97,7 +97,7 @@ class SpectralQuestion(Question):
         name: str,
         title: str,
         bodytext: str,
-        imgpath: Optional[List[str]],
+        figures: Optional[List[dict]],
         spectralpath: str,
         correct_answer: float,
         feedbacks: List[str],
@@ -110,12 +110,12 @@ class SpectralQuestion(Question):
             name (str): Question id for JSON
             title (str): Question title
             bodytext (str): The question itself
-            imgpath (Optional[str]): Path to the spectral question
+            figures (Optional[dict]): Path to the spectral question
             correct_answer (float): The correct answer
             feedbacks (List[str]): Feedbacks stored in the form of [correct,wrong]
             tolerance (float, optional): How much can user answer differ from actual correct answer. Defaults to 0.5.
         """
-        super().__init__(name, title, bodytext, imgpath, body_format)
+        super().__init__(name, title, bodytext, figures, body_format)
 
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
@@ -389,11 +389,11 @@ class SpectralQuestion(Question):
 
         return fig
 
-    def _detect_type(self, imgpath: str) -> SpectralType:
-        if re.search(r"ms", imgpath, re.IGNORECASE):
+    def _detect_type(self, figures: str) -> SpectralType:
+        if re.search(r"ms", figures, re.IGNORECASE):
             return SpectralType.MS
-        if re.search(r"ir", imgpath, re.IGNORECASE):
+        if re.search(r"ir", figures, re.IGNORECASE):
             return SpectralType.IR
-        if re.search(r"nmr", imgpath, re.IGNORECASE):
+        if re.search(r"nmr", figures, re.IGNORECASE):
             return SpectralType.NMR
         raise ValueError("Cannot determine spectral type")

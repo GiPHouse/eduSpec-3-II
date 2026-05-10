@@ -40,7 +40,7 @@ class QuestionBuilder:
         title = obj.get("title")
         bodytext = obj.get("bodyText")
         body_format = obj.get("bodyFormat", "text")
-        imgpath = cls._normaliseImagePath(obj.get("imagePath"))
+        figures = obj.get("figures")
         spectralpath = obj.get("spectralpath")
 
         match question_type:
@@ -56,7 +56,7 @@ class QuestionBuilder:
                     answers=answers,
                     feedbacks=feedbacks,
                     correct_answer=correct_answer,
-                    imgpath=imgpath,
+                    figures=figures,
                 )
 
             case "integer":
@@ -69,7 +69,7 @@ class QuestionBuilder:
                     body_format=body_format,
                     correct_answer=bounds,
                     feedbacks=feedbacks,
-                    imgpath=imgpath,
+                    figures=figures,
                 )
 
             case "word":
@@ -82,7 +82,7 @@ class QuestionBuilder:
                     body_format=body_format,
                     correct_answer=correct_answer,
                     feedbacks=feedbacks,
-                    imgpath=imgpath,
+                    figures=figures,
                 )
 
             case "spectral":
@@ -97,7 +97,7 @@ class QuestionBuilder:
                     body_format=body_format,
                     correct_answer=float(correct_answer),
                     feedbacks=feedbacks,
-                    imgpath=imgpath,
+                    figures=figures,
                     spectralpath=spectralpath,
                     tolerance=float(tolerance),
                 )
@@ -120,7 +120,7 @@ class QuestionBuilder:
                     body_format=body_format,
                     config=config,
                     feedbacks=feedbacks,
-                    imgpath=imgpath,
+                    figures=figures,
                 )
 
             case n:
@@ -161,7 +161,7 @@ class QuestionBuilder:
         - title (string): The question title
         - bodyText (string): The question body text
         - bodyFormat (string): The format of question body test
-        - imagePath (string): The image path. Empty if None
+        - figures (string): The image path. Empty if None
         - version (int): The version of that specific serialiser
         - type (str): The type of question
         """
@@ -175,7 +175,7 @@ class QuestionBuilder:
         if body_format not in ("text", "latex"):
             return False
 
-        if obj.get("imagePath") is None:
+        if obj.get("figures") is None:
             return False
 
         # Test any questiontype-specific attributes
@@ -256,8 +256,8 @@ class QuestionBuilder:
         return True
 
     @staticmethod
-    def _normaliseImagePath(image_path: str | list[str] | None) -> list[str] | None:
-        """Converts supported imagePath JSON formats to the internal representation.
+    def _normalisefigures(image_path: str | list[str] | None) -> list[str] | None:
+        """Converts supported figures JSON formats to the internal representation.
 
         Accepted empty formats are `""`, `[""]`, and `[]`. All of these map to `None`.
         Non-empty strings are wrapped in a single-item list for consistency.

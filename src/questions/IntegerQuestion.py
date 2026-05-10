@@ -2,7 +2,6 @@ from typing import Optional
 
 import streamlit as st
 
-from QuestionDrawer import QuestionDrawer
 from questions.Question import Question
 
 
@@ -16,7 +15,7 @@ class IntegerQuestion(Question):
         bodytext: str,
         correct_answer: tuple[int | float, int | float],
         feedbacks: list[str],
-        imgpath: Optional[list[str]] = None,
+        figures: Optional[list[dict]] = None,
         body_format: str = "text",
     ):
         """Initializes integer question
@@ -27,11 +26,11 @@ class IntegerQuestion(Question):
             bodytext (str): The body text of the question
             correct_answer (tuple[int|float, int|float]): The range in which the answer is correct
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 3 elements: [right answer, too small answer, too big answer]
-            imgpath (Optional[list[str]], optional): Represents the image if there is one, Defaults to None.
+            figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
         """
         # feedbacks is as follows: [feedback for right answer, feedback for too small answer, feedback for too large answer]
 
-        super().__init__(name, title, bodytext, imgpath.body_format)
+        super().__init__(name, title, bodytext, figures, body_format)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"number_input_{title}"
@@ -65,8 +64,12 @@ class IntegerQuestion(Question):
         """Unused, all logic is in `verifyAndFeedback()`"""
         pass
 
-    def drawYourself(self) -> None:
-        """Question draws itself"""
+    def drawYourself(self) -> Optional[int | float]:
+        """Question draws itself
+
+        Returns:
+            Optional[int | float]: returns the user input
+        """
         if self.widget_key not in st.session_state:
             st.session_state[self.widget_key] = self.default
 
@@ -76,5 +79,4 @@ class IntegerQuestion(Question):
             step=1 if isinstance(self.correct_answer[0], int) else 0.5,
             key=self.widget_key,
         )
-        if number is not None:
-            QuestionDrawer.evaluateAnswer(self, number)
+        return number

@@ -2,7 +2,6 @@ from typing import Optional
 
 import streamlit as st
 
-from QuestionDrawer import QuestionDrawer
 from questions.Question import Question
 
 
@@ -17,7 +16,7 @@ class WordQuestion(Question):
         body_format: str,
         correct_answer: str,
         feedbacks: list[str],
-        imgpath: Optional[list[str]] = None,
+        figures: Optional[list[dict]] = None,
     ):
         """Initializes word question
 
@@ -27,9 +26,9 @@ class WordQuestion(Question):
             bodytext (str): The body text of the question
             correct_answer str: The correct answer as a string
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 2 elements: correct feedback and incorrect feedback
-            imgpath (Optional[list[str]], optional): Represents the image if there is one, Defaults to None.
+            figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
         """
-        super().__init__(name, title, bodytext, body_format, imgpath)
+        super().__init__(name, title, bodytext, body_format, figures)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"word_input_{title}"
@@ -75,4 +74,5 @@ class WordQuestion(Question):
             key=self.widget_key,
         )
         if answer is not None and answer.strip() != "":
-            QuestionDrawer.evaluateAnswer(self, answer)
+            return answer
+        return None
