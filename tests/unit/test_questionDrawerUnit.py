@@ -31,6 +31,7 @@ class FakeQuestion:
         name: str = "example_question",
         title: str = "Example Question",
         bodytext: str = "Example body",
+        body_format: str = "text",
         widget_key: str = "widget_key",
         default: Any = "default value",
         user_input: Any = "student answer",
@@ -39,6 +40,7 @@ class FakeQuestion:
         self.name = name
         self.title = title
         self.bodytext = bodytext
+        self.body_format = body_format
         self.widget_key = widget_key
         self.default = default
         self.user_input = user_input
