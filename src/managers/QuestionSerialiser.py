@@ -237,6 +237,7 @@ class QuestionSerialiser:
         data_out["id"] = question.name
         data_out["title"] = question.title
         data_out["bodyText"] = question.bodytext
+        data_out["bodyFormat"] = getattr(question, "body_format", "text")
 
         imagepath = question.imgpath
         if imagepath is None:

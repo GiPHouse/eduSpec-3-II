@@ -17,6 +17,7 @@ class IntegerQuestion(Question):
         correct_answer: tuple[int | float, int | float],
         feedbacks: list[str],
         imgpath: Optional[list[str]] = None,
+        body_format: str = "text",
     ):
         """Initializes integer question
 
@@ -30,7 +31,7 @@ class IntegerQuestion(Question):
         """
         # feedbacks is as follows: [feedback for right answer, feedback for too small answer, feedback for too large answer]
 
-        super().__init__(name, title, bodytext, imgpath)
+        super().__init__(name, title, bodytext, imgpath.body_format)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"number_input_{title}"

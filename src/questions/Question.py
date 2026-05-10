@@ -14,7 +14,14 @@ class Question(ABC):
     and a few interface functions that are unique to each.
     """
 
-    def __init__(self, name: str, title: str, bodytext: str, imgpath: Optional[list[str]] = None):
+    def __init__(
+        self,
+        name: str,
+        title: str,
+        bodytext: str,
+        imgpath: Optional[list[str]] = None,
+        body_format: str = "text",
+    ):
         """Initialises a Question instance. DO NOT USE THE QUESTION CLASS DIRECTLY.
 
         Args:
@@ -22,11 +29,16 @@ class Question(ABC):
             title (str): The title of the question.
             bodytext (str): The body text of the question.
             imgpath (Optional[list[str]], optional): Paths to the images used for the question. Defaults to None.
+            body_format (str, optional): Whether the body should be shown as normal text or LaTeX.
         """
+        if body_format not in ["text", "latex"]:
+            raise ValueError("body_format must be either 'text' or 'latex'")
+
         self.name = name
         self.title = title
         self.bodytext = bodytext
         self.imgpath = imgpath
+        self.body_format = body_format
 
     @abstractmethod
     def verifyAndFeedback(self) -> tuple[bool, str]:

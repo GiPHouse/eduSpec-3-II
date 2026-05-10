@@ -30,7 +30,7 @@ class QuestionDrawer:
             st.title(current_question.title)
             current_question.drawImage()
             # Check if we have a spectral question: in that case create a download button with _drawDownload
-            st.text(current_question.bodytext)
+            QuestionDrawer._drawBody(current_question)
 
             def _handle_reset_drawing_question() -> None:
                 nonce_key = f"{current_question.widget_key}__jsme_nonce"
@@ -96,3 +96,11 @@ class QuestionDrawer:
                 file_name=os.path.basename(current_question.spectralpath),
                 icon=":material/file_download:",
             )
+
+    @staticmethod
+    def _drawBody(current_question: Question) -> None:
+        """Draw the question body as normal text or text with LaTeX."""  # For backslashes in JSON, use double (\\)
+        if current_question.body_format == "latex":
+            st.markdown(current_question.bodytext)
+        else:
+            st.text(current_question.bodytext)
