@@ -1,4 +1,3 @@
-checkers
 components
 editor
 managers
