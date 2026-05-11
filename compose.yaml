@@ -23,7 +23,7 @@ services:
     volumes: !override
       - data:/data:rw
     environment:
-      - MAIN_FILE=editornavigation.py
+      - MAIN_FILE=editor/editor.py
       - PORT=8502
     ports: !override
       - 8502:8502
