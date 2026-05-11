@@ -17,6 +17,7 @@ class MultipleChoiceQuestion(Question):
         correct_answer: int,
         feedbacks: list[str],
         figures: Optional[list[dict]] = None,
+        body_format: str = "text",
     ):
         """Initialises a new multiple-choice question
 
@@ -33,7 +34,7 @@ class MultipleChoiceQuestion(Question):
         assert correct_answer >= 0
         assert correct_answer < len(answers)
 
-        super().__init__(name, title, bodytext, figures)
+        super().__init__(name, title, bodytext, figures, body_format)
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
