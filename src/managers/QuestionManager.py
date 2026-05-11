@@ -40,6 +40,7 @@ class QuestionManager:
         question_data = question_file.read_text()
 
         question = QuestionBuilder.questionFromJson(question_data)
+        question.figures = cls._resolveAssetPath(question.figures)
         return question
 
     @classmethod
@@ -124,3 +125,49 @@ class QuestionManager:
         if not data_dir.exists():
             data_dir.mkdir(parents=True)
         return data_dir
+
+    @classmethod
+    def _getBaseDir(cls) -> pathlib.Path:
+        """Return the repository root."""
+        return pathlib.Path(__file__).resolve().parents[2]
+
+    @classmethod
+    def _resolveSingleAssetPath(cls, path: str) -> str:
+        """Resolve a single asset path to an existing file when possible."""
+        resolved_path = pathlib.Path(path)
+        if resolved_path.is_absolute() and resolved_path.exists():
+            return str(resolved_path)
+
+        base_dir = cls._getBaseDir()
+        question_dir = cls._getQuestionDir()
+        data_root = base_dir / "data"
+
+        candidates = [
+            question_dir / resolved_path,
+            base_dir / resolved_path,
+            data_root / resolved_path,
+            data_root / "images" / resolved_path.name,
+            data_root / "molecules" / resolved_path.name,
+            data_root / "spectra" / resolved_path.name,
+            data_root / "spectra" / resolved_path,
+        ]
+
+        for candidate in candidates:
+            if candidate.exists():
+                return str(candidate.resolve())
+
+        matches = list(data_root.rglob(resolved_path.name))
+        if len(matches) == 1:
+            return str(matches[0].resolve())
+
+        return resolved_path
+
+    @classmethod
+    def _resolveAssetPath(cls, figures: dict | list[dict] | None) -> list[dict] | None:
+        """Resolve question asset paths to existing files when possible."""
+        if not figures:
+            return None
+
+        for figure in figures:
+            figure["path"] = cls._resolveSingleAssetPath(figure["path"].strip())
+        return figures or None

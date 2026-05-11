@@ -1,33 +1,73 @@
+# questions/SpectralQuestion.py
+
 import re
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import jcamp
 import numpy as np
 import streamlit as st
 from plotly import graph_objects as go
 
+from questions.NMRParser import loadJCAMP
 from questions.Question import Question
 
 
-class SpectralType(Enum):
-    """Enum type for types of different spectra
+@st.cache_data
+def load_nmr(figures: str) -> None:
+    """Just a function to wrap external loadJCAMP with st.cache_data
 
     Args:
-        Enum (str,str,str): Spectra name, its unit and what the y-axis means.
+        figures (str): the path to the spectral data
+
+    Returns:
+        None: None
+    """
+    return loadJCAMP(figures)
+
+
+@st.cache_data
+def load_non_nmr_jcamp(figures: str) -> Tuple[np.ndarray, np.ndarray, str]:
+    """A function to load non_nmr data.
+
+    Args:
+        figures (str): Path to the spectral data
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray, str]: The x and y axes of the data alongiside the unit as a string
+    """
+    with open(figures, "rb") as f:
+        lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]
+
+    data = jcamp.jcamp_read(lines)
+    x = np.asarray(data["x"], dtype=float)
+    y = np.asarray(data["y"], dtype=float)
+
+    if y.size > 0 and np.max(y) > 0:
+        y = (y / np.max(y)) * 100.0
+
+    units = data.get("xunits", "m/z")
+    return x, y, units
+
+
+class SpectralType(Enum):
+    """Enum for each spectral type
+
+    Args:
+        Enum (_type_): Just Python way to create enums, its inheritance.
     """
 
     MS = ("MS", "m/z", "Intensity")
-    IR = ("IR", "cm^-1", "Transmittance")
+    IR = ("IR", "cm⁻¹", "Transmittance")
     NMR = ("NMR", "ppm", "Intensity")
 
     def __init__(self, label: str, unit: str, y_label: str):
-        """_summary_
+        """Initialize the enum
 
         Args:
-            label (_type_): Spectra name
-            unit (_type_): Unit to measure spectra
-            y_label (_type_): Wha the y-axis means
+            label (str): Name of the spectral type
+            unit (str): Units to measure it
+            y_label (str): What the y-label is called.
         """
         self.label = label
         self.unit = unit
@@ -35,165 +75,324 @@ class SpectralType(Enum):
 
 
 class SpectralQuestion(Question):
-    """Class for Spectral Questions"""
+    """A class to represent spectral questions
+
+    Args:
+        Question (): Inheritence
+
+    Raises:
+        ValueError: error
+        ValueError: error
+        ValueError: error
+
+    Returns:
+        _type_: nothing
+    """
+
+    NMR_MAX_DISPLAY_POINTS = 4000
+    IR_MAX_DISPLAY_POINTS = 5000
 
     def __init__(
         self,
         name: str,
         title: str,
         bodytext: str,
-        imgpath: Optional[str],
+        figures: Optional[List[dict]],
+        spectralpath: str,
         correct_answer: float,
-        feedbacks: List,
+        feedbacks: List[str],
         tolerance: float = 0.5,
     ):
-        """Function to initialize a spectral question instance
+        """Init for the class
 
         Args:
-            name (str): The unique name/ID of the question.
-            title (str): Title of the Question
-            bodytext (str): Bodytext, the question itself
-            imgpath (Optional[str]): The path that points to the spectral data, to be displayed with the question
+            name (str): Question id for JSON
+            title (str): Question title
+            bodytext (str): The question itself
+            figures (Optional[dict]): Path to the spectral question
+            correct_answer (float): The correct answer
+            feedbacks (List[str]): Feedbacks stored in the form of [correct,wrong]
+            tolerance (float, optional): How much can user answer differ from actual correct answer. Defaults to 0.5.
         """
-        super().__init__(name, title, bodytext, imgpath)
-        self.correct_answer = correct_answer
-        self.tolerance = tolerance
-        self.feedbacks = feedbacks
-        self.widget_key = f"spectral_question_{name}"
-        self.default = None
-        self.type = self._detect_type(imgpath)
+        super().__init__(name, title, bodytext, figures)
 
-    def verifyAndFeedback(self, user_input: int) -> tuple[bool, str]:
-        """Function that verifies the user input and gives feedback depending on the answer
+        self.correct_answer = correct_answer
+        self.feedbacks = feedbacks
+        self.tolerance = tolerance
+
+        self.widget_key = f"spectral_question_{name}"
+        self.chart_key = f"spectral_chart_{name}"
+        self.default = None
+        self.spectralpath = spectralpath
+        self.type = self._detect_type(spectralpath)
+
+        self.x: Optional[np.ndarray] = None
+        self.y: Optional[np.ndarray] = None
+        self.units: Optional[str] = None
+
+        self.display_x: Optional[np.ndarray] = None
+        self.display_y: Optional[np.ndarray] = None
+        self.display_idx: Optional[np.ndarray] = None
+
+        self._data_loaded = False
+
+    def verifyAndFeedback(self, user_input: float) -> tuple[bool, str]:
+        """Function to verify user answers
 
         Args:
-            user_input (int): The user input provided by the UI
+            user_input (float): _description_
 
         Returns:
-            str: the feedback message
+            tuple[bool, str]: _description_
         """
         is_correct = abs(user_input - self.correct_answer) <= self.tolerance
         return is_correct, self.feedback(user_input)
 
-    def feedback(self, user_input: int) -> str:
-        """Gives the feedback depending on the user input
+    def feedback(self, user_input: float) -> str:
+        """The function to give feedback
 
         Args:
-            user_input (int): The user input provided by the UI
+            user_input (float): _description_
 
         Returns:
-            str: the feedback message
+            str: _description_
         """
-        if abs(user_input - self.correct_answer) <= self.tolerance:
-            return self.feedbacks[0]
-        return self.feedbacks[1]
+        return (
+            self.feedbacks[0]
+            if abs(user_input - self.correct_answer) <= self.tolerance
+            else self.feedbacks[1]
+        )
 
     def _parse_jcampdx(self) -> None:
-        """Parsing logic for JCAMP-DX files.
-
-        Returns:
-            tuple[list,list]: X and Y coordinate values, respectively.
-        """
-        # Return on no given file
-        # ! Maybe make imgpath non-optional?
-        if self.imgpath is None:
+        if self._data_loaded:
             return
 
-        with open(self.imgpath, "rb") as f:
-            lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]
+        if self.spectralpath is None:
+            raise ValueError("No spectral file provided")
 
-        data = jcamp.jcamp_read(lines)
-
-        x = np.asarray(data["x"], dtype=float)
-        y = np.asarray(data["y"], dtype=float)
-
-        if y.max() > 0:
-            y = (y / y.max()) * 100
-        self.units = data.get("xunits", "m/z")
-
-        self.x = x
-        self.y = y
-
-    def drawYourself(self) -> None:
-        """The question draws itself to streamlit"""
-        selected = st.session_state.get(self.widget_key, self.default)
-        if selected is not None:
-            st.write(f"Selected peak: {selected} {self.type.unit}")
+        if self.type == SpectralType.NMR:
+            x, y, isotope = load_nmr(self.spectralpath)
+            y = (y / np.max(y)) * 100 if np.max(y) > 0 else y
+            self.units = f"δ {isotope} / ppm" if isotope else "δ / ppm"
+            self.x, self.y = x, y
+            self.display_x, self.display_y, self.display_idx = self._decimate_preserve_shape(
+                x, y, self.NMR_MAX_DISPLAY_POINTS
+            )
         else:
-            st.info("Click a peak on the spectrum to select it.")
-        return selected
+            x, y, units = load_non_nmr_jcamp(self.spectralpath)
+            self.x, self.y = x, y
+            self.units = units
+
+            if self.type == SpectralType.IR:
+                self.display_x, self.display_y, self.display_idx = self._decimate_preserve_shape(
+                    x, y, self.IR_MAX_DISPLAY_POINTS
+                )
+            else:
+                self.display_x = x
+                self.display_y = y
+                self.display_idx = np.arange(len(x), dtype=int)
+
+        self._data_loaded = True
+
+    # questions/SpectralQuestion.py
+
+    @staticmethod
+    def _decimate_preserve_shape(
+        x: np.ndarray,
+        y: np.ndarray,
+        max_points: int,
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        n = len(x)
+        full_idx = np.arange(n, dtype=int)
+
+        if n <= max_points:
+            return x, y, full_idx
+
+        if max_points < 4:
+            keep = np.array([0, int(np.argmax(y)), int(np.argmin(y)), n - 1], dtype=int)
+            keep = np.unique(np.clip(keep, 0, n - 1))
+            return x[keep], y[keep], keep
+
+        bucket_count = max(1, max_points // 2)
+        edges = np.linspace(0, n, bucket_count + 1, dtype=int)
+
+        keep: list[int] = [0, n - 1, int(np.argmax(y)), int(np.argmin(y))]
+
+        for start, end in zip(edges[:-1], edges[1:]):
+            if end <= start:
+                continue
+
+            segment = y[start:end]
+            local_max = start + int(np.argmax(segment))
+            local_min = start + int(np.argmin(segment))
+
+            keep.append(local_max)
+            keep.append(local_min)
+
+        keep = np.array(sorted(set(keep)), dtype=int)
+
+        if len(keep) > max_points:
+            chosen = np.linspace(0, len(keep) - 1, max_points, dtype=int)
+            keep = keep[chosen]
+
+            must_keep = np.array([0, n - 1, int(np.argmax(y)), int(np.argmin(y))], dtype=int)
+            keep = np.array(sorted(set(keep).union(set(must_keep))), dtype=int)
+
+            if len(keep) > max_points:
+                protected = set(must_keep.tolist())
+                optional = [idx for idx in keep if idx not in protected]
+
+                remaining_slots = max_points - len(protected)
+                if remaining_slots > 0 and optional:
+                    chosen_optional = np.linspace(0, len(optional) - 1, remaining_slots, dtype=int)
+                    keep = np.array(
+                        sorted(list(protected) + [optional[i] for i in chosen_optional]), dtype=int
+                    )
+                else:
+                    keep = np.array(sorted(protected), dtype=int)
+
+        return x[keep], y[keep], keep
+
+    def _snap_from_original_index(self, original_idx: int, window: int = 25) -> float:
+        x = self.x
+        y = self.y
+
+        if x is None or y is None:
+            raise ValueError("Spectral data not loaded")
+
+        lo = max(0, original_idx - window)
+        hi = min(len(x), original_idx + window + 1)
+
+        seg_x = x[lo:hi]
+        seg_y = y[lo:hi]
+
+        if self.type == SpectralType.IR:
+            local_idx = int(np.argmin(seg_y))
+        elif self.type == SpectralType.NMR:
+            local_idx = int(np.argmax(seg_y))
+        else:
+            local_idx = int(np.argmax(seg_y))
+
+        return float(seg_x[local_idx])
 
     def drawImage(self) -> None:
-        """We override the drawImage function as a spectral question needs to parse the spectral data"""
+        """A function to plot the spectral data and get user input"""
+        super().drawImage()
         self._parse_jcampdx()
 
-        # This is a weird numpy trick so that we can easily create a "stem" plot.
-        xs = np.empty(self.x.size * 3)
-        ys = np.empty(self.y.size * 3)
+        selected = st.session_state.get(self.widget_key, self.default)
+        fig = self.build_figure(selected)
 
-        xs[0::3] = self.x
-        xs[1::3] = self.x
-        xs[2::3] = np.nan
+        event = st.plotly_chart(
+            fig,
+            width="stretch",
+            on_select="rerun",
+            key=self.chart_key,
+        )
 
-        ys[0::3] = 0
-        ys[1::3] = self.y
-        ys[2::3] = np.nan
+        if event and getattr(event, "selection", None) and event.selection.points:
+            point = event.selection.points[0]
+
+            original_idx = point.get("customdata")
+            if original_idx is not None:
+                new_selected = self._snap_from_original_index(int(original_idx))
+
+                previous_selected = st.session_state.get(self.widget_key, self.default)
+                if previous_selected != new_selected:
+                    st.session_state[self.widget_key] = new_selected
+                    st.rerun()
+
+    def drawYourself(self) -> None:
+        """A function to capture the selected peak and display it.
+
+        Returns:
+            _type_: It returns the user input but I'm not sure of the type.
+        """
+        selected = st.session_state.get(self.widget_key, self.default)
+        if selected is None:
+            st.info("Click a peak in the spectrum to select it.")
+        else:
+            st.write(f"Selected peak: **{selected:.3f} {self.type.unit}**")
+        return selected
+
+    def build_figure(self, selected_x: Optional[float] = None) -> go.Figure:
+        """A function to build the plot.
+
+        Args:
+            selected_x (Optional[float], optional): x axis of the user input (I think). Defaults to None.
+
+        Returns:
+            go.Figure: The figure itself.
+        """
+        self._parse_jcampdx()
         fig = go.Figure()
 
         if self.type == SpectralType.MS:
             fig.add_trace(
                 go.Bar(
-                    x=self.x,
-                    y=self.y,
-                    hovertemplate="%{{x:.1f}} {}<br>{}: %{{y:.2f}}<extra></extra>".format(
-                        self.type.unit, self.type.y_label
-                    ),
+                    x=self.display_x,
+                    y=self.display_y,
+                    customdata=self.display_idx,
+                    showlegend=False,
+                )
+            )
+        else:
+            fig.add_trace(
+                go.Scattergl(
+                    x=self.display_x,
+                    y=self.display_y,
+                    mode="lines",
+                    line=dict(width=1.5),
+                    hoverinfo="skip",
                     showlegend=False,
                 )
             )
 
-        else:
             fig.add_trace(
-                go.Line(
-                    x=self.x,
-                    y=self.y,
-                    mode="lines+markers",
-                    line=dict(width=2),
-                    marker=dict(size=8, opacity=0.0),  # invisible hit-targets
-                    hovertemplate="%{{x:.1f}} {}<br>{}: %{{y:.2f}}<extra></extra>".format(
-                        self.type.unit, self.type.y_label
-                    ),
+                go.Scatter(
+                    x=self.display_x,
+                    y=self.display_y,
+                    mode="markers",
+                    customdata=self.display_idx,
+                    marker=dict(size=8, opacity=0.0),
+                    hovertemplate="x=%{x}<extra></extra>",
+                    showlegend=False,
+                )
+            )
+
+        if selected_x is not None:
+            fig.add_trace(
+                go.Scatter(
+                    x=[selected_x, selected_x],
+                    y=[float(np.min(self.display_y)), float(np.max(self.display_y))],
+                    mode="lines",
+                    line=dict(color="red", width=2, dash="dash"),
                     showlegend=False,
                 )
             )
 
         fig.update_layout(
-            title=self.title,
             xaxis_title=self.units,
             yaxis_title=self.type.y_label,
-            height=600,
             hovermode="closest",
+            clickmode="event+select",
+            dragmode="zoom",
+            height=600,
         )
 
-        event = st.plotly_chart(
-            fig, use_container_width=True, on_select="rerun", key="spectral_chart"
-        )
+        if self.type == SpectralType.NMR:
+            fig.update_layout(
+                xaxis=dict(autorange="reversed"),
+                yaxis=dict(visible=False),
+            )
 
-        if event and event.selection and event.selection.points:
-            selected = event.selection.points[0]
-            point_index = selected.get("point_index")
-            if point_index is not None:
-                st.session_state[self.widget_key] = float(self.x[point_index])
+        return fig
 
-    def _detect_type(self, imgpath: str) -> SpectralType:
-
-        if re.search("^.*ms.*$", imgpath):
+    def _detect_type(self, figures: str) -> SpectralType:
+        if re.search(r"ms", figures, re.IGNORECASE):
             return SpectralType.MS
-        elif re.search("^.*ir.*$", imgpath):
+        if re.search(r"ir", figures, re.IGNORECASE):
             return SpectralType.IR
-
-        # This doesn't work right now, up to how client created nmr files
-        elif re.search("^.*nmr.*$", imgpath):
+        if re.search(r"nmr", figures, re.IGNORECASE):
             return SpectralType.NMR
-
-        raise ValueError("Not a proper spectral file is provided")
+        raise ValueError("Cannot determine spectral type")

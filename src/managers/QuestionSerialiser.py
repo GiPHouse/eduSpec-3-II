@@ -54,7 +54,7 @@ class QuestionSerialiser:
             - type (string) "multipleChoice": The question type
             - title (string): The question title
             - bodyText (string): The question body text
-            - imagePath (string): The image path. Empty if None
+            - figures (dict): The image path. Empty if None
             - answers (array): The possible answers
             - correctAnswer (number): The correct answer as index of answers
             - feedbacks (array): The feedbacks given at each answer
@@ -87,7 +87,7 @@ class QuestionSerialiser:
             - type (string) "multipleChoice": The question type
             - title (string): The question title
             - bodyText (string): The question body text
-            - imagePath (string): The image path. Empty if None
+            - figures (dict): The image path. Empty if None
             - lowerBound (int): The lowest correct answer
             - upperBound (int): The highest correct answer
             - feedbacks (array): The feedbacks given at each stage (correct, too low, too high)
@@ -121,7 +121,7 @@ class QuestionSerialiser:
             - type (string) "multipleChoice": The question type
             - title (string): The question title
             - bodyText (string): The question body text
-            - imagePath (string): The image path. Empty if None
+            - figures (dict): The image path. Empty if None
             - correctAnswer (string): The correct answer to the question
             - correctFeedback (string): The feedback given if the answer was correct
             - incorrectFeedback (string): The feedback given if the answer was incorrect
@@ -155,7 +155,8 @@ class QuestionSerialiser:
             - type (string) "multipleChoice": The question type
             - title (string): The question title
             - bodyText (string): The question body text
-            - imagePath (string): The image path. Empty if None
+            - figures (list[dict]): The image path. Empty if None
+            - spectralpath (string): the image path for spectral. Cannot be empty
             - correctAnswer (float): The correct answer.
             - feedbacks (array): The feedbacks given at each stage (correct, wrong or anything that the client specifies)
             - tolerance (float): How off can the user input be from the correct answer.
@@ -165,6 +166,8 @@ class QuestionSerialiser:
         # ! Version number is hardcoded and updated when editing this function or _buildGenericQuestion
         data_out["version"] = 1
         data_out["type"] = "spectral"
+
+        data_out["spectralpath"] = question.spectralpath
 
         data_out["correctAnswer"] = question.correct_answer
 
@@ -189,7 +192,7 @@ class QuestionSerialiser:
             - type (string) "multipleChoice": The question type
             - title (string): The question title
             - bodyText (string): The question body text
-            - imagePath (string): The image path. Empty if None
+            - figures (dict): The image path. Empty if None
             - correctAnswer (string): The correct answer
             - defaultAnswer (string): The initial answer given
             - correctFeedback (string): The feedback given if the answer was correct
@@ -226,7 +229,7 @@ class QuestionSerialiser:
             - id (string): The question id/name
             - title (string): The question title
             - bodyText (string): The question body text
-            - imagePath (string): The image path. Empty if None
+            - figures (dict): The image path. Empty if None
         """
         # ! Versioning is done in the individual functions. When updating this function, increase all by 100
         data_out = {}
@@ -235,10 +238,10 @@ class QuestionSerialiser:
         data_out["title"] = question.title
         data_out["bodyText"] = question.bodytext
 
-        imagepath = question.imgpath
-        if imagepath is None:
-            data_out["imagePath"] = ""
+        figures = question.figures
+        if figures is None:
+            data_out["figures"] = []
         else:
-            data_out["imagePath"] = imagepath
+            data_out["figures"] = figures
 
         return data_out

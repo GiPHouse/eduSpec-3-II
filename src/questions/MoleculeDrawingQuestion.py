@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 import streamlit as st
 
-from pages.jsme_component import jsme_component
+from jsme_component import jsme_component
 from questions.WordQuestion import WordQuestion
 
 
@@ -48,7 +48,7 @@ class MoleculeDrawingQuestion(WordQuestion):
         bodytext: str,
         config: MoleculeDrawingConfig,
         feedbacks: list[str],
-        imgpath: Optional[str] = None,
+        figures: Optional[list[dict]] = None,
     ):
         """Initializes a MoleculeDrawingQuestion instance.
 
@@ -67,7 +67,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             The feedbacks to the answers.
             Needs to have 2 elements: correct feedback and incorrect feedback
 
-        imgpath (Optional[str], optional):
+        figures (Optional[dict], optional):
             Optional path to an image associated with the question.
             Defaults to None.
         """
@@ -75,7 +75,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             name=name,
             title=title,
             bodytext=bodytext,
-            imgpath=imgpath,
+            figures=figures,
             correct_answer=config.expected_smiles.strip(),
             feedbacks=feedbacks,
         )
@@ -119,10 +119,10 @@ class MoleculeDrawingQuestion(WordQuestion):
         reset_requested = previous_base != default_val and current_base == default_val
 
         if reset_requested:
-            st.session_state[self._nonce_key] += 1
+            # st.session_state[self._nonce_key] += 1
             self._latest_smiles = None
             st.session_state[self._last_seen_key] = default_val
-            st.rerun()
+            # st.rerun()
 
         nonce = st.session_state[self._nonce_key]
         component_key = f"{base_key}__jsme__{nonce}"

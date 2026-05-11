@@ -104,29 +104,29 @@ class MoleculeDisplay:
 
     @staticmethod
     @st.cache_data
-    def drawYourself(imgpath: str) -> None:
+    def drawYourself(figures: str) -> None:
         """_summary_
 
         Args:
-            imgpath (str): _description_
+            figures (str): _description_
         """
         try:
-            with open(imgpath, "r") as f:
+            with open(figures, "r") as f:
                 mol_string = f.read()
 
             if not mol_string.strip():
-                st.error(f"PDB file is empty: {imgpath}")
+                st.error(f"PDB file is empty: {figures}")
                 return
 
-            view = py3Dmol.view(width=800, height=500)
+            view = py3Dmol.view(width=350, height=350)
             view.addModel(mol_string, "pdb")
             view.setStyle(
                 {}, {"stick": {"scale": 0.25, "colorscheme": "Jmol"}, "sphere": {"scale": 0.3}}
             )
             view.zoomTo()
-            showmol(view, height=500, width=800)
+            showmol(view, height=350, width=350)
 
         except FileNotFoundError:
-            st.error(f"PDB file not found: {imgpath}")
+            st.error(f"PDB file not found: {figures}")
         except Exception as e:
             st.error(f"Failed to render molecule: {e}")
