@@ -49,6 +49,7 @@ class MoleculeDrawingQuestion(WordQuestion):
         config: MoleculeDrawingConfig,
         feedbacks: list[str],
         figures: Optional[list[dict]] = None,
+        body_format: str = "text",
     ):
         """Initializes a MoleculeDrawingQuestion instance.
 
@@ -76,6 +77,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             title=title,
             bodytext=bodytext,
             figures=figures,
+            body_format=body_format,
             correct_answer=config.expected_smiles.strip(),
             feedbacks=feedbacks,
         )

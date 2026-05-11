@@ -102,6 +102,7 @@ class SpectralQuestion(Question):
         correct_answer: float,
         feedbacks: List[str],
         tolerance: float = 0.5,
+        body_format: str = "text",
     ):
         """Init for the class
 
@@ -114,7 +115,7 @@ class SpectralQuestion(Question):
             feedbacks (List[str]): Feedbacks stored in the form of [correct,wrong]
             tolerance (float, optional): How much can user answer differ from actual correct answer. Defaults to 0.5.
         """
-        super().__init__(name, title, bodytext, figures)
+        super().__init__(name, title, bodytext, figures, body_format)
 
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks

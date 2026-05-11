@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 import streamlit as st
 
@@ -10,23 +11,29 @@ class QuestionDrawer:
     """Public class for displaying questions."""
 
     @staticmethod
-    def evaluateAnswer(current_question: Question, user_input: any, quiz=None, question_index: int = None) -> None:
+    def evaluateAnswer(
+        current_question: Question,
+        user_input: Any,
+        quiz: Any | None = None,
+        question_index: int = None,
+    ) -> None:
         """Evaluates the answer after submitting it"""
         if (user_input is not None) or (user_input == 0):
             is_correct, feedback = current_question.verifyAndFeedback(user_input)
-            
+
             # Record answer if quiz context is provided
             if quiz is not None and question_index is not None:
                 quiz.recordAnswer(question_index, is_correct)
-            
+
             if is_correct:
                 st.success(f"Your answer is correct!  \n {feedback}")
             else:
                 st.error(f"Your answer is incorrect!  \n {feedback}")
-        
-    
+
     @staticmethod
-    def drawQuestion(current_question: Question, quiz=None, question_index: int = None) -> None:
+    def drawQuestion(
+        current_question: Question, quiz: Any | None = None, question_index: int = None
+    ) -> None:
         """Draws the parts of the question that are the same for all questions
 
         Args:
@@ -40,7 +47,7 @@ class QuestionDrawer:
             # Check if we have a spectral question: in that case create a download button with _drawDownload
             if isinstance(current_question, SpectralQuestion):
                 QuestionDrawer._drawDownload(current_question)
-            st.text(current_question.bodytext)
+            QuestionDrawer._drawBody(current_question)
 
             def _handle_reset_drawing_question() -> None:
                 nonce_key = f"{current_question.widget_key}__jsme_nonce"
@@ -107,3 +114,11 @@ class QuestionDrawer:
                 file_name=os.path.basename(current_question.spectralpath),
                 icon=":material/file_download:",
             )
+
+    @staticmethod
+    def _drawBody(current_question: Question) -> None:
+        """Draw the question body as normal text or text with LaTeX."""  # For backslashes in JSON, use double (\\)
+        if current_question.body_format == "latex":
+            st.markdown(current_question.bodytext)
+        else:
+            st.text(current_question.bodytext)

@@ -13,6 +13,7 @@ class WordQuestion(Question):
         name: str,
         title: str,
         bodytext: str,
+        body_format: str,
         correct_answer: str,
         feedbacks: list[str],
         figures: Optional[list[dict]] = None,
@@ -27,7 +28,7 @@ class WordQuestion(Question):
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 2 elements: correct feedback and incorrect feedback
             figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
         """
-        super().__init__(name, title, bodytext, figures)
+        super().__init__(name, title, bodytext, figures, body_format)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"word_input_{title}"
