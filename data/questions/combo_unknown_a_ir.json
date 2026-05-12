@@ -1,7 +1,8 @@
 {
   "id": "combo_unknown_a_ir",
   "title": "Combination A: IR Clue",
-  "bodyText": "Unknown A has formula C4H10O. Use the IR spectrum first: click the strong C-O stretch that supports an alcohol or ether.",
+  "bodyText": "Unknown A has formula $C_4H_{10}O$. Use the IR spectrum first: click the strong C-O stretch that supports an alcohol or ether.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

@@ -1,7 +1,8 @@
 {
   "id": "nmr_methyl_triplet_click",
   "title": "NMR: Click the Terminal Methyl Signal",
-  "bodyText": "The 1H NMR spectrum contains an upfield terminal methyl triplet. Click the signal near 0.93 ppm.",
+  "bodyText": "The $^1H$ NMR spectrum contains an upfield terminal methyl triplet. Click the signal near $0.93\\ ppm$.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

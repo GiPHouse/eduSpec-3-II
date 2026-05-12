@@ -1,7 +1,8 @@
 {
   "id": "ir_c_o_stretch_click",
   "title": "IR: Click the Strong C-O Stretch",
-  "bodyText": "The spectrum is from an oxygen-containing organic liquid. Click the deepest C-O stretching absorption near 1245 cm^-1.",
+  "bodyText": "The spectrum is from an oxygen-containing organic liquid. Click the deepest C-O stretching absorption near $1245\\ cm^{-1}$.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

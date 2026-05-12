@@ -1,7 +1,8 @@
 {
   "id": "ir_c_o_range",
   "title": "IR: Estimate the C-O Wavenumber",
-  "bodyText": "Estimate the wavenumber of the strongest C-O absorption in cm^-1.",
+  "bodyText": "Estimate the wavenumber of the strongest C-O absorption in $cm^{-1}$.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

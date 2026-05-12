@@ -1,7 +1,8 @@
 {
   "id": "ir_broad_oh_mcq",
   "title": "IR: Recognize a Broad O-H Band",
-  "bodyText": "A broad, rounded absorption from roughly 3200 to 3600 cm^-1 is visible. Which functional group best explains it?",
+  "bodyText": "A broad, rounded absorption from roughly $3200$ to $3600\\ cm^{-1}$ is visible. Which functional group best explains it?",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

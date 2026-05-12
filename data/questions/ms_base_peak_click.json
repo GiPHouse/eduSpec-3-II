@@ -2,6 +2,7 @@
   "id": "ms_base_peak_click",
   "title": "MS: Click the Base Peak",
   "bodyText": "Click the base peak, the tallest signal in the mass spectrum.",
+  "bodyFormat": "text",
   "figures": [
     {
       "path": "data/images/test.png",

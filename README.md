@@ -140,11 +140,45 @@ All question types use these fields:
   "id": "unique_question_id",
   "title": "Title shown at the top of the page",
   "bodyText": "Instructions shown to the student.",
+  "bodyFormat": "text",
   "figures": [],
   "version": 1,
   "type": "question_type"
 }
 ```
+
+### Body Format
+
+`bodyFormat` controls how the question instructions are displayed, is optional and defaults to latex.
+
+Use normal text for simple prompts:
+
+```json
+"bodyFormat": "text"
+```
+
+Use LaTeX formatting when the prompt contains formulas, units, isotopes, subscripts, superscripts, or simple math:
+
+```json
+"bodyFormat": "latex"
+```
+
+When `bodyFormat` is `"latex"`, write LaTeX math between dollar signs inside `bodyText`:
+
+```json
+{
+  "bodyText": "Unknown A has formula $C_4H_{10}O$. Click the band near $1245\\ cm^{-1}$.",
+  "bodyFormat": "latex"
+}
+```
+
+Important details:
+
+- In the JSON file, the field is named `bodyFormat`.
+- In the Python code, this becomes `body_format`.
+- If `bodyFormat` is left out, the app treats it as `"latex"`.
+- In JSON strings, write a backslash as `\\`. For example, use `$1245\\ cm^{-1}$`, not `$1245\ cm^{-1}$`.
+- Do not use LaTeX packages such as `mhchem`; keep formulas simple, such as `$C_4H_{10}O$`, `$CH_3$`, `$^1H$`, and `$m/z$`.
 
 ### Figures
 
@@ -185,7 +219,8 @@ The student chooses one answer from a list.
 {
   "id": "ir_broad_oh_mcq",
   "title": "IR: Recognize a Broad O-H Band",
-  "bodyText": "Which functional group best explains a broad absorption around 3200-3600 cm^-1?",
+  "bodyText": "Which functional group best explains a broad absorption around $3200$-$3600\\ cm^{-1}$?",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",
@@ -226,7 +261,8 @@ The student enters a number. The answer is correct if it is between `lowerBound`
 {
   "id": "ms_base_peak_range",
   "title": "MS: Read the Base Peak m/z",
-  "bodyText": "Enter the m/z value of the base peak.",
+  "bodyText": "Enter the $m/z$ value of the base peak.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",
@@ -261,7 +297,8 @@ The student types a word or short text answer.
 {
   "id": "nmr_terminal_methyl_word",
   "title": "NMR: Terminal Methyl Multiplicity",
-  "bodyText": "Type the expected multiplicity as one word.",
+  "bodyText": "A terminal $CH_3$ group next to a $CH_2$ group follows the $n+1$ rule. Type the expected multiplicity as one word.",
+  "bodyFormat": "latex",
   "figures": [],
   "version": 1,
   "type": "word",
@@ -284,7 +321,8 @@ The student clicks a point in a spectrum. This is used for IR, NMR, and MS quest
 {
   "id": "ir_c_o_stretch_click",
   "title": "IR: Click the Strong C-O Stretch",
-  "bodyText": "Click the deepest C-O stretching absorption near 1245 cm^-1.",
+  "bodyText": "Click the deepest C-O stretching absorption near $1245\\ cm^{-1}$.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",
@@ -324,7 +362,8 @@ The student draws a molecule. The drawing is converted to a SMILES string and ch
 {
   "id": "combo_draw_butanol",
   "title": "Combination A: Draw the Molecule",
-  "bodyText": "Draw 1-butanol in the molecule editor.",
+  "bodyText": "Draw 1-butanol, $C_4H_{10}O$, in the molecule editor.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

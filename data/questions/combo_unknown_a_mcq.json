@@ -1,7 +1,8 @@
 {
   "id": "combo_unknown_a_mcq",
   "title": "Combination A: Pick the Structure",
-  "bodyText": "Unknown A has formula C4H10O, a 1H NMR signal near 3.6 ppm for CH2-O, and a terminal methyl triplet near 0.9 ppm. Which structure best fits?",
+  "bodyText": "Unknown A has formula $C_4H_{10}O$, a $^1H$ NMR signal near $3.6\\ ppm$ for $CH_2-O$, and a terminal methyl triplet near $0.9\\ ppm$. Which structure best fits?",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

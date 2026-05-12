@@ -1,7 +1,8 @@
 {
   "id": "ms_molecular_ion_mcq",
   "title": "MS: Molecular Ion Candidate",
-  "bodyText": "A small but visible high-mass peak appears near the molecular ion. Which m/z value is the best molecular-ion candidate in this mock spectrum?",
+  "bodyText": "A small but visible high-mass peak appears near the molecular ion. Which $m/z$ value is the best molecular-ion candidate in this mock spectrum?",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

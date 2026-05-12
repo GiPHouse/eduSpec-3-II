@@ -171,7 +171,7 @@ class QuestionBuilder:
             # Non-empty strings and non-zero integers are True in Python
             if not obj.get(attr, None):
                 return False
-        body_format = obj.get("bodyFormat", "text")
+        body_format = obj.get("bodyFormat", "latex")
         if body_format not in ("text", "latex"):
             return False
 

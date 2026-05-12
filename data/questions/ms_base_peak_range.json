@@ -1,7 +1,8 @@
 {
   "id": "ms_base_peak_range",
   "title": "MS: Read the Base Peak m/z",
-  "bodyText": "Enter the m/z value of the base peak.",
+  "bodyText": "Enter the $m/z$ value of the base peak.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

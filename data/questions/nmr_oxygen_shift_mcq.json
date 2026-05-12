@@ -1,7 +1,8 @@
 {
   "id": "nmr_oxygen_shift_mcq",
   "title": "NMR: CH2 Next to Oxygen",
-  "bodyText": "In a primary alcohol, where would you expect the CH2 group directly bonded to oxygen to appear in a 1H NMR spectrum?",
+  "bodyText": "In a primary alcohol, where would you expect the $CH_2$ group directly bonded to oxygen to appear in a $^1H$ NMR spectrum?",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",

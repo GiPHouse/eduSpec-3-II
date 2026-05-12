@@ -1,7 +1,8 @@
 {
   "id": "combo_draw_butanol",
   "title": "Combination A: Draw the Molecule",
-  "bodyText": "Draw 1-butanol in the molecule editor. The answer is checked as a SMILES string.",
+  "bodyText": "Draw 1-butanol, $C_4H_{10}O$, in the molecule editor. The answer is checked as a SMILES string.",
+  "bodyFormat": "latex",
   "figures": [
     {
       "path": "data/images/test.png",
