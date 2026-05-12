@@ -126,7 +126,7 @@ def test_navigation_to_nested_directory_question() -> None:
     assert at.session_state["current_question"] == "ir_c_o_stretch_click"
     assert at.session_state["navbar"] == "IR"
     assert_query_question(at, "ir_c_o_stretch_click")
-    assert_title(at, "IR: Click the Strong C-O Stretch")
+    assert_title(at, "titleir_c_o_stretch_click")
 
 
 def test_url_direct_load_valid_question() -> None:
@@ -136,7 +136,7 @@ def test_url_direct_load_valid_question() -> None:
     at.run()
     assert at.session_state["current_question"] == "ir_c_o_stretch_click"
     assert at.session_state["navbar"] == "IR"
-    assert_title(at, "IR: Click the Strong C-O Stretch")
+    assert_title(at, "titleir_c_o_stretch_click")
 
 
 def test_multiple_question_navigations() -> None:
@@ -146,17 +146,17 @@ def test_multiple_question_navigations() -> None:
     click_button(at, "nmr_oxygen_shift_mcq")
     assert at.session_state["current_question"] == "nmr_oxygen_shift_mcq"
     assert at.session_state["navbar"] == "NMR"
-    assert_title(at, "NMR: CH2 Next to Oxygen")
+    assert_title(at, "titlenmr_oxygen_shift_mcq")
 
     click_button(at, "ms_molecular_ion_mcq")
     assert at.session_state["current_question"] == "ms_molecular_ion_mcq"
     assert at.session_state["navbar"] == "MS"
-    assert_title(at, "MS: Molecular Ion Candidate")
+    assert_title(at, "titlems_molecular_ion_mcq")
 
     click_button(at, "combo_unknown_a_mcq")
     assert at.session_state["current_question"] == "combo_unknown_a_mcq"
     assert at.session_state["navbar"] == "Combination exercises"
-    assert_title(at, "Combination A: Pick the Structure")
+    assert_title(at, "titlecombo_unknown_a_mcq")
 
 
 def test_navigation_to_home() -> None:
