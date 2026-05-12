@@ -1,6 +1,0 @@
-components
-editor
-managers
-pages
-questions
-quizzes
