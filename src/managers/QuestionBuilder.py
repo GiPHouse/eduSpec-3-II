@@ -39,6 +39,7 @@ class QuestionBuilder:
         name = obj.get("id")
         title = obj.get("title")
         bodytext = obj.get("bodyText")
+        body_format = obj.get("bodyFormat", "text")
         figures = obj.get("figures")
         spectralpath = obj.get("spectralpath")
 
@@ -51,6 +52,7 @@ class QuestionBuilder:
                     name=name,
                     title=title,
                     bodytext=bodytext,
+                    body_format=body_format,
                     answers=answers,
                     feedbacks=feedbacks,
                     correct_answer=correct_answer,
@@ -64,6 +66,7 @@ class QuestionBuilder:
                     name=name,
                     title=title,
                     bodytext=bodytext,
+                    body_format=body_format,
                     correct_answer=bounds,
                     feedbacks=feedbacks,
                     figures=figures,
@@ -76,6 +79,7 @@ class QuestionBuilder:
                     name=name,
                     title=title,
                     bodytext=bodytext,
+                    body_format=body_format,
                     correct_answer=correct_answer,
                     feedbacks=feedbacks,
                     figures=figures,
@@ -90,6 +94,7 @@ class QuestionBuilder:
                     name=name,
                     title=title,
                     bodytext=bodytext,
+                    body_format=body_format,
                     correct_answer=float(correct_answer),
                     feedbacks=feedbacks,
                     figures=figures,
@@ -112,6 +117,7 @@ class QuestionBuilder:
                     name=name,
                     title=title,
                     bodytext=bodytext,
+                    body_format=body_format,
                     config=config,
                     feedbacks=feedbacks,
                     figures=figures,
@@ -154,6 +160,7 @@ class QuestionBuilder:
         - id (string): The question id/name
         - title (string): The question title
         - bodyText (string): The question body text
+        - bodyFormat (string): The format of question body test
         - figures (string): The image path. Empty if None
         - version (int): The version of that specific serialiser
         - type (str): The type of question
@@ -164,6 +171,9 @@ class QuestionBuilder:
             # Non-empty strings and non-zero integers are True in Python
             if not obj.get(attr, None):
                 return False
+        body_format = obj.get("bodyFormat", "latex")
+        if body_format not in ("text", "latex"):
+            return False
 
         if obj.get("figures") is None:
             return False

@@ -1,0 +1,21 @@
+{
+  "id": "ms_base_peak_range",
+  "title": "MS: Read the Base Peak m/z",
+  "bodyText": "Enter the $m/z$ value of the base peak.",
+  "bodyFormat": "latex",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this would show the tallest signal clearly labeled against the m/z axis."
+    }
+  ],
+  "version": 1,
+  "type": "integer",
+  "lowerBound": 42.5,
+  "upperBound": 43.5,
+  "feedbacks": [
+    "Correct: the base peak is at m/z 43.",
+    "Too low. The tallest signal is just above m/z 42.",
+    "Too high. The tallest signal is at m/z 43."
+  ]
+}

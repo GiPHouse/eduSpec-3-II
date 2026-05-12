@@ -52,6 +52,7 @@ class TestSerialisationCycle:
             "question3",
             "Example Question",
             "here's a question",
+            "text",
             "The correct answer",
             ["correct", "wrong"],
             figures=["data/img/image1.png"],

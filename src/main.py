@@ -27,7 +27,6 @@ available_quizzes = getAvailableQuizzes()
 quiz_options = [""] + available_quizzes
 current_quiz = st.session_state.get("current_quiz") or ""
 
-st.sidebar.divider()
 selected_quiz = st.sidebar.selectbox(
     "Quiz",
     options=quiz_options,

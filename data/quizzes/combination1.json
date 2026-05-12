@@ -1,1 +1,10 @@
-{"id": "combination1", "questionNames": ["question1", "question2", "question3", "question4", "question5"]}
+{
+  "id": "combination1",
+  "questionNames": [
+    "combo_unknown_a_ir",
+    "nmr_methyl_triplet_click",
+    "ms_base_peak_click",
+    "combo_unknown_a_mcq",
+    "combo_draw_butanol"
+  ]
+}

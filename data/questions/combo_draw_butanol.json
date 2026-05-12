@@ -1,0 +1,23 @@
+{
+  "id": "combo_draw_butanol",
+  "title": "Combination A: Draw the Molecule",
+  "bodyText": "Draw 1-butanol, $C_4H_{10}O$, in the molecule editor. The answer is checked as a SMILES string.",
+  "bodyFormat": "latex",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this would show the final combined spectrum evidence and the target molecular formula before drawing."
+    },
+    {
+      "path": "data/molecules/water.pdb",
+      "description": "Mock 3D molecule figure: normally this would show a small reference structure in the molecule viewer; this placeholder uses the available water PDB asset."
+    }
+  ],
+  "version": 1,
+  "type": "drawing",
+  "correctAnswer": "CCCCO",
+  "defaultAnswer": "",
+  "correctFeedback": "Correct: CCCCO is 1-butanol.",
+  "incorrectFeedback": "Not quite. Draw a straight four-carbon chain with the OH group on carbon 1.",
+  "widgetKey": "combo_draw_butanol_editor"
+}
