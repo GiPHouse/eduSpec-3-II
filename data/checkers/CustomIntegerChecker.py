@@ -1,3 +1,5 @@
+from typing import cast
+
 from checkers.BaseIntegerChecker import BaseIntegerChecker
 
 
@@ -10,17 +12,11 @@ class CustomIntegerChecker(BaseIntegerChecker):
         Args:
             obj (dict):
         """
-        self.lower_bound = obj.get("lowerBound")
-        self.upper_bound = obj.get("upperBound")
-        self.lower_feedback = obj.get("lowerFeedback")
-        self.higher_feedback = obj.get("higherFeedback")
-        self.correct_feedback = obj.get("correctFeedback")
-
-        assert isinstance(self.lower_bound, int)
-        assert isinstance(self.upper_bound, int)
-        assert isinstance(self.lower_feedback, str)
-        assert isinstance(self.higher_feedback, str)
-        assert isinstance(self.correct_feedback, str)
+        self.lower_bound = cast(int, obj.get("lowerBound"))
+        self.upper_bound = cast(int, obj.get("upperBound"))
+        self.lower_feedback = cast(str, obj.get("lowerFeedback"))
+        self.higher_feedback = cast(str, obj.get("higherFeedback"))
+        self.correct_feedback = cast(str, obj.get("correctFeedback"))
 
     def serialiseSelf(self) -> dict:
         """Generates a dictionary with all the arguments for `IntegerChecker`
