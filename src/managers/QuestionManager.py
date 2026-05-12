@@ -101,7 +101,7 @@ class QuestionManager(BaseManager):
     @classmethod
     def _resolveSingleAssetPath(cls, path: str) -> str:
         """Resolve a single asset path to an existing file when possible."""
-        resolved_path = pathlib.Path(path)
+        resolved_path = Path(path)
         if resolved_path.is_absolute() and resolved_path.exists():
             return str(resolved_path)
 
