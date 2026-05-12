@@ -1,9 +1,11 @@
 # ruff: noqua: F405
+from collections.abc import Callable
 from importlib import import_module
 from pathlib import Path
 from sys import path as syspath
+from types import ModuleType
 
-from checkers.BaseChecker import BaseChecker
+from Checker import Checker
 from managers.BaseManager import BaseManager
 
 
@@ -15,33 +17,24 @@ class CheckerManager(BaseManager):
     DEFAULT_CHECKERS = ["IntegerChecker"]
 
     @classmethod
-    def buildChecker(cls, data: dict) -> BaseChecker:
-        """Builds a checker based on the deserialised data object
+    def buildChecker(cls, name: str) -> Checker:
+        """Builds a checker based on the module name.
 
         Args:
-            data (dict): The dictionary with data
-
-            Expects the following:
-            - checkerType: string
-            - checkerData: dict
+            name (str): The name of the checker file. Must contain a proper check() function. Does not need to end in .py.
 
         Raises:
-            ValueError: Raised when the data is in the wrong shape
+            FileNotFoundError: Raised when the checker isn't found.
 
         Returns:
-            BaseChecker: The checker built, can be any subclass of BaseChecker
+            Checker: The checker built
         """
-        checker_name = data.get("checkerType")
-        checker_data = data.get("checkerData")
-        if checker_name is None or checker_data is None:
-            raise ValueError("Invalid checker!")
-        cls.importChecker(checker_name)
-        checker_type = BaseChecker.findChecker(checker_name)
-        checker = checker_type.build(checker_data)
+        checking_function = cls.importChecker(name)
+        checker = Checker(checking_function)
         return checker
 
     @classmethod
-    def importChecker(cls, name: str) -> None:
+    def importChecker(cls, name: str) -> Callable:
         """Imports a checker from the data folder.
 
         It is important that all checkers are in a file with their own name.
@@ -49,18 +42,35 @@ class CheckerManager(BaseManager):
         Args:
             name (str): The file to import from (and thus checker to load later)
         """
-        if name in cls.DEFAULT_CHECKERS:
-            return cls.importDefaultChecker(name)
         data_dir: str = str(cls._getDir().resolve())
         if data_dir not in syspath:
             syspath.append(data_dir)
-        import_module(name)
+        checker_file = import_module(name)
+        if not cls.validateChecker(checker_file):
+            raise NameError("No function `check(answer) -> tuple[bool, str]` found")
+        return checker_file.check
 
     @classmethod
-    def importDefaultChecker(cls, name: str) -> None:
-        """Imports a checker from the checkers.default folder
+    def validateChecker(cls, checker_file: ModuleType) -> bool:
+        """Checks whether the checker file contains a proper check function.
+
+        The function should have the annotation `check(answer) -> tuple[bool, str]`.
 
         Args:
-            name (str): The file to import from (and thus checker to load later)
+            checker_file (ModuleType): The module to check.
+
+        Returns:
+            bool: Whether a proper check function is present.
         """
-        import_module(f"checkers.default.{name}")
+        try:
+            check_function = checker_file.check
+            if not isinstance(check_function, Callable):
+                return False
+            annotations = check_function.__annotations__
+            if annotations.get("return", "") != tuple[bool, str]:
+                return False
+            if len(annotations) != 2:
+                return False
+            return True
+        except Exception:
+            return False
