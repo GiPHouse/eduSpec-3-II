@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 import streamlit as st
 
+from Checker import Checker
 from jsme_component import jsme_component
 from questions.WordQuestion import WordQuestion
 
@@ -48,6 +49,7 @@ class MoleculeDrawingQuestion(WordQuestion):
         bodytext: str,
         config: MoleculeDrawingConfig,
         feedbacks: list[str],
+        checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
     ):
@@ -76,6 +78,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             name=name,
             title=title,
             bodytext=bodytext,
+            checker=checker,
             figures=figures,
             body_format=body_format,
             correct_answer=config.expected_smiles.strip(),
@@ -173,15 +176,6 @@ class MoleculeDrawingQuestion(WordQuestion):
         #     return False, f"Incorrect. Expected {expected}, but you drew {submitted}."
 
         # return True, msg
-
-    def feedback(self) -> str:
-        """Provides default feedback for incorrect submissions.
-
-        Returns:
-            str:
-                A generic feedback message encouraging retry.
-        """
-        return "Try again: make sure the structure matches the target molecule."
 
     """
     Template to create a question like this:

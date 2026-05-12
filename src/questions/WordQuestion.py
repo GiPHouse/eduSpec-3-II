@@ -2,6 +2,7 @@ from typing import Optional
 
 import streamlit as st
 
+from Checker import Checker
 from questions.Question import Question
 
 
@@ -16,6 +17,7 @@ class WordQuestion(Question):
         body_format: str,
         correct_answer: str,
         feedbacks: list[str],
+        checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
     ):
         """Initializes word question
@@ -28,7 +30,7 @@ class WordQuestion(Question):
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 2 elements: correct feedback and incorrect feedback
             figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
         """
-        super().__init__(name, title, bodytext, figures, body_format)
+        super().__init__(name, title, bodytext, checker, figures, body_format)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"word_input_{title}"
@@ -43,6 +45,8 @@ class WordQuestion(Question):
         Returns:
             (bool, str): return a tuple with whether the answer is correct and its corresponding feedback
         """
+        if self.checker is not None:
+            return self.checker.check(user_input)
         isAnswerCorrect: bool
         ReturnFeedback: str
 

@@ -2,6 +2,7 @@ from typing import Optional
 
 import streamlit as st
 
+from Checker import Checker
 from questions.Question import Question
 
 
@@ -16,6 +17,7 @@ class MultipleChoiceQuestion(Question):
         answers: list[str],
         correct_answer: int,
         feedbacks: list[str],
+        checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
     ):
@@ -34,7 +36,7 @@ class MultipleChoiceQuestion(Question):
         assert correct_answer >= 0
         assert correct_answer < len(answers)
 
-        super().__init__(name, title, bodytext, figures, body_format)
+        super().__init__(name, title, bodytext, checker, figures, body_format)
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
@@ -50,18 +52,9 @@ class MultipleChoiceQuestion(Question):
         Returns:
             tuple[bool, str]: Whether the answer was correct, and the feedback.
         """
-        return ((self.correct_answer == user_input), self.feedback(user_input))
-
-    def feedback(self, user_input: int) -> str:
-        """Returns the feedback for an answer.
-
-        Args:
-            user_input (_type_): The chosen answer, as index to the answers.
-
-        Returns:
-            str: The feedback for the chosen answer.
-        """
-        return self.feedbacks[user_input]
+        if self.checker is not None:
+            return self.checker.check(user_input)
+        return ((self.correct_answer == user_input), self.feedbacks[user_input])
 
     def drawYourself(self) -> Optional[int]:
         """Question draws itself

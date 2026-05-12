@@ -9,6 +9,7 @@ import numpy as np
 import streamlit as st
 from plotly import graph_objects as go
 
+from Checker import Checker
 from questions.NMRParser import loadJCAMP
 from questions.Question import Question
 
@@ -102,6 +103,7 @@ class SpectralQuestion(Question):
         correct_answer: float,
         feedbacks: List[str],
         tolerance: float = 0.5,
+        checker: Optional[Checker] = None,
         body_format: str = "text",
     ):
         """Init for the class
@@ -115,7 +117,7 @@ class SpectralQuestion(Question):
             feedbacks (List[str]): Feedbacks stored in the form of [correct,wrong]
             tolerance (float, optional): How much can user answer differ from actual correct answer. Defaults to 0.5.
         """
-        super().__init__(name, title, bodytext, figures, body_format)
+        super().__init__(name, title, bodytext, checker, figures, body_format)
 
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
@@ -146,6 +148,8 @@ class SpectralQuestion(Question):
         Returns:
             tuple[bool, str]: _description_
         """
+        if self.checker is not None:
+            return self.checker.check(user_input)
         is_correct = abs(user_input - self.correct_answer) <= self.tolerance
         return is_correct, self.feedback(user_input)
 

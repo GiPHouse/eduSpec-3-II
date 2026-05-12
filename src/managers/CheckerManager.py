@@ -30,7 +30,7 @@ class CheckerManager(BaseManager):
             Checker: The checker built
         """
         checking_function = cls.importChecker(name)
-        checker = Checker(checking_function)
+        checker = Checker(checking_function, name)
         return checker
 
     @classmethod
