@@ -21,4 +21,5 @@ src/questions/WordQuestion.py
 src/softwareeng.egg-info/PKG-INFO
 src/softwareeng.egg-info/SOURCES.txt
 src/softwareeng.egg-info/dependency_links.txt
+src/softwareeng.egg-info/requires.txt
 src/softwareeng.egg-info/top_level.txt

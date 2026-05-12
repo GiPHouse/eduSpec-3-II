@@ -327,7 +327,7 @@ def createDrawingQuestionForm() -> None:
                 st.session_state["last_successful_questionBody"],
                 config=config,
                 feedbacks=[DQ_correct_feedback, DQ_wrong_feedback],
-                imgpath=st.session_state.get("last_successful_file", None),
+                figures=st.session_state.get("last_successful_file", None),
             )
             try:
                 QuestionManager.saveQuestion(new_question)
@@ -353,7 +353,7 @@ def createDrawingQuestionForm() -> None:
                 st.session_state["last_successful_questionBody"],
                 config=config,
                 feedbacks=[DQ_correct_feedback, DQ_wrong_feedback],
-                imgpath=st.session_state.get("last_successful_file", None),
+                figures=st.session_state.get("last_successful_file", None),
             )
             preview_question(new_question)
         if st.session_state["overwrite_done"]:

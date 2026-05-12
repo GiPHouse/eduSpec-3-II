@@ -10,6 +10,7 @@ def wq() -> WordQuestion:
         name="question1",
         title="Example Question",
         bodytext="here's a question",
+        body_format="text",
         correct_answer="correct answer",
         feedbacks=["correct", "incorrect"],
     )
@@ -68,6 +69,7 @@ class TestWordQuestionExtra:
             name="question2",
             title="Math Question",
             bodytext="What is 2+2?",
+            body_format="text",
             correct_answer="4",
             feedbacks=["yes", "no"],
         )

@@ -38,7 +38,7 @@ class TestQuizBuilder:
         assert built_question.name == correct_question.name
         assert built_question.title == correct_question.title
         assert built_question.bodytext == correct_question.bodytext
-        assert built_question.imgpath == correct_question.imgpath
+        assert built_question.figures == correct_question.figures
         assert built_question.correct_answer == correct_question.correct_answer
         assert built_question.feedbacks == correct_question.feedbacks
 

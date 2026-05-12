@@ -8,6 +8,8 @@ from managers.QuestionManager import QuestionManager
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 
+IMAGE_FIGURE = [({"path": "../data/img/test1", "description": "This is a description"})]
+
 
 class TestQuestionManager:
     """Test cases for the question manager"""
@@ -54,7 +56,7 @@ class TestQuestionManager:
         location.parent.mkdir(exist_ok=True)
         location.touch()
         location.write_text(
-            r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "imagePath": [], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
+            r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
         )
 
         loaded_mcq = QuestionManager.loadQuestion("question1")
@@ -73,7 +75,7 @@ class TestQuestionManager:
         assert mcq.name == loaded_mcq.name
         assert mcq.title == loaded_mcq.title
         assert mcq.bodytext == loaded_mcq.bodytext
-        assert mcq.imgpath == loaded_mcq.imgpath
+        assert mcq.figures == loaded_mcq.figures
         assert mcq.answers == loaded_mcq.answers
         assert mcq.feedbacks == loaded_mcq.feedbacks
         assert mcq.correct_answer == loaded_mcq.correct_answer
@@ -101,7 +103,7 @@ class TestQuestionManager:
         assert mcq.name == loaded_mcq.name
         assert mcq.title == loaded_mcq.title
         assert mcq.bodytext == loaded_mcq.bodytext
-        assert mcq.imgpath == loaded_mcq.imgpath
+        assert mcq.figures == loaded_mcq.figures
         assert mcq.answers == loaded_mcq.answers
         assert mcq.feedbacks == loaded_mcq.feedbacks
         assert mcq.correct_answer == loaded_mcq.correct_answer
@@ -127,7 +129,7 @@ class TestQuestionManager:
             ["1", "2", "3"],
             0,
             ["1: correct", "2: wrong", "3: wrong"],
-            imgpath=["data/img/test1"],
+            figures=IMAGE_FIGURE,
         )
 
         assert QuestionManager.saveQuestion(mcq_1)
@@ -141,7 +143,6 @@ class TestQuestionManager:
         assert mcq_2.name == loaded_mcq.name
         assert mcq_2.title == loaded_mcq.title
         assert mcq_2.bodytext == loaded_mcq.bodytext
-        assert mcq_2.imgpath == loaded_mcq.imgpath
         assert mcq_2.answers == loaded_mcq.answers
         assert mcq_2.feedbacks == loaded_mcq.feedbacks
         assert mcq_2.correct_answer == loaded_mcq.correct_answer
@@ -219,7 +220,7 @@ class TestQuestionManager:
             ["1", "2", "3"],
             0,
             ["1: correct", "2: wrong", "3: wrong"],
-            imgpath=["data/img/test1"],
+            figures=IMAGE_FIGURE,
         )
 
         mcq_3 = MultipleChoiceQuestion(
@@ -249,7 +250,6 @@ class TestQuestionManager:
         assert mcq_1.name == loaded_mcq_1.name
         assert mcq_1.title == loaded_mcq_1.title
         assert mcq_1.bodytext == loaded_mcq_1.bodytext
-        assert mcq_1.imgpath == loaded_mcq_1.imgpath
         assert mcq_1.answers == loaded_mcq_1.answers
         assert mcq_1.feedbacks == loaded_mcq_1.feedbacks
         assert mcq_1.correct_answer == loaded_mcq_1.correct_answer
@@ -257,7 +257,6 @@ class TestQuestionManager:
         assert mcq_2.name == loaded_mcq_2.name
         assert mcq_2.title == loaded_mcq_2.title
         assert mcq_2.bodytext == loaded_mcq_2.bodytext
-        assert mcq_2.imgpath == loaded_mcq_2.imgpath
         assert mcq_2.answers == loaded_mcq_2.answers
         assert mcq_2.feedbacks == loaded_mcq_2.feedbacks
         assert mcq_2.correct_answer == loaded_mcq_2.correct_answer
@@ -265,7 +264,7 @@ class TestQuestionManager:
         assert mcq_3.name == loaded_mcq_3.name
         assert mcq_3.title == loaded_mcq_3.title
         assert mcq_3.bodytext == loaded_mcq_3.bodytext
-        assert mcq_3.imgpath == loaded_mcq_3.imgpath
+        assert mcq_3.figures == loaded_mcq_3.figures
         assert mcq_3.answers == loaded_mcq_3.answers
         assert mcq_3.feedbacks == loaded_mcq_3.feedbacks
         assert mcq_3.correct_answer == loaded_mcq_3.correct_answer

@@ -1,0 +1,27 @@
+{
+  "id": "nmr_oxygen_shift_mcq",
+  "title": "NMR: CH2 Next to Oxygen",
+  "bodyText": "In a primary alcohol, where would you expect the $CH_2$ group directly bonded to oxygen to appear in a $^1H$ NMR spectrum?",
+  "bodyFormat": "latex",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this would show a zoomed 1H NMR region with the oxygen-adjacent CH2 resonance around 3.6 ppm."
+    }
+  ],
+  "version": 1,
+  "type": "multipleChoice",
+  "answers": [
+    "Around 3.4-3.8 ppm",
+    "Around 0.8-1.0 ppm",
+    "Around 6.5-8.0 ppm",
+    "Around 10-12 ppm"
+  ],
+  "correctAnswer": 0,
+  "feedbacks": [
+    "Correct: protons on a carbon attached to oxygen are deshielded and often appear around 3.4-3.8 ppm.",
+    "That region is typical for simple alkyl methyl groups.",
+    "That region is typical for aromatic or vinylic protons.",
+    "That region is typical for aldehydes or carboxylic acid protons."
+  ]
+}

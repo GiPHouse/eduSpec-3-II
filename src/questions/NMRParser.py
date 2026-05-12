@@ -350,8 +350,6 @@ def loadJCAMP(filePath: str) -> tuple:
     if spec:
         sw = abs(firstX - lastX)
         sw = sw + sw / nPoints
-        if xUnits != "PPM":
-            sw /= freq
         if ".SHIFTREFERENCE" in dataBlock:
             ref = _JCAMPshiftReference(
                 dataBlock[".SHIFTREFERENCE"],
@@ -369,9 +367,24 @@ def loadJCAMP(filePath: str) -> tuple:
         # FID [seconds]
         sw = 1.0 / ((lastX - firstX) / (nPoints - 1))
 
-    if firstX > lastX:
-        spectDat = spectDat[::-1]
+    # Convert sw to units of ppm if it isnt already
+    if xUnits != "PPM":
+        sw *= 10**6 / ref
 
-    x = np.linspace(start=firstX, stop=lastX, num=nPoints)
+    # Convert y-data to spectrum intensities in the order of ascending corresponding x-values
+    if spec:
+        if firstX > lastX:
+            spectDat = spectDat[::-1]
+    else:
+        # The data is not in spectral form, so it needs to be fourier transformed
+        spectDat = np.fft.fftshift(np.fft.fft(spectDat))
 
-    return (x, spectDat)
+    # Construct the x-axis in ppm units from sw, freq and ref in Hz.
+    firstX = -sw / 2 + 10**6 * (freq - ref) / ref
+    lastX = sw / 2 + 10**6 * (freq - ref) / ref
+    xAxis = np.linspace(firstX, lastX, nPoints)
+
+    # Include the observed isotope to label the x-axis correctly:
+    isotope = dataBlock.get(".OBSERVENUCLEUS")
+
+    return xAxis, spectDat, isotope

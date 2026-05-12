@@ -1,0 +1,31 @@
+{
+  "id": "combo_unknown_a_mcq",
+  "title": "Combination A: Pick the Structure",
+  "bodyText": "Unknown A has formula $C_4H_{10}O$, a $^1H$ NMR signal near $3.6\\ ppm$ for $CH_2-O$, and a terminal methyl triplet near $0.9\\ ppm$. Which structure best fits?",
+  "bodyFormat": "latex",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this would show IR, 1H NMR, and MS evidence side by side for a small alcohol unknown."
+    },
+    {
+      "path": "data/molecules/neoNR8.pdb",
+      "description": "Mock 3D molecule figure: normally this would be a rotatable candidate structure or the solved unknown shown in ball-and-stick form."
+    }
+  ],
+  "version": 1,
+  "type": "multipleChoice",
+  "answers": [
+    "1-butanol",
+    "2-butanone",
+    "Diethyl ether",
+    "Butanal"
+  ],
+  "correctAnswer": 0,
+  "feedbacks": [
+    "Correct: 1-butanol fits C4H10O, a CH2-O signal, and a terminal methyl triplet.",
+    "2-butanone would contain a carbonyl and has formula C4H8O.",
+    "Diethyl ether has CH2-O signals but would show a more symmetric ethyl pattern.",
+    "Butanal would show an aldehyde proton near 9-10 ppm and has formula C4H8O."
+  ]
+}

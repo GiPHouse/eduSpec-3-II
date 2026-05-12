@@ -84,7 +84,7 @@ class TestQuizManager:
         assert built_question.name == intq.name
         assert built_question.title == intq.title
         assert built_question.bodytext == intq.bodytext
-        assert built_question.imgpath == intq.imgpath
+        assert built_question.figures == intq.figures
         assert built_question.correct_answer == intq.correct_answer
         assert built_question.feedbacks == intq.feedbacks
 

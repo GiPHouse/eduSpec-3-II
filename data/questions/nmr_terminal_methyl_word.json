@@ -1,0 +1,17 @@
+{
+  "id": "nmr_terminal_methyl_word",
+  "title": "NMR: Terminal Methyl Multiplicity",
+  "bodyText": "A terminal $CH_3$ group next to a $CH_2$ group follows the $n+1$ rule. Type its expected multiplicity as one word.",
+  "bodyFormat": "latex",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this would show the expanded methyl signal with three lines of roughly equal spacing."
+    }
+  ],
+  "version": 1,
+  "type": "word",
+  "correctAnswer": "triplet",
+  "correctFeedback": "Correct: the adjacent CH2 has two protons, so n+1 gives three lines.",
+  "incorrectFeedback": "Not quite. A CH3 next to one CH2 has two neighboring protons, so n+1 gives three lines."
+}

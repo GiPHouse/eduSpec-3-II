@@ -6,11 +6,13 @@ def render_word_question() -> None:
     from questions.WordQuestion import WordQuestion
 
     question = WordQuestion(
-        "question1",
-        "Example Question",
-        "here's a question",
-        "The correct answer",
-        ["correct", "wrong"],
+        name="q1",
+        title="Word Question",
+        bodytext="Type the answer.",
+        figures=None,
+        body_format="text",
+        correct_answer="answer",
+        feedbacks=["Correct!", "Incorrect!"],
     )
     question.drawYourself()
 
