@@ -1,0 +1,21 @@
+{
+  "id": "ir_c_o_stretch_click",
+  "title": "IR: Click the Strong C-O Stretch",
+  "bodyText": "The spectrum is from an oxygen-containing organic liquid. Click the deepest C-O stretching absorption near $1245\\ cm^{-1}$.",
+  "bodyFormat": "latex",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this would show the full IR spectrum with a strong fingerprint-region C-O absorption and weaker alkyl C-H stretches."
+    }
+  ],
+  "version": 1,
+  "type": "spectral",
+  "spectralpath": "data/spectra/ir.dx",
+  "correctAnswer": 1245.0,
+  "feedbacks": [
+    "Correct: the strongest C-O stretch is centered around 1245 cm^-1.",
+    "Not quite. Look for the deepest absorption in the fingerprint region around 1200-1300 cm^-1."
+  ],
+  "tolerance": 8.0
+}

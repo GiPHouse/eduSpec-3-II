@@ -1,0 +1,27 @@
+{
+  "id": "ms_molecular_ion_mcq",
+  "title": "MS: Molecular Ion Candidate",
+  "bodyText": "A small but visible high-mass peak appears near the molecular ion. Which $m/z$ value is the best molecular-ion candidate in this mock spectrum?",
+  "bodyFormat": "latex",
+  "figures": [
+    {
+      "path": "data/images/test.png",
+      "description": "Mock placeholder: normally this would show a mass spectrum with a strong fragment at m/z 43 and a weaker molecular ion near m/z 88."
+    }
+  ],
+  "version": 1,
+  "type": "multipleChoice",
+  "answers": [
+    "m/z 31",
+    "m/z 43",
+    "m/z 61",
+    "m/z 88"
+  ],
+  "correctAnswer": 3,
+  "feedbacks": [
+    "m/z 31 is a low-mass fragment, not the molecular ion.",
+    "m/z 43 is the base peak, but the molecular ion should be the intact radical cation.",
+    "m/z 61 is a fragment peak in this spectrum.",
+    "Correct: the high-mass peak near m/z 88 is the best molecular-ion candidate."
+  ]
+}
