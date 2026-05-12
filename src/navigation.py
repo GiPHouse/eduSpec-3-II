@@ -202,13 +202,13 @@ def showNavigation() -> None:
     with st.sidebar:
         col1, col2, col3 = st.columns(3)
         with col1:
-            button_type = "primary" if st.session_state["current_page"] == "home" else "secondary"
+            button_type = "primary" if st.session_state.get("current_page", "") == "home" else "secondary"
             st.button("Home", width="stretch", on_click=navigateHome, type=button_type, key="Home")
         with col2:
-            button_type = "primary" if st.session_state["current_page"] == "settings" else "secondary"
+            button_type = "primary" if st.session_state.get("current_page", "") == "settings" else "secondary"
             st.button("Settings", width="stretch", on_click=navigatePage, args=("settings",), type=button_type, key="Settings")
         with col3:
-            button_type = "primary" if st.session_state["current_page"] == "about" else "secondary"
+            button_type = "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
             st.button("About", width="stretch", on_click=navigatePage, args=("about",), type=button_type, key="About")
         
     tabs = sidebar.tabs([item["label"] for item in items])

@@ -85,84 +85,78 @@ def test_home_page_default() -> None:
     at = run_app()
 
     assert at.session_state["current_page"] == "home"
-    assert get_state(at, "current_question") is None
+    assert "current_question" not in at.session_state or at.session_state["current_question"] is None
 
 
 def test_navigation_to_nmr_question() -> None:
     """Test navigation to the NMR question."""
-    at = click_button(run_app(), "question5")
-
-    assert at.session_state["current_question"] == "question5"
+    at = click_button(run_app(), "nmr_oxygen_shift_mcq")
+    assert at.session_state["current_question"] == "nmr_oxygen_shift_mcq"
     assert at.session_state["navbar"] == "NMR"
-    assert_query_question(at, "question5")
+    assert_query_question(at, "nmr_oxygen_shift_mcq")
 
 
 def test_navigation_to_ms_question() -> None:
     """Test navigation to the MS question."""
-    at = click_button(run_app(), "question6")
-
-    assert at.session_state["current_question"] == "question6"
+    at = click_button(run_app(), "ms_molecular_ion_mcq")
+    assert at.session_state["current_question"] == "ms_molecular_ion_mcq"
     assert at.session_state["navbar"] == "MS"
-    assert_query_question(at, "question6")
+    assert_query_question(at, "ms_molecular_ion_mcq")
 
 
 def test_navigation_to_molecule_question() -> None:
     """Test navigation to the molecule question."""
-    at = click_button(run_app(), "question7")
-
-    assert at.session_state["current_question"] == "question7"
-    assert at.session_state["navbar"] == "Molecules"
-    assert_query_question(at, "question7")
+    at = click_button(run_app(), "combo_unknown_a_mcq")
+    assert at.session_state["current_question"] == "combo_unknown_a_mcq"
+    assert at.session_state["navbar"] == "Combination exercises"
+    assert_query_question(at, "combo_unknown_a_mcq")
 
 
 def test_navigation_to_word_question() -> None:
     """Test navigation to the word question."""
-    at = click_button(run_app(), "question8")
-
-    assert at.session_state["current_question"] == "question8"
-    assert at.session_state["navbar"] == "Word"
-    assert_query_question(at, "question8")
+    at = click_button(run_app(), "nmr_terminal_methyl_word")
+    assert at.session_state["current_question"] == "nmr_terminal_methyl_word"
+    assert at.session_state["navbar"] == "NMR"
+    assert_query_question(at, "nmr_terminal_methyl_word")
 
 
 def test_navigation_to_nested_directory_question() -> None:
     """Test navigation through a nested directory example."""
-    at = click_button(run_app(), "question3")
-
-    assert at.session_state["current_question"] == "question3"
+    at = click_button(run_app(), "ir_c_o_stretch_click")
+    assert at.session_state["current_question"] == "ir_c_o_stretch_click"
     assert at.session_state["navbar"] == "IR"
-    assert_query_question(at, "question3")
-    assert_title(at, "title3")
+    assert_query_question(at, "ir_c_o_stretch_click")
+    assert_title(at, "titleir_c_o_stretch_click")
 
 
 def test_url_direct_load_valid_question() -> None:
     """Test loading a valid question via URL query parameter."""
     at = AppTest.from_file("../../src/main.py")
-    at.query_params["question"] = "question3"
-    at.run(timeout=10)
-
-    assert at.session_state["current_question"] == "question3"
+    at.query_params["question"] = "ir_c_o_stretch_click"
+    at.run()
+    assert at.session_state["current_question"] == "ir_c_o_stretch_click"
     assert at.session_state["navbar"] == "IR"
-    assert_title(at, "title3")
+    assert_title(at, "titleir_c_o_stretch_click")
 
 
 def test_multiple_question_navigations() -> None:
     """Test navigating through multiple question links."""
     at = run_app()
 
-    click_button(at, "question5")
-    assert at.session_state["current_question"] == "question5"
+    click_button(at, "nmr_oxygen_shift_mcq")
+    assert at.session_state["current_question"] == "nmr_oxygen_shift_mcq"
     assert at.session_state["navbar"] == "NMR"
-    assert_title(at, "title5")
+    assert_title(at, "titlenmr_oxygen_shift_mcq")
 
-    click_button(at, "question6")
-    assert at.session_state["current_question"] == "question6"
+    click_button(at, "ms_molecular_ion_mcq")
+    assert at.session_state["current_question"] == "ms_molecular_ion_mcq"
     assert at.session_state["navbar"] == "MS"
-    assert_title(at, "title6")
+    assert_title(at, "titlems_molecular_ion_mcq")
 
-    click_button(at, "question7")
-    assert at.session_state["current_question"] == "question7"
-    assert at.session_state["navbar"] == "Molecules"
-    assert_title(at, "title7")
+    click_button(at, "combo_unknown_a_mcq")
+    assert at.session_state["current_question"] == "combo_unknown_a_mcq"
+    assert at.session_state["navbar"] == "Combination exercises"
+    assert_title(at, "titlecombo_unknown_a_mcq")
 
 
 def test_navigation_to_home() -> None:

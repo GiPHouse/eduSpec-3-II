@@ -4,12 +4,19 @@
       "label": "IR",
       "children": [
         {
-          "label": "Practice Set",
-          "question": "question1",
+          "label": "Functional Groups",
           "children": [
             {
-              "label": "Review Question",
-              "question": "question2"
+              "label": "C-O Stretch",
+              "question": "ir_c_o_stretch_click"
+            },
+            {
+              "label": "Broad O-H Pattern",
+              "question": "ir_broad_oh_mcq"
+            },
+            {
+              "label": "Strongest Absorption",
+              "question": "ir_c_o_range"
             }
           ]
         }
@@ -19,12 +26,19 @@
       "label": "NMR",
       "children": [
         {
-          "label": "Practice Set",
-          "question": "question3",
+          "label": "1H NMR Basics",
           "children": [
             {
-              "label": "Review Question",
-              "question": "question4"
+              "label": "Terminal Methyl Signal",
+              "question": "nmr_methyl_triplet_click"
+            },
+            {
+              "label": "Chemical Shift",
+              "question": "nmr_oxygen_shift_mcq"
+            },
+            {
+              "label": "Multiplicity",
+              "question": "nmr_terminal_methyl_word"
             }
           ]
         }
@@ -34,42 +48,41 @@
       "label": "MS",
       "children": [
         {
-          "label": "Practice Set",
-          "question": "question5",
+          "label": "Fragment Ions",
           "children": [
             {
-              "label": "Review Question",
-              "question": "question6"
+              "label": "Base Peak",
+              "question": "ms_base_peak_click"
+            },
+            {
+              "label": "Molecular Ion",
+              "question": "ms_molecular_ion_mcq"
+            },
+            {
+              "label": "Base Peak Value",
+              "question": "ms_base_peak_range"
             }
           ]
         }
       ]
     },
     {
-      "label": "Molecules",
+      "label": "Combination exercises",
       "children": [
         {
-          "label": "Practice Set",
-          "question": "question7",
+          "label": "Unknown A",
           "children": [
             {
-              "label": "Review Question",
-              "question": "question8"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "label": "Word",
-      "children": [
-        {
-          "label": "Practice Set",
-          "question": "question9",
-          "children": [
+              "label": "IR Clue",
+              "question": "combo_unknown_a_ir"
+            },
             {
-              "label": "Review Question",
-              "question": "question10"
+              "label": "Choose Structure",
+              "question": "combo_unknown_a_mcq"
+            },
+            {
+              "label": "Draw 1-butanol",
+              "question": "combo_draw_butanol"
             }
           ]
         }
