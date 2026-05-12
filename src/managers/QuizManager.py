@@ -1,18 +1,17 @@
-import pathlib
+from pathlib import Path
 
 from streamlit import cache_data
 
+from managers.BaseManager import BaseManager
 from managers.QuizBuilder import QuizBuilder
 from managers.QuizSerialiser import QuizSerialiser
 from Quiz import Quiz
 
 
-class QuizManager:
+class QuizManager(BaseManager):
     """Class for loading quizzes from/to the file system"""
 
-    # Here to be modified during tests.
-    # DO NOT ACTUALLY EDIT
-    _save_location = pathlib.Path("data/quizzes/")
+    _item_dir = Path("quizzes")
 
     @classmethod
     @cache_data
@@ -32,10 +31,10 @@ class QuizManager:
         Returns:
             Quiz: The quiz.
         """
-        if not cls.quizExists(name):
+        if not cls.itemExists(name):
             raise FileNotFoundError(f"Quiz {name} does not exist!")
 
-        data_dir = cls._getQuizDir()
+        data_dir = cls._getDir()
         quiz_file = data_dir.joinpath(f"{name}.json")
 
         quiz_data = quiz_file.read_text()
@@ -60,12 +59,12 @@ class QuizManager:
         """
         quiz_name = quiz.name
 
-        if cls.quizExists(quiz_name):
+        if cls.itemExists(quiz_name):
             raise FileExistsError(f"Quiz {quiz_name} already exists!")
 
         quiz_data = QuizSerialiser.quizToJson(quiz)
 
-        data_dir = cls._getQuizDir()
+        data_dir = cls._getDir()
         quiz_file = data_dir.joinpath(f"{quiz_name}.json")
         quiz_file.write_text(quiz_data)
         return True
@@ -83,44 +82,28 @@ class QuizManager:
             bool: Whether updating was succesful.
         """
         quiz_name = quiz.name
-        if not cls.quizExists(quiz_name):
+        if not cls.itemExists(quiz_name):
             raise FileNotFoundError(f"Quiz {quiz_name} does not exist!")
 
         quiz_data = QuizSerialiser.quizToJson(quiz)
 
-        data_dir = cls._getQuizDir()
+        data_dir = cls._getDir()
         quiz_file = data_dir.joinpath(f"{quiz_name}.json")
         quiz_file.write_text(quiz_data)
         return True
 
     @classmethod
-    def quizExists(cls, name: str) -> bool:
-        """Checks whether a quiz with the given name is currently saved
-
-        Args:
-            name (str): The unique id/name of the quiz to verify
+    def listQuizzes(cls) -> list[str]:
+        """Lists all saved quizzes. Ignores subdirectories.
 
         Returns:
-            bool: Whether the quiz exists on the system
+            list[str]: The found items.
         """
-        data_dir = cls._getQuizDir()
+        base_dir = cls._getDir()
 
-        quiz_file = data_dir.joinpath(f"{name}.json")
+        found_items = cls._iterDir(base_dir, False)
 
-        return quiz_file.is_file()
+        # Useless iteration but required for typing
+        out = [x for x in found_items if isinstance(x, str)]
 
-    @classmethod
-    def _getQuizDir(cls) -> pathlib.Path:
-        """Returns the quiz directory path
-
-        Returns:
-            pathlib.Path: The quiz directory path
-        """
-        current_file = pathlib.Path(__file__)
-        manager_dir = current_file.parent
-        src_dir = manager_dir.parent
-        base_dir = src_dir.parent
-        data_dir = base_dir.joinpath(cls._save_location).resolve()
-        if not data_dir.exists():
-            data_dir.mkdir(parents=True)
-        return data_dir
+        return out

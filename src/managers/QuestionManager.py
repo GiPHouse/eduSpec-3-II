@@ -1,18 +1,17 @@
-import pathlib
+from pathlib import Path
 
 from streamlit import cache_data
 
+from managers.BaseManager import BaseManager, DirectoryStructure
 from managers.QuestionBuilder import QuestionBuilder
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.Question import Question
 
 
-class QuestionManager:
+class QuestionManager(BaseManager):
     """Class for loading questions from/to the file system"""
 
-    # Here to be modified during tests.
-    # DO NOT ACTUALLY EDIT
-    _save_location = pathlib.Path("data/questions/")
+    _item_dir = Path("questions/")
 
     @classmethod
     @cache_data
@@ -30,10 +29,10 @@ class QuestionManager:
         Returns:
             Question: The question.
         """
-        if not cls.questionExists(name):
+        if not cls.itemExists(name):
             raise FileNotFoundError(f"Question {name} does not exist!")
 
-        data_dir = cls._getQuestionDir()
+        data_dir = cls._getDir()
         question_file = data_dir.joinpath(f"{name}.json")
 
         question_data = question_file.read_text()
@@ -57,12 +56,12 @@ class QuestionManager:
         """
         question_name = question.name
 
-        if cls.questionExists(question_name):
+        if cls.itemExists(question_name):
             raise FileExistsError(f"Question {question_name} already exists!")
 
         question_data = QuestionSerialiser.questionToJson(question)
 
-        data_dir = cls._getQuestionDir()
+        data_dir = cls._getDir()
         question_file = data_dir.joinpath(f"{question_name}.json")
         question_file.write_text(question_data)
         return True
@@ -78,62 +77,36 @@ class QuestionManager:
             bool: Whether updating was succesful.
         """
         question_name = question.name
-        if not cls.questionExists(question_name):
+        if not cls.itemExists(question_name):
             raise FileNotFoundError(f"Question {question_name} does not exist!")
 
         question_data = QuestionSerialiser.questionToJson(question)
 
-        data_dir = cls._getQuestionDir()
+        data_dir = cls._getDir()
         question_file = data_dir.joinpath(f"{question_name}.json")
         question_file.write_text(question_data)
         return True
 
     @classmethod
-    def questionExists(cls, name: str) -> bool:
-        """Checks whether a question with the given name is currently saved
-
-        Args:
-            name (str): The unique id/name of the question to verify
+    def listQuestions(cls) -> DirectoryStructure:
+        """Lists all the currently saved questions
 
         Returns:
-            bool: Whether the question exists on the system
+            DirectoryStructure: The question ids. Subdirectories are tuples with the dir name first and list of questions second.
         """
-        data_dir = cls._getQuestionDir()
+        base_dir = cls._getDir()
 
-        question_file = data_dir.joinpath(f"{name}.json")
-
-        return question_file.is_file()
-
-    @classmethod
-    def _getQuestionDir(cls) -> pathlib.Path:
-        """Returns the question directory path
-
-        Returns:
-            pathlib.Path: The question directory path
-        """
-        current_file = pathlib.Path(__file__)
-        manager_dir = current_file.parent
-        src_dir = manager_dir.parent
-        base_dir = src_dir.parent
-        data_dir = base_dir.joinpath(cls._save_location).resolve()
-        if not data_dir.exists():
-            data_dir.mkdir(parents=True)
-        return data_dir
-
-    @classmethod
-    def _getBaseDir(cls) -> pathlib.Path:
-        """Return the repository root."""
-        return pathlib.Path(__file__).resolve().parents[2]
+        return cls._iterDir(base_dir)
 
     @classmethod
     def _resolveSingleAssetPath(cls, path: str) -> str:
         """Resolve a single asset path to an existing file when possible."""
-        resolved_path = pathlib.Path(path)
+        resolved_path = Path(path)
         if resolved_path.is_absolute() and resolved_path.exists():
             return str(resolved_path)
 
-        base_dir = cls._getBaseDir()
-        question_dir = cls._getQuestionDir()
+        base_dir = cls._getDir().parent
+        question_dir = cls._getDir()
         data_root = base_dir / "data"
 
         candidates = [

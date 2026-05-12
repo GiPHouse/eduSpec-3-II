@@ -3,6 +3,7 @@ pyproject.toml
 src/editor/CreateForms.py
 src/editor/__init__.py
 src/editor/editor.py
+src/managers/BaseManager.py
 src/managers/QuestionBuilder.py
 src/managers/QuestionManager.py
 src/managers/QuestionSerialiser.py
