@@ -2,13 +2,13 @@ import json
 import os
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import streamlit as st
 
 from CustomThemes import THEMES, applyTheme, showThemeSelector
 
-data_dir = Path(__file__).parent.parent / "data" #get path to data directory
+data_dir = Path(__file__).parent.parent / "data"  # get path to data directory
 navigation_file = data_dir / "navigation" / "navigation.json"
 navigation_env_var = "EDUSPEC_NAVIGATION_FILE"
 
@@ -47,7 +47,7 @@ def _walkNavigation(items: list[NavigationItem]) -> list[NavigationItem]:
 
 def getQuestionRegistry() -> list[str]:
     """Return the list of question ids referenced by the navigation tree."""
-    #Not sure if we need this function
+    # Not sure if we need this function
     valid_question_ids = []
     for item in _walkNavigation(loadNavigationItems()):
         question = item.get("question")
@@ -72,9 +72,7 @@ def itemContainsQuestion(item: NavigationItem, question: str) -> bool:
     if item.get("question") == question:
         return True
 
-    return any(
-        itemContainsQuestion(child, question) for child in item.get("children", [])
-    )
+    return any(itemContainsQuestion(child, question) for child in item.get("children", []))
 
 
 def getTopLevelLabel(question: str) -> str:
@@ -106,6 +104,7 @@ def navigate(question: str, label: str | None = None) -> None:
     st.query_params.pop("page", None)
     st.rerun()
 
+
 def navigateHome() -> None:
     """Navigate to the home page."""
     st.session_state["current_question"] = None
@@ -113,6 +112,7 @@ def navigateHome() -> None:
     st.query_params.pop("question", None)
     st.session_state["current_page"] = "home"
     st.query_params["page"] = "home"
+
 
 def navigatePage(page: str) -> None:
     """Navigate to a different page."""
@@ -122,36 +122,38 @@ def navigatePage(page: str) -> None:
     st.session_state["current_page"] = page
     st.query_params["page"] = page
 
+
 def homePage() -> None:
     """render home page"""
     st.title("Live Laugh Learn")
     st.image(str(data_dir / "images" / "maxresdefault.jpg"))
-    st.text("In dit huis: maken we geen ruzie, is het altijd gezellig, staat de koffie en thee klaar, staan we voor elkaar klaar")
+    st.text(
+        "In dit huis: maken we geen ruzie, is het altijd gezellig, staat de koffie en thee klaar, staan we voor elkaar klaar"
+    )
+
 
 def settingsPage() -> None:
     """render settings page"""
     st.title("Settings")
     showThemeSelector()
 
+
 def aboutPage() -> None:
     """render about page"""
     st.title("About")
     st.text("This application was developed by the EduSpec team for educational purposes.")
+
 
 def renderNavigationButton(
     container: Any, label: str, question: str, current_question: str
 ) -> None:
     """Render a single navigation button."""
     button_type = "primary" if current_question == question else "secondary"
-    if container.button(
-        label, key=question, type=button_type, width="stretch"
-    ):
+    if container.button(label, key=question, type=button_type, width="stretch"):
         navigate(question, label)
 
 
-def renderNavigationNode(
-    container: Any, item: NavigationItem, current_question: str
-) -> None:
+def renderNavigationNode(container: Any, item: NavigationItem, current_question: str) -> None:
     """Render a nested navigation node."""
     children = item.get("children", [])
     question = item.get("question")
@@ -179,7 +181,7 @@ def showNavigation() -> None:
         matching_item = next(
             (item for item in items if item["label"] == current_label),
             None,
-        ) 
+        )
     else:
         matching_item = None
 
@@ -189,7 +191,8 @@ def showNavigation() -> None:
         st.session_state["navbar"] = getTopLevelLabel(current_question)
 
     sidebar = st.sidebar
-    st.markdown("""
+    st.markdown(
+        """
     <style>
     [data-testid="stSidebar"] .stHorizontalBlock {
         display: flex;
@@ -197,20 +200,42 @@ def showNavigation() -> None:
         gap: 8px;
     }
     </style>
-""", unsafe_allow_html=True)
+""",
+        unsafe_allow_html=True,
+    )
 
     with st.sidebar:
         col1, col2, col3 = st.columns(3)
         with col1:
-            button_type = "primary" if st.session_state.get("current_page", "") == "home" else "secondary"
+            button_type = (
+                "primary" if st.session_state.get("current_page", "") == "home" else "secondary"
+            )
             st.button("Home", width="stretch", on_click=navigateHome, type=button_type, key="Home")
         with col2:
-            button_type = "primary" if st.session_state.get("current_page", "") == "settings" else "secondary"
-            st.button("Settings", width="stretch", on_click=navigatePage, args=("settings",), type=button_type, key="Settings")
+            button_type = (
+                "primary" if st.session_state.get("current_page", "") == "settings" else "secondary"
+            )
+            st.button(
+                "Settings",
+                width="stretch",
+                on_click=navigatePage,
+                args=("settings",),
+                type=button_type,
+                key="Settings",
+            )
         with col3:
-            button_type = "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
-            st.button("About", width="stretch", on_click=navigatePage, args=("about",), type=button_type, key="About")
-        
+            button_type = (
+                "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
+            )
+            st.button(
+                "About",
+                width="stretch",
+                on_click=navigatePage,
+                args=("about",),
+                type=button_type,
+                key="About",
+            )
+
     tabs = sidebar.tabs([item["label"] for item in items])
 
     for tab, item in zip(tabs, items):

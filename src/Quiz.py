@@ -48,21 +48,21 @@ class Quiz:
             is_correct (bool): Whether the answer was correct.
         """
         question = self.question_list[question_index]
-        
+
         # Increment attempt count
         attempts_key = f"attempts_{self.name}"
         if question_index not in st.session_state[attempts_key]:
             st.session_state[attempts_key][question_index] = 0
         st.session_state[attempts_key][question_index] += 1
-        
+
         # Record answer (only update to correct if they got it right)
         answers_key = f"answers_{self.name}"
         current_answer = st.session_state[answers_key].get(question_index, {})
-        
+
         # If already marked correct, don't change it
         if current_answer.get("correct", False):
             return
-        
+
         st.session_state[answers_key][question_index] = {
             "correct": is_correct,
             "title": question.title,
@@ -91,15 +91,13 @@ class Quiz:
         st.metric("Your Score", f"{correct_count} / {total}")
 
         # Show incorrect questions
-        wrong_questions = [
-            (idx, data) for idx, data in answers.items() if not data["correct"]
-        ]
+        wrong_questions = [(idx, data) for idx, data in answers.items() if not data["correct"]]
 
         if wrong_questions:
             st.subheader("Questions to Review")
             for idx, data in wrong_questions:
                 with st.expander(f"❌ Question {idx + 1}: {data['title']}"):
-                    st.write(f"Go back and review this question.")
+                    st.write("Go back and review this question.")
                     if st.button(f"Go to Question {idx + 1}", key=f"review_goto_{idx}"):
                         st.session_state[f"quiz_completed_{self.name}"] = False
                         st.session_state[f"current_index_{self.name}"] = idx
@@ -120,16 +118,16 @@ class Quiz:
         """Draws the overview panel showing attempt statistics for each question."""
         st.title("📊 Quiz Overview")
         st.write("See how many attempts each question took:")
-        
+
         attempts = st.session_state.get(f"attempts_{self.name}", {})
         answers = st.session_state.get(f"answers_{self.name}", {})
-        
+
         # Create a container for the overview
         for idx, question in enumerate(self.question_list):
             attempt_count = attempts.get(idx, 0)
             answer_data = answers.get(idx, {})
             is_correct = answer_data.get("correct", False)
-            
+
             # Determine status and styling
             if attempt_count == 0:
                 status_icon = "⬜"
@@ -139,15 +137,19 @@ class Quiz:
                 if attempt_count == 1:
                     status_text = "Correct on first try!"
                 else:
-                    status_text = f"Correct after {attempt_count} attempt{'s' if attempt_count > 1 else ''}"
+                    status_text = (
+                        f"Correct after {attempt_count} attempt{'s' if attempt_count > 1 else ''}"
+                    )
             else:
                 status_icon = "🔄"
-                status_text = f"{attempt_count} attempt{'s' if attempt_count > 1 else ''} - still trying"
-            
+                status_text = (
+                    f"{attempt_count} attempt{'s' if attempt_count > 1 else ''} - still trying"
+                )
+
             # Create an expander for each question
             with st.expander(f"{status_icon} Question {idx + 1}: {question.title}", expanded=False):
                 col1, col2 = st.columns([3, 1])
-                
+
                 with col1:
                     if attempt_count == 0:
                         st.info(status_text)
@@ -155,20 +157,22 @@ class Quiz:
                         st.success(status_text)
                     else:
                         st.warning(status_text)
-                
+
                 with col2:
                     if st.button(f"Go to Q{idx + 1}", key=f"overview_goto_{idx}"):
                         st.session_state[f"show_overview_{self.name}"] = False
                         st.session_state[f"current_index_{self.name}"] = idx
                         st.rerun()
-        
+
         # Summary statistics
         st.divider()
         total_questions = len(self.question_list)
         attempted_count = len([i for i in range(total_questions) if attempts.get(i, 0) > 0])
-        correct_count = len([i for i in range(total_questions) if answers.get(i, {}).get("correct", False)])
+        correct_count = len(
+            [i for i in range(total_questions) if answers.get(i, {}).get("correct", False)]
+        )
         total_attempts = sum(attempts.values())
-        
+
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.metric("Questions", f"{attempted_count}/{total_questions}")
@@ -179,9 +183,9 @@ class Quiz:
         with col4:
             avg_attempts = total_attempts / attempted_count if attempted_count > 0 else 0
             st.metric("Avg Attempts", f"{avg_attempts:.1f}")
-        
+
         st.divider()
-        
+
         # Back button
         if st.button("← Back to Quiz", key="back_from_overview", type="primary"):
             st.session_state[f"show_overview_{self.name}"] = False
@@ -224,10 +228,14 @@ class Quiz:
             if st.button("Finish Quiz", key="finish_quiz", type="primary"):
                 st.session_state[f"quiz_completed_{self.name}"] = True
                 st.rerun()
-        
+
         # Overview button - always visible
         st.divider()
-        if st.button("📊 Overview", key="show_overview", help="View your progress and attempts for each question"):
+        if st.button(
+            "📊 Overview",
+            key="show_overview",
+            help="View your progress and attempts for each question",
+        ):
             st.session_state[f"show_overview_{self.name}"] = True
             st.rerun()
 
@@ -255,7 +263,7 @@ class Quiz:
         if st.session_state.get(f"quiz_completed_{self.name}", False):
             self.drawReviewPage()
             return
-        
+
         # Show overview if requested
         if st.session_state.get(f"show_overview_{self.name}", False):
             self.drawOverview()
@@ -263,5 +271,7 @@ class Quiz:
 
         self.current_index = st.session_state.get(f"current_index_{self.name}", 0)
         safe_index = min(self.current_index, len(self.question_list) - 1)
-        QuestionDrawer.drawQuestion(self.question_list[safe_index], quiz=self, question_index=safe_index)
+        QuestionDrawer.drawQuestion(
+            self.question_list[safe_index], quiz=self, question_index=safe_index
+        )
         self.drawQuestionNavigator()
