@@ -14,6 +14,32 @@ from questions.Question import Question
 
 
 @st.cache_data
+def read_jcamp_header_fields(figure: str) -> dict[str, str]:
+    """Reads the header fields and returns the field names with associated values. Basically only used to determine the type of the spectra (ms,nmr, or ir)
+
+    Args:
+        figure (str): The filepath to the spectral figure.
+
+    Returns:
+        dict[str, str]: field names with associated values
+    """
+    fields: dict[str, str] = {}
+
+    with open(figure, "rb") as f:
+        for raw_line in f:
+            line = raw_line.decode("utf-8", errors="replace").strip()
+
+            if not line.startswith("##") or "=" not in line:
+                continue
+
+            key, value = line[2:].split("=", 1)
+            normalized_key = re.sub(r"[^A-Z0-9]", "", key.upper())
+            fields[normalized_key] = value.strip()
+
+    return fields
+
+
+@st.cache_data
 def load_nmr(figures: str) -> None:
     """Just a function to wrap external loadJCAMP with st.cache_data
 
@@ -390,10 +416,37 @@ class SpectralQuestion(Question):
         return fig
 
     def _detect_type(self, figures: str) -> SpectralType:
+
+        fields = read_jcamp_header_fields(figures)
+
+        data_type = fields.get("DATATYPE", "").upper()
+        x_units = fields.get("XUNITS", "").upper()
+
+        if "NMR" in data_type:
+            return SpectralType.NMR
+
+        if "INFRARED" in data_type or "IR" in data_type:
+            return SpectralType.IR
+
+        if "MASS" in data_type or "MS" in data_type:
+            return SpectralType.MS
+
+        # fallback using x-axis units
+        if "PPM" in x_units:
+            return SpectralType.NMR
+
+        if "CM" in x_units or "1/CM" in x_units:
+            return SpectralType.IR
+
+        if "M/Z" in x_units or "MASS" in x_units:
+            return SpectralType.MS
+
+        # final fallback: old behavior
         if re.search(r"ms", figures, re.IGNORECASE):
             return SpectralType.MS
         if re.search(r"ir", figures, re.IGNORECASE):
             return SpectralType.IR
         if re.search(r"nmr", figures, re.IGNORECASE):
             return SpectralType.NMR
-        raise ValueError("Cannot determine spectral type")
+
+        raise ValueError("Cannot determine spectral type from JCAMP metadata or filename")
