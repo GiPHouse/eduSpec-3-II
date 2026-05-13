@@ -6,7 +6,6 @@ from managers.QuestionManager import QuestionManager
 from managers.QuizManager import QuizManager
 from navigation import (
     aboutPage,
-    getDefaultQuestion,
     homePage,
     initTheme,
     settingsPage,
@@ -22,6 +21,7 @@ def getAvailableQuizzes() -> list[str]:
     if not quiz_dir.exists():
         return []
     return sorted(path.stem for path in quiz_dir.glob("*.json"))
+
 
 available_quizzes = getAvailableQuizzes()
 quiz_options = [""] + available_quizzes
@@ -44,7 +44,7 @@ else:
     query_params = st.query_params
     requested_question = query_params.get("question")
     session_question = st.session_state.get("current_question")
-    current_question_name = (requested_question or session_question)
+    current_question_name = requested_question or session_question
 
 if current_question_name is None:
     current_page = query_params.get("page")
@@ -67,4 +67,3 @@ else:
 
 showNavigation()
 initTheme()
-
