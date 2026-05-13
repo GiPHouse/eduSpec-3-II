@@ -83,7 +83,7 @@ class MoleculeDisplay:
             mol_string = f.read()
 
         ext = os.path.splitext(pdb_file_path)[1].lower()
-        mol_format = "pdb" if ext in [".pdb", ".ent"] else "mol2"
+        mol_format = "pdb" if ext in [".pdb", ".ent"] else "mol"
 
         view = py3Dmol.view(width=width, height=height)
         view.addModel(mol_string, mol_format)
@@ -115,11 +115,14 @@ class MoleculeDisplay:
                 mol_string = f.read()
 
             if not mol_string.strip():
-                st.error(f"PDB file is empty: {figures}")
+                st.error(f"Molecule file is empty: {figures}")
                 return
 
+            ext = os.path.splitext(figures)[1].lower()
+            mol_format = "pdb" if ext in [".pdb", ".ent"] else "mol"
+
             view = py3Dmol.view(width=350, height=350)
-            view.addModel(mol_string, "pdb")
+            view.addModel(mol_string, mol_format)
             view.setStyle(
                 {}, {"stick": {"scale": 0.25, "colorscheme": "Jmol"}, "sphere": {"scale": 0.3}}
             )
@@ -127,6 +130,6 @@ class MoleculeDisplay:
             showmol(view, height=350, width=350)
 
         except FileNotFoundError:
-            st.error(f"PDB file not found: {figures}")
+            st.error(f"Molecule file not found: {figures}")
         except Exception as e:
             st.error(f"Failed to render molecule: {e}")
