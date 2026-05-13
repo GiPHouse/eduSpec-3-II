@@ -1,12 +1,11 @@
-from pathlib import Path
-
 import streamlit as st
 
 from managers.QuestionManager import QuestionManager
 from managers.QuizManager import QuizManager
 from navigation import (
     aboutPage,
-    getDefaultQuestion,
+    getTopLevelQuestionLabel,
+    getTopLevelQuizLabel,
     homePage,
     initTheme,
     settingsPage,
@@ -14,57 +13,49 @@ from navigation import (
 )
 from QuestionDrawer import QuestionDrawer
 
-quiz_dir = Path(__file__).resolve().parent.parent / "data" / "quizzes"
+initTheme()
 
+query_params = st.query_params
+requested_quiz = query_params.get("quiz")
+requested_question = query_params.get("question")
+session_quiz = st.session_state.get("current_quiz")
+session_question = st.session_state.get("current_question")
 
-def getAvailableQuizzes() -> list[str]:
-    """Return all quiz ids available in the data/quizzes directory."""
-    if not quiz_dir.exists():
-        return []
-    return sorted(path.stem for path in quiz_dir.glob("*.json"))
+current_quiz_name = requested_quiz or (None if requested_question else session_quiz)
+current_question_name = None if current_quiz_name else requested_question or session_question
 
-available_quizzes = getAvailableQuizzes()
-quiz_options = [""] + available_quizzes
-current_quiz = st.session_state.get("current_quiz") or ""
-
-selected_quiz = st.sidebar.selectbox(
-    "Quiz",
-    options=quiz_options,
-    index=quiz_options.index(current_quiz) if current_quiz in quiz_options else 0,
-    format_func=lambda quiz_name: "Browse questions" if quiz_name == "" else quiz_name,
-    key="quiz_selector",
-)
-
-if selected_quiz:
-    st.session_state["current_quiz"] = selected_quiz
-    quiz = QuizManager.loadQuiz(selected_quiz)
+if current_quiz_name:
+    st.session_state["current_quiz"] = current_quiz_name
+    st.session_state["current_question"] = None
+    st.session_state["current_page"] = None
+    st.session_state["navbar"] = getTopLevelQuizLabel(current_quiz_name)
+    st.query_params["quiz"] = current_quiz_name
+    st.query_params.pop("question", None)
+    st.query_params.pop("page", None)
+    showNavigation()
+    quiz = QuizManager.loadQuiz(current_quiz_name)
     quiz.drawQuiz()
-else:
+elif current_question_name:
     st.session_state["current_quiz"] = None
-    query_params = st.query_params
-    requested_question = query_params.get("question")
-    session_question = st.session_state.get("current_question")
-    current_question_name = (requested_question or session_question)
-
-if current_question_name is None:
+    st.session_state["current_question"] = current_question_name
+    st.session_state["navbar"] = getTopLevelQuestionLabel(current_question_name)
+    if requested_question != current_question_name:
+        st.query_params["question"] = current_question_name
+    st.query_params.pop("quiz", None)
+    showNavigation()
+    question = QuestionManager.loadQuestion(current_question_name)
+    QuestionDrawer.drawQuestion(question)
+else:
     current_page = query_params.get("page")
-    if current_page == "settings":
+    if current_page and current_page.lower() == "settings":
         st.session_state["current_page"] = "settings"
         settingsPage()
-    elif current_page == "about":
+    elif current_page and current_page.lower() == "about":
         st.session_state["current_page"] = "about"
         aboutPage()
     else:
         st.session_state["current_page"] = "home"
         homePage()
-else:
-    question = QuestionManager.loadQuestion(current_question_name)
-    QuestionDrawer.drawQuestion(question)
-
-    st.session_state["current_question"] = current_question_name
-    if requested_question != current_question_name:
-        st.query_params["question"] = current_question_name
-
-showNavigation()
-initTheme()
+    showNavigation()
+    
 

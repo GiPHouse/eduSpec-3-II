@@ -8,6 +8,10 @@
           "question": "ir_broad_oh_mcq"
         },
         {
+            "label": "IR quiz",
+            "quiz": "ir_quiz"
+        },
+        {
           "label": "Practice Set",
           "children": [
             {
@@ -35,6 +39,10 @@
             {
               "label": "Multiplicity",
               "question": "nmr_terminal_methyl_word"
+            },
+            {
+                "label": "quiz",
+                "quiz": "nmr_quiz"
             }
           ]
         }

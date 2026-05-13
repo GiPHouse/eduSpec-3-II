@@ -19,7 +19,7 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.pytest]
+[tool.pytest.ini_options]
 pythonpath = ["src/"]
 
 [tool.ruff]

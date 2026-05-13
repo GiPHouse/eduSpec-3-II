@@ -130,7 +130,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             st.session_state[self._last_seen_key] = default_val
             # st.rerun()
 
-        nonce = st.session_state[self._nonce_key]
+        nonce = st.session_state.get(self._nonce_key, 0)
         component_key = f"{base_key}__jsme__{nonce}"
 
         data = jsme_component(default_smiles=self.default, key=component_key)
