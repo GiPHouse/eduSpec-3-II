@@ -1,5 +1,6 @@
 import json
 
+from managers.CheckerManager import CheckerManager
 from questions.IntegerQuestion import IntegerQuestion
 from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
@@ -42,6 +43,8 @@ class QuestionBuilder:
         body_format = obj.get("bodyFormat", "text")
         figures = obj.get("figures")
         spectralpath = obj.get("spectralpath")
+        checker = obj.get("checker")
+        checker_object = CheckerManager.buildChecker(checker) if checker else None
 
         match question_type:
             case "multipleChoice":
@@ -57,6 +60,7 @@ class QuestionBuilder:
                     feedbacks=feedbacks,
                     correct_answer=correct_answer,
                     figures=figures,
+                    checker=checker_object,
                 )
 
             case "integer":
@@ -70,6 +74,7 @@ class QuestionBuilder:
                     correct_answer=bounds,
                     feedbacks=feedbacks,
                     figures=figures,
+                    checker=checker_object,
                 )
 
             case "word":
@@ -83,6 +88,7 @@ class QuestionBuilder:
                     correct_answer=correct_answer,
                     feedbacks=feedbacks,
                     figures=figures,
+                    checker=checker_object,
                 )
 
             case "spectral":
@@ -100,6 +106,7 @@ class QuestionBuilder:
                     figures=figures,
                     spectralpath=spectralpath,
                     tolerance=float(tolerance),
+                    checker=checker_object,
                 )
 
             case "drawing":
@@ -121,6 +128,7 @@ class QuestionBuilder:
                     config=config,
                     feedbacks=feedbacks,
                     figures=figures,
+                    checker=checker_object,
                 )
 
             case n:

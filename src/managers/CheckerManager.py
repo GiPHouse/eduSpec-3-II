@@ -29,12 +29,12 @@ class CheckerManager(BaseManager):
         Returns:
             Checker: The checker built
         """
-        checking_function = cls.importChecker(name)
+        checking_function = cls._importChecker(name)
         checker = Checker(checking_function, name)
         return checker
 
     @classmethod
-    def importChecker(cls, name: str) -> Callable:
+    def _importChecker(cls, name: str) -> Callable:
         """Imports a checker from the data folder.
 
         It is important that all checkers are in a file with their own name.
@@ -46,12 +46,12 @@ class CheckerManager(BaseManager):
         if data_dir not in syspath:
             syspath.append(data_dir)
         checker_file = import_module(name)
-        if not cls.validateChecker(checker_file):
+        if not cls._validateChecker(checker_file):
             raise NameError("No function `check(answer) -> tuple[bool, str]` found")
         return checker_file.check
 
     @classmethod
-    def validateChecker(cls, checker_file: ModuleType) -> bool:
+    def _validateChecker(cls, checker_file: ModuleType) -> bool:
         """Checks whether the checker file contains a proper check function.
 
         The function should have the annotation `check(answer) -> tuple[bool, str]`.
