@@ -190,91 +190,93 @@ class QuestionBuilder:
         if body_format not in ("text", "latex"):
             return False
 
+        # Test any questiontype-specific attributes
         if obj.get("figures") is None:
             return False
+
         checker = obj.get("checker")
+        if checker:
+            try:
+                CheckerManager.buildChecker(checker)
+            except Exception:
+                return False
 
-        try:
-            CheckerManager.buildChecker(checker)
-        except Exception:
-            # Test any questiontype-specific attributes
-            match obj.get("type"):
-                case "multipleChoice":
-                    # Multiple-choice questions must have at least 2 answers, the same amount of feedbacks, and a valid correct answer
-                    answers = obj.get("answers")
-                    feedbacks = obj.get("feedbacks")
-                    correct_answer = obj.get("correctAnswer")
+        match obj.get("type"):
+            case "multipleChoice":
+                # Multiple-choice questions must have at least 2 answers, the same amount of feedbacks, and a valid correct answer
+                answers = obj.get("answers")
+                feedbacks = obj.get("feedbacks")
+                correct_answer = obj.get("correctAnswer")
+                if not answers or not feedbacks:
+                    return False
+                if correct_answer is None or not isinstance(correct_answer, int):
+                    return False
+                if len(answers) < 2:
+                    return False
+                if len(feedbacks) != len(answers):
+                    return False
+                if correct_answer < 0 or correct_answer >= len(answers):
+                    return False
 
-                    if not answers or not feedbacks:
-                        return False
-                    if correct_answer is None or not isinstance(correct_answer, int):
-                        return False
-                    if len(answers) < 2:
-                        return False
-                    if len(feedbacks) != len(answers):
-                        return False
-                    if correct_answer < 0 or correct_answer >= len(answers):
-                        return False
+            case "integer":
+                # Integer questions must have an integer lower and higher bound, and 3 feedback options.
+                # The lower bound must be lower than or equal to the higher bound
+                lower_bound = obj.get("lowerBound")
+                upper_bound = obj.get("upperBound")
+                feedbacks = obj.get("feedbacks")
+                if lower_bound is None or upper_bound is None or feedbacks is None:
+                    return False
+                if not isinstance(lower_bound, (int, float)) or not isinstance(
+                    upper_bound, (int, float)
+                ):
+                    return False
+                if lower_bound > upper_bound:
+                    return False
+                if len(feedbacks) != 3:
+                    return False
 
-                case "integer":
-                    # Integer questions must have an integer lower and higher bound, and 3 feedback options.
-                    # The lower bound must be lower than or equal to the higher bound
-                    lower_bound = obj.get("lowerBound")
-                    upper_bound = obj.get("upperBound")
-                    feedbacks = obj.get("feedbacks")
-                    if lower_bound is None or upper_bound is None or feedbacks is None:
-                        return False
-                    if not isinstance(lower_bound, (int, float)) or not isinstance(
-                        upper_bound, (int, float)
-                    ):
-                        return False
-                    if lower_bound > upper_bound:
-                        return False
-                    if len(feedbacks) != 3:
-                        return False
+            case "word":
+                # Word questions must have a single correct answer string, a correct feedback and incorrect feedback
+                correct_answer = obj.get("correctAnswer")
+                correct_feedback = obj.get("correctFeedback")
+                incorrect_feedback = obj.get("incorrectFeedback")
+                if not correct_answer or not correct_feedback or not incorrect_feedback:
+                    return False
+                if not isinstance(correct_answer, str):
+                    return False
 
-                case "word":
-                    # Word questions must have a single correct answer string, a correct feedback and incorrect feedback
-                    correct_answer = obj.get("correctAnswer")
-                    correct_feedback = obj.get("correctFeedback")
-                    incorrect_feedback = obj.get("incorrectFeedback")
-                    if not correct_answer or not correct_feedback or not incorrect_feedback:
-                        return False
-                    if not isinstance(correct_answer, str):
-                        return False
+            case "spectral":
+                # A single correct answer (float), tolerance(float), and a feedback list
+                correct_answer = obj.get("correctAnswer")
+                feedbacks = obj.get("feedbacks")
+                tolerance = obj.get("tolerance")
+                spectralpath = obj.get("spectralpath")
+                if not isinstance(correct_answer, float) or not isinstance(tolerance, float):
+                    return False
+                if not feedbacks:
+                    return False
+                if not spectralpath:
+                    return False
 
-                case "spectral":
-                    # A single correct answer (float), tolerance(float), and a feedback list
-                    correct_answer = obj.get("correctAnswer")
-                    feedbacks = obj.get("feedbacks")
-                    tolerance = obj.get("tolerance")
-                    spectralpath = obj.get("spectralpath")
-                    if not isinstance(correct_answer, float) or not isinstance(tolerance, float):
-                        return False
-                    if not feedbacks:
-                        return False
-                    if not spectralpath:
-                        return False
+            case "drawing":
+                # Drawing questions must have the same checks as word
+                # but also a default answer and widget key
+                correct_answer = obj.get("correctAnswer")
+                default_answer = obj.get("defaultAnswer")
+                correct_feedback = obj.get("correctFeedback")
+                incorrect_feedback = obj.get("incorrectFeedback")
+                widget_key = obj.get("widgetKey")
+                if not correct_answer or not correct_feedback or not incorrect_feedback:
+                    return False
+                if (
+                    not isinstance(correct_answer, str)
+                    or not isinstance(default_answer, str)
+                    or not isinstance(widget_key, str)
+                ):
+                    return False
 
-                case "drawing":
-                    # Drawing questions must have the same checks as word
-                    # but also a default answer and widget key
-                    correct_answer = obj.get("correctAnswer")
-                    default_answer = obj.get("defaultAnswer")
-                    correct_feedback = obj.get("correctFeedback")
-                    incorrect_feedback = obj.get("incorrectFeedback")
-                    widget_key = obj.get("widgetKey")
-                    if not correct_answer or not correct_feedback or not incorrect_feedback:
-                        return False
-                    if (
-                        not isinstance(correct_answer, str)
-                        or not isinstance(default_answer, str)
-                        or not isinstance(widget_key, str)
-                    ):
-                        return False
-
-                case n:
-                    raise TypeError(f"Attempted to verify unknown or illegal question type: {n}")
+            case n:
+                raise TypeError(f"Attempted to verify unknown or illegal question type: {n}")
 
         return True
 
