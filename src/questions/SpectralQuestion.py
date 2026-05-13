@@ -14,6 +14,32 @@ from questions.Question import Question
 
 
 @st.cache_data
+def read_jcamp_header_fields(figure: str) -> dict[str, str]:
+    """Reads the header fields and returns the field names with associated values. Basically only used to determine the type of the spectra (ms,nmr, or ir)
+
+    Args:
+        figure (str): The filepath to the spectral figure.
+
+    Returns:
+        dict[str, str]: field names with associated values
+    """
+    fields: dict[str, str] = {}
+
+    with open(figure, "rb") as f:
+        for raw_line in f:
+            line = raw_line.decode("utf-8", errors="replace").strip()
+
+            if not line.startswith("##") or "=" not in line:
+                continue
+
+            key, value = line[2:].split("=", 1)
+            normalized_key = re.sub(r"[^A-Z0-9]", "", key.upper())
+            fields[normalized_key] = value.strip()
+
+    return fields
+
+
+@st.cache_data
 def load_nmr(figures: str) -> None:
     """Just a function to wrap external loadJCAMP with st.cache_data
 
@@ -103,6 +129,7 @@ class SpectralQuestion(Question):
         feedbacks: List[str],
         tolerance: float = 0.5,
         body_format: str = "text",
+        download_data: Optional[str] = None,
     ):
         """Init for the class
 
@@ -114,8 +141,9 @@ class SpectralQuestion(Question):
             correct_answer (float): The correct answer
             feedbacks (List[str]): Feedbacks stored in the form of [correct,wrong]
             tolerance (float, optional): How much can user answer differ from actual correct answer. Defaults to 0.5.
+            download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
-        super().__init__(name, title, bodytext, figures, body_format)
+        super().__init__(name, title, bodytext, figures, body_format, download_data)
 
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
@@ -293,15 +321,17 @@ class SpectralQuestion(Question):
 
         if event and getattr(event, "selection", None) and event.selection.points:
             point = event.selection.points[0]
+            if self.type == SpectralType.MS:
+                new_selected = float(point["x"])
+            else:
+                original_idx = point.get("customdata")
+                if original_idx is not None:
+                    new_selected = self._snap_from_original_index(int(original_idx))
 
-            original_idx = point.get("customdata")
-            if original_idx is not None:
-                new_selected = self._snap_from_original_index(int(original_idx))
-
-                previous_selected = st.session_state.get(self.widget_key, self.default)
-                if previous_selected != new_selected:
-                    st.session_state[self.widget_key] = new_selected
-                    st.rerun()
+            previous_selected = st.session_state.get(self.widget_key, self.default)
+            if previous_selected != new_selected:
+                st.session_state[self.widget_key] = new_selected
+                st.rerun()
 
     def drawYourself(self) -> None:
         """A function to capture the selected peak and display it.
@@ -361,11 +391,11 @@ class SpectralQuestion(Question):
                 )
             )
 
-        if selected_x is not None:
+        if selected_x is not None and self.type != SpectralType.MS:
             fig.add_trace(
                 go.Scatter(
                     x=[selected_x, selected_x],
-                    y=[float(np.min(self.display_y)), float(np.max(self.display_y))],
+                    y=[float(np.min(self.display_y)), float(np.max(self.display_y)) * 1.2],
                     mode="lines",
                     line=dict(color="red", width=2, dash="dash"),
                     showlegend=False,
@@ -390,10 +420,37 @@ class SpectralQuestion(Question):
         return fig
 
     def _detect_type(self, figures: str) -> SpectralType:
+
+        fields = read_jcamp_header_fields(figures)
+
+        data_type = fields.get("DATATYPE", "").upper()
+        x_units = fields.get("XUNITS", "").upper()
+
+        if "NMR" in data_type:
+            return SpectralType.NMR
+
+        if "INFRARED" in data_type or "IR" in data_type:
+            return SpectralType.IR
+
+        if "MASS" in data_type or "MS" in data_type:
+            return SpectralType.MS
+
+        # fallback using x-axis units
+        if "PPM" in x_units:
+            return SpectralType.NMR
+
+        if "CM" in x_units or "1/CM" in x_units:
+            return SpectralType.IR
+
+        if "M/Z" in x_units or "MASS" in x_units:
+            return SpectralType.MS
+
+        # final fallback: old behavior
         if re.search(r"ms", figures, re.IGNORECASE):
             return SpectralType.MS
         if re.search(r"ir", figures, re.IGNORECASE):
             return SpectralType.IR
         if re.search(r"nmr", figures, re.IGNORECASE):
             return SpectralType.NMR
-        raise ValueError("Cannot determine spectral type")
+
+        raise ValueError("Cannot determine spectral type from JCAMP metadata or filename")

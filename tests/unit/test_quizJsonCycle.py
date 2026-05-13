@@ -2,6 +2,7 @@ import pathlib
 
 from streamlit import cache_data
 
+from managers.BaseManager import BaseManager
 from managers.QuestionManager import QuestionManager
 from managers.QuizBuilder import QuizBuilder
 from managers.QuizSerialiser import QuizSerialiser
@@ -14,7 +15,7 @@ class Test_QuizSerialisationCycle:
 
     def test_quizCycle(self, tmp_path: pathlib.Path) -> None:
         """Test case for quiz serialisation cycling"""
-        QuestionManager._save_location = tmp_path  # noqa: SLF001
+        BaseManager._data_dir = tmp_path  # noqa : SLF001
         cache_data.clear()
 
         intq = IntegerQuestion(

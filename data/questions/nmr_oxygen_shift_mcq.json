@@ -23,5 +23,6 @@
     "That region is typical for simple alkyl methyl groups.",
     "That region is typical for aromatic or vinylic protons.",
     "That region is typical for aldehydes or carboxylic acid protons."
-  ]
+  ],
+  "download_data": "data/images/test.png"
 }

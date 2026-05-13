@@ -35,6 +35,7 @@ class FakeQuestion:
         widget_key: str = "widget_key",
         default: Any = "default value",
         user_input: Any = "student answer",
+        download_data: str | None = None,
     ) -> None:
         """Initialise the fake question."""
         self.name = name
@@ -45,6 +46,7 @@ class FakeQuestion:
         self.default = default
         self.user_input = user_input
         self.draw_image_called = False
+        self.download_data = download_data
 
     def drawImage(self) -> None:
         """Record that drawImage was called."""
@@ -224,10 +226,9 @@ def test_draw_question_calls_draw_download_for_spectral_question() -> None:
     class FakeSpectralQuestion(FakeQuestion):
         """Fake spectral question type."""
 
-    current_question = FakeSpectralQuestion()
+    current_question = FakeSpectralQuestion(download_data="data/images/test.png")
 
     with (
-        patch("QuestionDrawer.SpectralQuestion", FakeSpectralQuestion),
         patch("QuestionDrawer.st.container", return_value=DummyContext()),
         patch("QuestionDrawer.st.form", return_value=DummyContext()),
         patch("QuestionDrawer.st.title"),
@@ -247,13 +248,13 @@ def test_draw_download_calls_streamlit_download_button(tmp_path: Path) -> None:
     test_file = tmp_path / "spectrum.txt"
     test_file.write_text("example spectral data", encoding="utf-8")
 
-    current_question = FakeQuestion()
+    current_question = FakeQuestion(download_data="data/images/test.png")
     current_question.spectralpath = str(test_file)
 
     with patch("QuestionDrawer.st.download_button") as mock_download_button:
         QuestionDrawer._drawDownload.__wrapped__(current_question)  # noqa: SLF001
 
     assert mock_download_button.call_count == 1
-    assert mock_download_button.call_args.args[0] == "Download Spectral Data"
-    assert mock_download_button.call_args.kwargs["file_name"] == "spectrum.txt"
+    assert mock_download_button.call_args.args[0] == "Download Data"
+    assert mock_download_button.call_args.kwargs["file_name"] == "test.png"
     assert mock_download_button.call_args.kwargs["icon"] == ":material/file_download:"
