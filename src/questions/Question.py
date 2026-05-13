@@ -65,7 +65,7 @@ class Question(ABC):
                 if col_counter == 0:
                     with col1:
                         ext = os.path.splitext(figure["path"])[1].lower()
-                        if ext in [".pdb", ".ent"]:
+                        if ext in [".pdb", ".ent", ".mol"]:
                             MoleculeDisplay.drawYourself(figure["path"])
                         else:
                             st.image(figure["path"], use_container_width=True)
@@ -73,7 +73,7 @@ class Question(ABC):
                 else:
                     with col2:
                         ext = os.path.splitext(figure["path"])[1].lower()
-                        if ext in [".pdb", ".ent"]:
+                        if ext in [".pdb", ".ent", ".mol"]:
                             MoleculeDisplay.drawYourself(figure["path"])
                         else:
                             st.image(figure["path"], use_container_width=True)
