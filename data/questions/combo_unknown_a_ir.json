@@ -17,5 +17,6 @@
     "Correct: this C-O stretch is useful evidence for an oxygen-containing saturated compound.",
     "Not quite. In this mock set, the most diagnostic C-O stretch is around 1245 cm^-1."
   ],
-  "tolerance": 8.0
+  "tolerance": 8.0,
+  "download_data": "data/images/test.png"
 }

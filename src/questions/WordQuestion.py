@@ -17,6 +17,7 @@ class WordQuestion(Question):
         correct_answer: str,
         feedbacks: list[str],
         figures: Optional[list[dict]] = None,
+        download_data: Optional[str] = None,
     ):
         """Initializes word question
 
@@ -27,8 +28,9 @@ class WordQuestion(Question):
             correct_answer str: The correct answer as a string
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 2 elements: correct feedback and incorrect feedback
             figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
+            download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
-        super().__init__(name, title, bodytext, figures, body_format)
+        super().__init__(name, title, bodytext, figures, body_format, download_data)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"word_input_{title}"

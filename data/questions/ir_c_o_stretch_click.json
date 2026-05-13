@@ -17,5 +17,6 @@
     "Correct: the strongest C-O stretch is centered around 1245 cm^-1.",
     "Not quite. Look for the deepest absorption in the fingerprint region around 1200-1300 cm^-1."
   ],
-  "tolerance": 8.0
+  "tolerance": 8.0,
+  "download_data": "data/images/test.png"
 }

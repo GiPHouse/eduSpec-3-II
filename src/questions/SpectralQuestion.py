@@ -129,6 +129,7 @@ class SpectralQuestion(Question):
         feedbacks: List[str],
         tolerance: float = 0.5,
         body_format: str = "text",
+        download_data: Optional[str] = None,
     ):
         """Init for the class
 
@@ -140,8 +141,9 @@ class SpectralQuestion(Question):
             correct_answer (float): The correct answer
             feedbacks (List[str]): Feedbacks stored in the form of [correct,wrong]
             tolerance (float, optional): How much can user answer differ from actual correct answer. Defaults to 0.5.
+            download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
-        super().__init__(name, title, bodytext, figures, body_format)
+        super().__init__(name, title, bodytext, figures, body_format, download_data)
 
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
