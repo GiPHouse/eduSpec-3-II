@@ -1,6 +1,7 @@
 {
   "id": "combination1",
   "questionNames": [
+    "question_with_custom_checker",
     "combo_unknown_a_ir",
     "nmr_methyl_triplet_click",
     "ms_base_peak_click",
