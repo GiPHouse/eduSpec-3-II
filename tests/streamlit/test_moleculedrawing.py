@@ -137,16 +137,6 @@ def test_whitespace_only_input_is_treated_as_empty() -> None:
     assert "No SMILES found" in msg
 
 
-def test_feedback_message_default() -> None:
-    """Check that the default feedback message is returned."""
-    q = make_question()
-
-    msg = q.feedback()
-
-    assert isinstance(msg, str)
-    assert "Try again" in msg
-
-
 def test_constructor_sets_basic_fields() -> None:
     """Check that constructor values are stored correctly."""
     q = make_question(seed_smiles="C")

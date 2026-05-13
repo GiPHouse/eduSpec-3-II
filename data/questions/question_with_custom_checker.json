@@ -1,0 +1,14 @@
+{
+    "id":  "question_custom_checker",
+    "title":  "title1",
+    "bodyText":  "this is a bodytext",
+    "version":  1,
+    "type":  "integer",
+    "figures":  [
+                      {
+                        "path": "../data/images/test.png",
+                        "description": "This is a description"
+                      }
+                  ],
+    "checker": "customintchecker"
+}

@@ -1,5 +1,8 @@
 README.md
 pyproject.toml
+src/checkers/BaseChecker.py
+src/checkers/BaseIntegerChecker.py
+src/checkers/default/IntegerChecker.py
 src/editor/CreateForms.py
 src/editor/__init__.py
 src/editor/editor.py
