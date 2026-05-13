@@ -145,7 +145,11 @@ class SpectralQuestion(Question):
             tolerance (float, optional): How much can user answer differ from actual correct answer. Defaults to 0.5.
             download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
+<<<<<<< custom_checkers
         super().__init__(name, title, bodytext, checker, figures, body_format, download_data)
+=======
+        super().__init__(name, title, bodytext, figures, body_format, download_data)
+>>>>>>> master
 
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
