@@ -52,6 +52,7 @@ class MoleculeDrawingQuestion(WordQuestion):
         checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
+        download_data: Optional[str] = None,
     ):
         """Initializes a MoleculeDrawingQuestion instance.
 
@@ -73,6 +74,8 @@ class MoleculeDrawingQuestion(WordQuestion):
         figures (Optional[dict], optional):
             Optional path to an image associated with the question.
             Defaults to None.
+
+        download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
         super().__init__(
             name=name,
@@ -83,6 +86,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             body_format=body_format,
             correct_answer=config.expected_smiles.strip(),
             feedbacks=feedbacks,
+            download_data=download_data,
         )
 
         self.widget_key = config.widget_key

@@ -17,5 +17,6 @@
     "Correct: the terminal CH3 group appears upfield near 0.93 ppm.",
     "Not quite. The terminal methyl group is the most upfield major signal, just below 1 ppm."
   ],
-  "tolerance": 0.04
+  "tolerance": 0.04,
+  "download_data": "data/images/test.png"
 }

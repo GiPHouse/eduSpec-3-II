@@ -19,6 +19,7 @@ class IntegerQuestion(Question):
         checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
+        download_data: Optional[str] = None,
     ):
         """Initializes integer question
 
@@ -29,10 +30,11 @@ class IntegerQuestion(Question):
             correct_answer (tuple[int|float, int|float]): The range in which the answer is correct
             feedbacks (list[str]): The feedbacks to the answers. Needs to have 3 elements: [right answer, too small answer, too big answer]
             figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
+            download_data (Optional[str], optional): paths to the data that can be downloaded with download button. Defaults to None.
         """
         # feedbacks is as follows: [feedback for correct answer, feedback for too small answer, feedback for too large answer]
 
-        super().__init__(name, title, bodytext, checker, figures, body_format)
+        super().__init__(name, title, bodytext, checker, figures, body_format, download_data)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"number_input_{title}"

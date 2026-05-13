@@ -45,6 +45,7 @@ class QuestionBuilder:
         spectralpath = obj.get("spectralpath")
         checker = obj.get("checker")
         checker_object = CheckerManager.buildChecker(checker) if checker else None
+        download_data = obj.get("download_data")
 
         match question_type:
             case "multipleChoice":
@@ -60,6 +61,7 @@ class QuestionBuilder:
                     feedbacks=feedbacks,
                     correct_answer=correct_answer,
                     figures=figures,
+                    download_data=download_data,
                     checker=checker_object,
                 )
 
@@ -74,6 +76,7 @@ class QuestionBuilder:
                     correct_answer=bounds,
                     feedbacks=feedbacks,
                     figures=figures,
+                    download_data=download_data,
                     checker=checker_object,
                 )
 
@@ -88,6 +91,7 @@ class QuestionBuilder:
                     correct_answer=correct_answer,
                     feedbacks=feedbacks,
                     figures=figures,
+                    download_data=download_data,
                     checker=checker_object,
                 )
 
@@ -106,6 +110,7 @@ class QuestionBuilder:
                     figures=figures,
                     spectralpath=spectralpath,
                     tolerance=float(tolerance),
+                    download_data=download_data,
                     checker=checker_object,
                 )
 
@@ -128,6 +133,7 @@ class QuestionBuilder:
                     config=config,
                     feedbacks=feedbacks,
                     figures=figures,
+                    download_data=download_data,
                     checker=checker_object,
                 )
 
@@ -165,11 +171,12 @@ class QuestionBuilder:
         """
         """
         Shared fields:
-        - id (string): The question id/name
-        - title (string): The question title
-        - bodyText (string): The question body text
-        - bodyFormat (string): The format of question body test
-        - figures (string): The image path. Empty if None
+        - id (str): The question id/name
+        - title (str): The question title
+        - bodyText (str): The question body text
+        - bodyFormat (str): The format of question body test
+        - figures (dict): The image path. Empty if None
+        - download_data (str): The data file that can be downloaded. Empty if None
         - version (int): The version of that specific serialiser
         - type (str): The type of question
         """
@@ -241,9 +248,12 @@ class QuestionBuilder:
                     correct_answer = obj.get("correctAnswer")
                     feedbacks = obj.get("feedbacks")
                     tolerance = obj.get("tolerance")
+                    spectralpath = obj.get("spectralpath")
                     if not isinstance(correct_answer, float) or not isinstance(tolerance, float):
                         return False
                     if not feedbacks:
+                        return False
+                    if not spectralpath:
                         return False
 
                 case "drawing":

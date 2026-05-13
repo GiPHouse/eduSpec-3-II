@@ -20,6 +20,7 @@ class MultipleChoiceQuestion(Question):
         checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
+        download_data: Optional[str] = None,
     ):
         """Initialises a new multiple-choice question
 
@@ -31,12 +32,13 @@ class MultipleChoiceQuestion(Question):
             correct_answer (int): The correct answer, as an index to the answers list
             feedbacks (list[str]): The feedbacks to the answers. Needs to be the same length as answers.
             figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
+            download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
         assert len(answers) == len(feedbacks)
         assert correct_answer >= 0
         assert correct_answer < len(answers)
 
-        super().__init__(name, title, bodytext, checker, figures, body_format)
+        super().__init__(name, title, bodytext, checker, figures, body_format, download_data)
         self.answers = answers
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks

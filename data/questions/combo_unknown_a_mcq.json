@@ -27,5 +27,6 @@
     "2-butanone would contain a carbonyl and has formula C4H8O.",
     "Diethyl ether has CH2-O signals but would show a more symmetric ethyl pattern.",
     "Butanal would show an aldehyde proton near 9-10 ppm and has formula C4H8O."
-  ]
+  ],
+  "download_data": "data/images/test.png"
 }
