@@ -35,7 +35,7 @@ class FakeQuestion:
         widget_key: str = "widget_key",
         default: Any = "default value",
         user_input: Any = "student answer",
-        download_data: str | None = "data/images/test.png",
+        download_data: str | None = None,
     ) -> None:
         """Initialise the fake question."""
         self.name = name
@@ -226,10 +226,9 @@ def test_draw_question_calls_draw_download_for_spectral_question() -> None:
     class FakeSpectralQuestion(FakeQuestion):
         """Fake spectral question type."""
 
-    current_question = FakeSpectralQuestion()
+    current_question = FakeSpectralQuestion(download_data="data/images/test.png")
 
     with (
-        patch("QuestionDrawer.SpectralQuestion", FakeSpectralQuestion),
         patch("QuestionDrawer.st.container", return_value=DummyContext()),
         patch("QuestionDrawer.st.form", return_value=DummyContext()),
         patch("QuestionDrawer.st.title"),
@@ -249,7 +248,7 @@ def test_draw_download_calls_streamlit_download_button(tmp_path: Path) -> None:
     test_file = tmp_path / "spectrum.txt"
     test_file.write_text("example spectral data", encoding="utf-8")
 
-    current_question = FakeQuestion()
+    current_question = FakeQuestion(download_data="data/images/test.png")
     current_question.spectralpath = str(test_file)
 
     with patch("QuestionDrawer.st.download_button") as mock_download_button:
