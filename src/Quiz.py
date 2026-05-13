@@ -51,12 +51,16 @@ class Quiz:
         
         # Increment attempt count
         attempts_key = f"attempts_{self.name}"
+        if attempts_key not in st.session_state:
+            st.session_state[attempts_key] = {}
         if question_index not in st.session_state[attempts_key]:
             st.session_state[attempts_key][question_index] = 0
         st.session_state[attempts_key][question_index] += 1
         
         # Record answer (only update to correct if they got it right)
         answers_key = f"answers_{self.name}"
+        if answers_key not in st.session_state:
+            st.session_state[answers_key] = {}
         current_answer = st.session_state[answers_key].get(question_index, {})
         
         # If already marked correct, don't change it
@@ -70,12 +74,12 @@ class Quiz:
 
     def isQuizComplete(self) -> bool:
         """Checks if all questions have been answered."""
-        answers = st.session_state[f"answers_{self.name}"]
+        answers = st.session_state.get(f"answers_{self.name}", {})
         return len(answers) == len(self.question_list)
 
     def drawReviewPage(self) -> None:
         """Draws the final review page showing results."""
-        answers = st.session_state[f"answers_{self.name}"]
+        answers = st.session_state.get(f"answers_{self.name}", {})
 
         # Show balloons on first view of review page
         if not st.session_state.get(f"balloons_shown_{self.name}", False):

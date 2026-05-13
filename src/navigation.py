@@ -56,19 +56,11 @@ def getQuestionRegistry() -> list[str]:
     return valid_question_ids
 
 
-def getDefaultQuestion() -> str:
-    """Return the first question referenced in the navigation tree."""
-    nav = _walkNavigation(loadNavigationItems())
-    if len(nav) > 0:
-        for item in nav:
-            question = item.get("question")
-            if question is not None:
-                return question
-    return ""
-
-
-def itemContainsQuestion(item: NavigationItem, question: str) -> bool:
+def itemContainsQuestion(item: NavigationItem, question: str | None) -> bool:
     """Check whether the item or one of its descendants matches the question."""
+    if question is None:
+        return False
+
     if item.get("question") == question:
         return True
 
@@ -77,12 +69,36 @@ def itemContainsQuestion(item: NavigationItem, question: str) -> bool:
     )
 
 
-def getTopLevelLabel(question: str) -> str:
+def itemContainsQuiz(item: NavigationItem, quiz: str | None) -> bool:
+    """Check whether the item or one of its descendants matches the quiz."""
+    if quiz is None:
+        return False
+
+    if item.get("quiz") == quiz:
+        return True
+
+    return any(
+        itemContainsQuiz(child, quiz) for child in item.get("children", [])
+    )
+
+
+def getTopLevelQuestionLabel(question: str) -> str:
     """Return the active top-level label for the current question."""
     items = loadNavigationItems()
 
     for item in items:
         if itemContainsQuestion(item, question):
+            return item["label"]
+
+    return items[0]["label"]
+
+
+def getTopLevelQuizLabel(quiz: str) -> str:
+    """Return the active top-level label for the current quiz."""
+    items = loadNavigationItems()
+
+    for item in items:
+        if itemContainsQuiz(item, quiz):
             return item["label"]
 
     return items[0]["label"]
@@ -96,29 +112,47 @@ def initTheme() -> None:
     applyTheme(THEMES[st.session_state["theme"]])
 
 
-def navigate(question: str, label: str | None = None) -> None:
-    """Navigate to a different question."""
+def navigateQuestion(question: str, label: str | None = None) -> None:
+    """Navigate to a question."""
     st.session_state["current_question"] = question
+    st.session_state["current_quiz"] = None
     st.session_state["current_page"] = None
     if label is not None:
         st.session_state["navbar"] = label
     st.query_params["question"] = question
+    st.query_params.pop("quiz", None)
+    st.query_params.pop("page", None)
+    st.rerun()
+
+def navigateQuiz(quiz: str, label: str | None = None) -> None:
+    """Navigate to a quiz."""
+    st.session_state["current_quiz"] = quiz
+    st.session_state["current_question"] = None
+    st.session_state["current_page"] = None
+    if label is not None:
+        st.session_state["navbar"] = label
+    st.query_params["quiz"] = quiz
+    st.query_params.pop("question", None)
     st.query_params.pop("page", None)
     st.rerun()
 
 def navigateHome() -> None:
     """Navigate to the home page."""
     st.session_state["current_question"] = None
+    st.session_state["current_quiz"] = None
     st.session_state["navbar"] = None
     st.query_params.pop("question", None)
+    st.query_params.pop("quiz", None)
     st.session_state["current_page"] = "home"
     st.query_params["page"] = "home"
 
 def navigatePage(page: str) -> None:
     """Navigate to a different page."""
     st.session_state["current_question"] = None
+    st.session_state["current_quiz"] = None
     st.session_state["navbar"] = None
     st.query_params.pop("question", None)
+    st.query_params.pop("quiz", None)
     st.session_state["current_page"] = page
     st.query_params["page"] = page
 
@@ -138,55 +172,67 @@ def aboutPage() -> None:
     st.title("About")
     st.text("This application was developed by the EduSpec team for educational purposes.")
 
-def renderNavigationButton(
-    container: Any, label: str, question: str, current_question: str
+def renderQuestionButton(
+    container: Any, label: str, question: str, current_question: str | None
 ) -> None:
-    """Render a single navigation button."""
+    """Render a single navigation button for questions"""
     button_type = "primary" if current_question == question else "secondary"
     if container.button(
         label, key=question, type=button_type, width="stretch"
     ):
-        navigate(question, label)
+        navigateQuestion(question, label)
+
+
+def renderQuizButton(
+    container: Any, label: str, quiz: str, current_quiz: str | None
+) -> None:
+    """Render a single navigation button for quizes"""
+    button_type = "primary" if current_quiz == quiz else "secondary"
+    if container.button(
+        label, key=f"quiz_{quiz}", type=button_type, width="stretch"
+    ):
+        navigateQuiz(quiz)
 
 
 def renderNavigationNode(
-    container: Any, item: NavigationItem, current_question: str
+    container: Any,
+    item: NavigationItem,
+    current_question: str | None,
+    current_quiz: str | None,
 ) -> None:
     """Render a nested navigation node."""
     children = item.get("children", [])
     question = item.get("question")
+    quiz = item.get("quiz")
 
     if children:
         expander = container.expander(
-            item["label"], expanded=itemContainsQuestion(item, current_question)
+            item["label"],
+            expanded=(
+                itemContainsQuestion(item, current_question)
+                or itemContainsQuiz(item, current_quiz)
+            ),
         )
         if question:
-            renderNavigationButton(expander, item["label"], question, current_question)
+            renderQuestionButton(expander, item["label"], question, current_question)
+        if quiz:
+            renderQuizButton(expander, item["label"], quiz, current_quiz)
         for child in children:
-            renderNavigationNode(expander, child, current_question)
+            renderNavigationNode(expander, child, current_question, current_quiz)
         return
 
     if question:
-        renderNavigationButton(container, item["label"], question, current_question)
+        renderQuestionButton(container, item["label"], question, current_question)
+    if quiz:
+        renderQuizButton(container, item["label"], quiz, current_quiz)
 
 
 def showNavigation() -> None:
     """Render the full navigation UI in the sidebar."""
     items = loadNavigationItems()
-    current_question = st.session_state.get("current_question", getDefaultQuestion())
+    current_question = st.session_state.get("current_question")
+    current_quiz = st.session_state.get("current_quiz")
     current_label = st.session_state.get("navbar")
-    if current_label is not None:
-        matching_item = next(
-            (item for item in items if item["label"] == current_label),
-            None,
-        ) 
-    else:
-        matching_item = None
-
-    if matching_item is not None and itemContainsQuestion(matching_item, current_question):
-        st.session_state["navbar"] = current_label
-    else:
-        st.session_state["navbar"] = getTopLevelLabel(current_question)
 
     sidebar = st.sidebar
     st.markdown("""
@@ -210,14 +256,17 @@ def showNavigation() -> None:
         with col3:
             button_type = "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
             st.button("About", width="stretch", on_click=navigatePage, args=("about",), type=button_type, key="About")
-        
-    tabs = sidebar.tabs([item["label"] for item in items])
+
+    tabs = sidebar.tabs([item["label"] for item in items], default=current_label)
 
     for tab, item in zip(tabs, items):
         with tab:
             question = item.get("question")
+            quiz = item.get("quiz")
             if question:
-                renderNavigationButton(tab, item["label"], question, current_question)
+                renderQuestionButton(tab, item["label"], question, current_question)
+            if quiz:
+                renderQuizButton(tab, item["label"], quiz, current_quiz)
 
             for child in item.get("children", []):
-                renderNavigationNode(tab, child, current_question)
+                renderNavigationNode(tab, child, current_question, current_quiz)

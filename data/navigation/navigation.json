@@ -72,6 +72,10 @@
         {
           "label": "Unknown A",
           "children": [
+                    {
+                "label": "Combination quiz",
+                "quiz": "combination1"
+            },
             {
               "label": "IR Clue",
               "question": "combo_unknown_a_ir"
