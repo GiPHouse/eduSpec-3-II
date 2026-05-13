@@ -17,5 +17,6 @@
     "Correct: the base peak is at m/z 43.",
     "Too low. The tallest signal is just above m/z 42.",
     "Too high. The tallest signal is at m/z 43."
-  ]
+  ],
+  "download_data": "data/images/test.png"
 }

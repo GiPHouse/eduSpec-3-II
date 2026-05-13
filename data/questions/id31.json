@@ -1,1 +1,0 @@
-{"id": "id31", "title": "title", "bodyText": "body", "imagePath": ["../data/images/test.png", "../data/molecules/neoNR8.pdb"], "version": 1, "type": "drawing", "correctAnswer": "C", "defaultAnswer": "", "correctFeedback": "bravo", "incorrectFeedback": "no bravo", "widgetKey": "dq_default_widget_key"}

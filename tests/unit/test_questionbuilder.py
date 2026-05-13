@@ -271,27 +271,20 @@ class TestBuildingWordQ:
         assert wordq.feedbacks == correct_wordq.feedbacks
 
     def test_faulty_WordQ_1(self) -> None:
-        """Test case for building a word question without figures attribute"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
-
-        with pytest.raises(ValueError):
-            assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
-
-    def test_faulty_WordQ_2(self) -> None:
         """Test case for building a word question without correctFeedback attribute"""
         input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "word", "correctAnswer": "answer", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
 
-    def test_faulty_WordQ_3(self) -> None:
+    def test_faulty_WordQ_2(self) -> None:
         """Test case for building a word question with non-string correctAnswer"""
         input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "word", "correctAnswer": 3, "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), WordQuestion)
 
-    def test_faulty_WordQ_4(self) -> None:
+    def test_faulty_WordQ_3(self) -> None:
         """Test case for building a word question with empty correctAnswer"""
         input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "word", "correctAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 

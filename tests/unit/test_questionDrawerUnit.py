@@ -35,6 +35,7 @@ class FakeQuestion:
         widget_key: str = "widget_key",
         default: Any = "default value",
         user_input: Any = "student answer",
+        download_data: str | None = "data/images/test.png",
     ) -> None:
         """Initialise the fake question."""
         self.name = name
@@ -45,6 +46,7 @@ class FakeQuestion:
         self.default = default
         self.user_input = user_input
         self.draw_image_called = False
+        self.download_data = download_data
 
     def drawImage(self) -> None:
         """Record that drawImage was called."""
@@ -254,6 +256,6 @@ def test_draw_download_calls_streamlit_download_button(tmp_path: Path) -> None:
         QuestionDrawer._drawDownload.__wrapped__(current_question)  # noqa: SLF001
 
     assert mock_download_button.call_count == 1
-    assert mock_download_button.call_args.args[0] == "Download Spectral Data"
-    assert mock_download_button.call_args.kwargs["file_name"] == "spectrum.txt"
+    assert mock_download_button.call_args.args[0] == "Download Data"
+    assert mock_download_button.call_args.kwargs["file_name"] == "test.png"
     assert mock_download_button.call_args.kwargs["icon"] == ":material/file_download:"
