@@ -292,15 +292,17 @@ class SpectralQuestion(Question):
 
         if event and getattr(event, "selection", None) and event.selection.points:
             point = event.selection.points[0]
+            if self.type == SpectralType.MS:
+                new_selected = float(point["x"])
+            else:
+                original_idx = point.get("customdata")
+                if original_idx is not None:
+                    new_selected = self._snap_from_original_index(int(original_idx))
 
-            original_idx = point.get("customdata")
-            if original_idx is not None:
-                new_selected = self._snap_from_original_index(int(original_idx))
-
-                previous_selected = st.session_state.get(self.widget_key, self.default)
-                if previous_selected != new_selected:
-                    st.session_state[self.widget_key] = new_selected
-                    st.rerun()
+            previous_selected = st.session_state.get(self.widget_key, self.default)
+            if previous_selected != new_selected:
+                st.session_state[self.widget_key] = new_selected
+                st.rerun()
 
     def drawYourself(self) -> None:
         """A function to capture the selected peak and display it.
@@ -360,11 +362,11 @@ class SpectralQuestion(Question):
                 )
             )
 
-        if selected_x is not None:
+        if selected_x is not None and self.type != SpectralType.MS:
             fig.add_trace(
                 go.Scatter(
                     x=[selected_x, selected_x],
-                    y=[float(np.min(self.display_y)), float(np.max(self.display_y))],
+                    y=[float(np.min(self.display_y)), float(np.max(self.display_y)) * 1.2],
                     mode="lines",
                     line=dict(color="red", width=2, dash="dash"),
                     showlegend=False,
