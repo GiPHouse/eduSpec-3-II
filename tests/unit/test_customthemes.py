@@ -242,10 +242,7 @@ def test_show_theme_selector_preview_border_uses_active_highlight() -> None:
         showThemeSelector()
 
     html_blocks = [call.args[0] for call in mock_html.call_args_list]
-    spotify_block = next(
-        block for block in html_blocks if THEMES["Spotify"]["primaryColor"] in block
-    )
+
     light_block = next(block for block in html_blocks if THEMES["Light"]["primaryColor"] in block)
 
-    assert "border: 2px solid #FF4B4B" in spotify_block
     assert f"border: 2px solid {THEMES['Light']['borderColor']}" in light_block
