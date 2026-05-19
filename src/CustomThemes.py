@@ -158,8 +158,8 @@ def applyTheme(theme: dict) -> None:
                 border: 1px solid {theme["borderColor"]};
                 color: {theme["textColor"]};
                 border-radius: 8px;
-            }}    
-                
+            }}
+
              /* Top toolbar */
             [data-testid="stToolbar"] {{
                 background-color: {theme["backgroundColor"]} !important;
@@ -178,9 +178,9 @@ def applyTheme(theme: dict) -> None:
             /* App decoration line at top */
             [data-testid="stDecoration"] {{
                 background-color: {theme["backgroundColor"]} !important;
-            
+
             }}
-            
+
             [data-testid="stExpander"] {{
                 background-color: {theme["secondaryBackgroundColor"]};
                 border: 1px solid {theme["borderColor"]};
@@ -192,9 +192,43 @@ def applyTheme(theme: dict) -> None:
                 color: {theme["textColor"]} !important;
                 border-radius: 8px;
             }}
+            /* Expander header */
+            [data-testid="stDownloadButton"] button {{
+                background-color: {theme["backgroundColor"]} !important;
+                color: {theme["textColor"]} !important;
+                border: 1px solid {theme["borderColor"]} !important;
+                border-radius: 8px;
+            }}
+            /* Expander header */
+            [class*="stFormSubmitButton"] button {{
+                background-color: {theme["buttonColor"]} !important;
+                color: {theme["textColor"]} !important;
+                border: 1px solid {theme["borderColor"]} !important;
+                border-radius: 8px;
+            }}
 
-         
-            
+            /* Expander header */
+            [class*="st-key-reset_button_form_"] button {{
+                background-color: {theme["backgroundColor"]} !important;
+                color: {theme["textColor"]} !important;
+                border: 1px solid {theme["borderColor"]} !important;
+                border-radius: 8px;
+            }}
+
+            /* Inner selected dot */
+            [data-testid="stRadio"] label[data-baseweb="radio"]  > div:first-child >div {{
+                background-color: {theme["backgroundColor"]} !important;
+                border: 1px solid {theme["textColor"]} !important;
+            }}
+
+
+
+
+
+
+
+
+
         </style>
         """,
     )
@@ -221,7 +255,7 @@ def showThemeSelector() -> None:
                 f"""
                 <div style="
                     background-color: {theme["backgroundColor"]};
-                    border: 2px solid {"#FF4B4B" if is_active else theme["borderColor"]};
+                    border: 2px solid {theme["borderColor"]};
                     border-radius: 8px;
                     padding: 8px;
                     text-align: center;
