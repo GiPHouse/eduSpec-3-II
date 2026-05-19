@@ -207,6 +207,8 @@ class QuestionBuilder:
                 answers = obj.get("answers")
                 feedbacks = obj.get("feedbacks")
                 correct_answer = obj.get("correctAnswer")
+                if checker:
+                    return True  # If there is a custom checker, we don't need to verify the answers, feedbacks and correct answer
                 if not answers or not feedbacks:
                     return False
                 if correct_answer is None or not isinstance(correct_answer, int):
@@ -224,6 +226,8 @@ class QuestionBuilder:
                 lower_bound = obj.get("lowerBound")
                 upper_bound = obj.get("upperBound")
                 feedbacks = obj.get("feedbacks")
+                if checker:
+                    return True  # If there is a custom checker, we don't need to verify the bounds and feedbacks
                 if lower_bound is None or upper_bound is None or feedbacks is None:
                     return False
                 if not isinstance(lower_bound, (int, float)) or not isinstance(
@@ -240,6 +244,8 @@ class QuestionBuilder:
                 correct_answer = obj.get("correctAnswer")
                 correct_feedback = obj.get("correctFeedback")
                 incorrect_feedback = obj.get("incorrectFeedback")
+                if checker:
+                    return True  # If there is a custom checker, we don't need to verify the correct answer and feedbacks
                 if not correct_answer or not correct_feedback or not incorrect_feedback:
                     return False
                 if not isinstance(correct_answer, str):
@@ -251,11 +257,13 @@ class QuestionBuilder:
                 feedbacks = obj.get("feedbacks")
                 tolerance = obj.get("tolerance")
                 spectralpath = obj.get("spectralpath")
+                if not spectralpath:
+                    return False
+                if checker:
+                    return True  # If there is a custom checker, we don't need to verify the correct answer, feedbacks and tolerance
                 if not isinstance(correct_answer, float) or not isinstance(tolerance, float):
                     return False
                 if not feedbacks:
-                    return False
-                if not spectralpath:
                     return False
 
             case "drawing":
@@ -266,12 +274,15 @@ class QuestionBuilder:
                 correct_feedback = obj.get("correctFeedback")
                 incorrect_feedback = obj.get("incorrectFeedback")
                 widget_key = obj.get("widgetKey")
+                if not isinstance(widget_key, str):
+                    return False
+                if checker:
+                    return True  # If there is a custom checker, we don't need to verify the correct answer, feedbacks and widget key
                 if not correct_answer or not correct_feedback or not incorrect_feedback:
                     return False
                 if (
                     not isinstance(correct_answer, str)
                     or not isinstance(default_answer, str)
-                    or not isinstance(widget_key, str)
                 ):
                     return False
 
