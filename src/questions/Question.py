@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 import streamlit as st
 
+from Checker import Checker
 from MoleculeDisplay import MoleculeDisplay
 
 
@@ -19,6 +20,7 @@ class Question(ABC):
         name: str,
         title: str,
         bodytext: str,
+        checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
         download_data: Optional[str] = None,
@@ -39,6 +41,7 @@ class Question(ABC):
         self.name = name
         self.title = title
         self.bodytext = bodytext
+        self.checker = checker
         self.figures = figures
         self.body_format = body_format
         self.download_data = download_data
@@ -47,10 +50,6 @@ class Question(ABC):
     def verifyAndFeedback(self) -> tuple[bool, str]:
         """Interface template. Returns whether an answer is correct and the feedback given."""
         pass
-
-    @abstractmethod
-    def feedback(self) -> str:
-        """Interface template. Returns the feedback for an answer."""
 
     @abstractmethod
     def drawYourself(self) -> Any:

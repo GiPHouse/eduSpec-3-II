@@ -127,7 +127,7 @@ class QuestionManager(BaseManager):
         if len(matches) == 1:
             return str(matches[0].resolve())
 
-        return resolved_path
+        return str(resolved_path)
 
     @classmethod
     def _resolveAssetPath(cls, figures: dict | list[dict] | None) -> list[dict] | None:

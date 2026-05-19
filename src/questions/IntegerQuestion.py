@@ -2,6 +2,7 @@ from typing import Optional
 
 import streamlit as st
 
+from Checker import Checker
 from questions.Question import Question
 
 
@@ -15,6 +16,7 @@ class IntegerQuestion(Question):
         bodytext: str,
         correct_answer: tuple[int | float, int | float],
         feedbacks: list[str],
+        checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
         download_data: Optional[str] = None,
@@ -30,9 +32,9 @@ class IntegerQuestion(Question):
             figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
             download_data (Optional[str], optional): paths to the data that can be downloaded with download button. Defaults to None.
         """
-        # feedbacks is as follows: [feedback for right answer, feedback for too small answer, feedback for too large answer]
+        # feedbacks is as follows: [feedback for correct answer, feedback for too small answer, feedback for too large answer]
 
-        super().__init__(name, title, bodytext, figures, body_format, download_data)
+        super().__init__(name, title, bodytext, checker, figures, body_format, download_data)
         self.correct_answer = correct_answer
         self.feedbacks = feedbacks
         self.widget_key = f"number_input_{title}"
@@ -47,6 +49,9 @@ class IntegerQuestion(Question):
         Returns:
             (bool, str): return a tuple with whether the answer is correct and its corresponding feedback
         """
+        if self.checker is not None:
+            return self.checker.check(user_input)
+
         isAnswerCorrect: bool
         ReturnFeedback: str
 
@@ -61,10 +66,6 @@ class IntegerQuestion(Question):
             ReturnFeedback = self.feedbacks[0]
 
         return (isAnswerCorrect, ReturnFeedback)
-
-    def feedback(self) -> None:
-        """Unused, all logic is in `verifyAndFeedback()`"""
-        pass
 
     def drawYourself(self) -> Optional[int | float]:
         """Question draws itself

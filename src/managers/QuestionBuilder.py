@@ -1,5 +1,6 @@
 import json
 
+from managers.CheckerManager import CheckerManager
 from questions.IntegerQuestion import IntegerQuestion
 from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
@@ -42,6 +43,8 @@ class QuestionBuilder:
         body_format = obj.get("bodyFormat", "text")
         figures = obj.get("figures")
         spectralpath = obj.get("spectralpath")
+        checker = obj.get("checker")
+        checker_object = CheckerManager.buildChecker(checker) if checker else None
         download_data = obj.get("download_data")
 
         match question_type:
@@ -59,6 +62,7 @@ class QuestionBuilder:
                     correct_answer=correct_answer,
                     figures=figures,
                     download_data=download_data,
+                    checker=checker_object,
                 )
 
             case "integer":
@@ -73,6 +77,7 @@ class QuestionBuilder:
                     feedbacks=feedbacks,
                     figures=figures,
                     download_data=download_data,
+                    checker=checker_object,
                 )
 
             case "word":
@@ -87,6 +92,7 @@ class QuestionBuilder:
                     feedbacks=feedbacks,
                     figures=figures,
                     download_data=download_data,
+                    checker=checker_object,
                 )
 
             case "spectral":
@@ -105,6 +111,7 @@ class QuestionBuilder:
                     spectralpath=spectralpath,
                     tolerance=float(tolerance),
                     download_data=download_data,
+                    checker=checker_object,
                 )
 
             case "drawing":
@@ -127,6 +134,7 @@ class QuestionBuilder:
                     feedbacks=feedbacks,
                     figures=figures,
                     download_data=download_data,
+                    checker=checker_object,
                 )
 
             case n:
@@ -183,6 +191,16 @@ class QuestionBuilder:
             return False
 
         # Test any questiontype-specific attributes
+        if obj.get("figures") is None:
+            return False
+
+        checker = obj.get("checker")
+        if checker:
+            try:
+                CheckerManager.buildChecker(checker)
+            except Exception:
+                return False
+
         match obj.get("type"):
             case "multipleChoice":
                 # Multiple-choice questions must have at least 2 answers, the same amount of feedbacks, and a valid correct answer

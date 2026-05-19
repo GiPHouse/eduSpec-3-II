@@ -35,6 +35,7 @@ class TestSerialisationMCQ:
             "answers": ["a", "b", "c"],
             "correctAnswer": 1,
             "feedbacks": ["a: wrong", "b: correct", "c: wrong"],
+            "checker": None,
         }
 
     def test_MCQfigures(self) -> None:
@@ -63,6 +64,7 @@ class TestSerialisationMCQ:
             "answers": ["a", "b", "c"],
             "correctAnswer": 1,
             "feedbacks": ["a: wrong", "b: correct", "c: wrong"],
+            "checker": None,
         }
 
 
@@ -93,6 +95,7 @@ class TestSerialisationIntQ:
             "lowerBound": 0,
             "upperBound": 3,
             "feedbacks": ["correct", "too low", "too high"],
+            "checker": None,
         }
 
 
@@ -123,6 +126,7 @@ class TestSerialisationWordQ:
             "correctAnswer": "answer",
             "correctFeedback": "correct",
             "incorrectFeedback": "wrong",
+            "checker": None,
         }
 
 
@@ -154,5 +158,6 @@ class TestSerialisationDrawQ:
             "defaultAnswer": "seed",
             "correctFeedback": "correct",
             "incorrectFeedback": "wrong",
+            "checker": None,
             "widgetKey": "key",
         }
