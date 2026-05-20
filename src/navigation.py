@@ -6,8 +6,6 @@ from typing import Any
 
 import streamlit as st
 
-from CustomThemes import THEMES, applyTheme, showThemeSelector
-
 data_dir = Path(__file__).parent.parent / "data"  # get path to data directory
 navigation_file = data_dir / "navigation" / "navigation.json"
 navigation_env_var = "EDUSPEC_NAVIGATION_FILE"
@@ -75,9 +73,7 @@ def itemContainsQuiz(item: NavigationItem, quiz: str | None) -> bool:
     if item.get("quiz") == quiz:
         return True
 
-    return any(
-        itemContainsQuiz(child, quiz) for child in item.get("children", [])
-    )
+    return any(itemContainsQuiz(child, quiz) for child in item.get("children", []))
 
 
 def getTopLevelQuestionLabel(question: str) -> str:
@@ -102,14 +98,6 @@ def getTopLevelQuizLabel(quiz: str) -> str:
     return items[0]["label"]
 
 
-def initTheme() -> None:
-    """Initialize and apply the current theme."""
-    if "theme" not in st.session_state:
-        st.session_state["theme"] = "Light"
-
-    applyTheme(THEMES[st.session_state["theme"]])
-
-
 def navigateQuestion(question: str, label: str | None = None) -> None:
     """Navigate to a question."""
     st.session_state["current_question"] = question
@@ -121,6 +109,7 @@ def navigateQuestion(question: str, label: str | None = None) -> None:
     st.query_params.pop("quiz", None)
     st.query_params.pop("page", None)
     st.rerun()
+
 
 def navigateQuiz(quiz: str, label: str | None = None) -> None:
     """Navigate to a quiz."""
@@ -166,36 +155,25 @@ def homePage() -> None:
     )
 
 
-def settingsPage() -> None:
-    """render settings page"""
-    st.title("Settings")
-    showThemeSelector()
-
-
 def aboutPage() -> None:
     """render about page"""
     st.title("About")
     st.text("This application was developed by the EduSpec team for educational purposes.")
+
 
 def renderQuestionButton(
     container: Any, label: str, question: str, current_question: str | None
 ) -> None:
     """Render a single navigation button for questions"""
     button_type = "primary" if current_question == question else "secondary"
-    if container.button(
-        label, key=question, type=button_type, width="stretch"
-    ):
+    if container.button(label, key=question, type=button_type, width="stretch"):
         navigateQuestion(question, label)
 
 
-def renderQuizButton(
-    container: Any, label: str, quiz: str, current_quiz: str | None
-) -> None:
+def renderQuizButton(container: Any, label: str, quiz: str, current_quiz: str | None) -> None:
     """Render a single navigation button for quizes"""
     button_type = "primary" if current_quiz == quiz else "secondary"
-    if container.button(
-        label, key=f"quiz_{quiz}", type=button_type, width="stretch"
-    ):
+    if container.button(label, key=f"quiz_{quiz}", type=button_type, width="stretch"):
         navigateQuiz(quiz)
 
 
@@ -214,8 +192,7 @@ def renderNavigationNode(
         expander = container.expander(
             item["label"],
             expanded=(
-                itemContainsQuestion(item, current_question)
-                or itemContainsQuiz(item, current_quiz)
+                itemContainsQuestion(item, current_question) or itemContainsQuiz(item, current_quiz)
             ),
         )
         if question:
@@ -254,7 +231,7 @@ def showNavigation() -> None:
     )
 
     with st.sidebar:
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
         with col1:
             button_type = (
                 "primary" if st.session_state.get("current_page", "") == "home" else "secondary"
@@ -262,19 +239,16 @@ def showNavigation() -> None:
             st.button("Home", width="stretch", on_click=navigateHome, type=button_type, key="Home")
         with col2:
             button_type = (
-                "primary" if st.session_state.get("current_page", "") == "settings" else "secondary"
+                "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
             )
             st.button(
-                "Settings",
+                "About",
                 width="stretch",
                 on_click=navigatePage,
-                args=("settings",),
+                args=("about",),
                 type=button_type,
-                key="Settings",
+                key="About",
             )
-        with col3:
-            button_type = "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
-            st.button("About", width="stretch", on_click=navigatePage, args=("about",), type=button_type, key="About")
 
     tabs = sidebar.tabs([item["label"] for item in items], default=current_label)
 
