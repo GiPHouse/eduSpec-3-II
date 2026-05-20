@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 import streamlit as st
 
+from Checker import Checker
 from jsme_component import jsme_component
 from questions.WordQuestion import WordQuestion
 
@@ -26,7 +27,7 @@ class MoleculeDrawingConfig:
         only one editor is used per page, but good practice to always set it)
     """
 
-    expected_smiles: str  # what you want them to draw (answer)
+    expected_smiles: Optional[str]  # what you want them to draw (answer)
     seed_smiles: str  # what editor starts with
     widget_key: str  # unique key for Streamlit widget
 
@@ -47,9 +48,11 @@ class MoleculeDrawingQuestion(WordQuestion):
         title: str,
         bodytext: str,
         config: MoleculeDrawingConfig,
-        feedbacks: list[str],
+        feedbacks: Optional[list[str]] = None,
+        checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
+        download_data: Optional[str] = None,
     ):
         """Initializes a MoleculeDrawingQuestion instance.
 
@@ -64,22 +67,32 @@ class MoleculeDrawingQuestion(WordQuestion):
             Configuration object containing expected answer,
             initial editor state, and widget key.
 
-        feedbacks (list[str]):
+        feedbacks (Optional[list[str]], optional):
             The feedbacks to the answers.
-            Needs to have 2 elements: correct feedback and incorrect feedback
+            Needs to have 2 elements: correct feedback and incorrect feedback.
+            Not needed when there is a custom checker.
+            Default to None.
 
         figures (Optional[dict], optional):
             Optional path to an image associated with the question.
             Defaults to None.
+
+        download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
+        correct_answer = None
+        if checker is None:
+            correct_answer = config.expected_smiles.strip()
+
         super().__init__(
             name=name,
             title=title,
             bodytext=bodytext,
+            checker=checker,
             figures=figures,
             body_format=body_format,
-            correct_answer=config.expected_smiles.strip(),
+            correct_answer=correct_answer,
             feedbacks=feedbacks,
+            download_data=download_data,
         )
 
         self.widget_key = config.widget_key
@@ -121,15 +134,17 @@ class MoleculeDrawingQuestion(WordQuestion):
         reset_requested = previous_base != default_val and current_base == default_val
 
         if reset_requested:
-            # st.session_state[self._nonce_key] += 1
+            st.session_state[self._nonce_key] += 1
             self._latest_smiles = None
             st.session_state[self._last_seen_key] = default_val
-            # st.rerun()
+            st.rerun()
 
-        nonce = st.session_state[self._nonce_key]
+        nonce = st.session_state.get(self._nonce_key, 0)
         component_key = f"{base_key}__jsme__{nonce}"
 
         data = jsme_component(default_smiles=self.default, key=component_key)
+
+        st.info("Draw a molecule in the editor, then click Submit Answer.")
 
         smiles = ""
         if isinstance(data, dict):
@@ -143,7 +158,6 @@ class MoleculeDrawingQuestion(WordQuestion):
 
         self._latest_smiles = None
         st.session_state[self._last_seen_key] = current_base
-        st.info("Draw a molecule in the editor, then click Submit Answer.")
         return None
 
     def verifyAndFeedback(
@@ -173,15 +187,6 @@ class MoleculeDrawingQuestion(WordQuestion):
         #     return False, f"Incorrect. Expected {expected}, but you drew {submitted}."
 
         # return True, msg
-
-    def feedback(self) -> str:
-        """Provides default feedback for incorrect submissions.
-
-        Returns:
-            str:
-                A generic feedback message encouraging retry.
-        """
-        return "Try again: make sure the structure matches the target molecule."
 
     """
     Template to create a question like this:

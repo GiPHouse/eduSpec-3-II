@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 import streamlit as st
 
+from Checker import Checker
 from MoleculeDisplay import MoleculeDisplay
 
 
@@ -19,8 +20,10 @@ class Question(ABC):
         name: str,
         title: str,
         bodytext: str,
+        checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
+        download_data: Optional[str] = None,
     ):
         """Initialises a Question instance. DO NOT USE THE QUESTION CLASS DIRECTLY.
 
@@ -30,6 +33,7 @@ class Question(ABC):
             bodytext (str): The body text of the question.
             figures (Optional[list[dict]], optional): Paths to the images used for the question. Defaults to None.
             body_format (str, optional): Whether the body should be shown as normal text or LaTeX.
+            download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
         if body_format not in ["text", "latex"]:
             raise ValueError("body_format must be either 'text' or 'latex'")
@@ -37,17 +41,15 @@ class Question(ABC):
         self.name = name
         self.title = title
         self.bodytext = bodytext
+        self.checker = checker
         self.figures = figures
         self.body_format = body_format
+        self.download_data = download_data
 
     @abstractmethod
     def verifyAndFeedback(self) -> tuple[bool, str]:
         """Interface template. Returns whether an answer is correct and the feedback given."""
         pass
-
-    @abstractmethod
-    def feedback(self) -> str:
-        """Interface template. Returns the feedback for an answer."""
 
     @abstractmethod
     def drawYourself(self) -> Any:

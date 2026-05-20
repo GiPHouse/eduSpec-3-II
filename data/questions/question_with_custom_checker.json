@@ -1,20 +1,14 @@
 {
-    "id":  "question1",
+    "id":  "question_custom_checker",
     "title":  "title1",
     "bodyText":  "this is a bodytext",
     "version":  1,
     "type":  "integer",
-    "feedbacks":  [
-                      "correct",
-                      "too low",
-                      "too high"
-                  ],
-    "lowerBound":  10,
-    "upperBound":  20,
     "figures":  [
                       {
                         "path": "../data/images/test.png",
                         "description": "This is a description"
                       }
-                  ]
+                  ],
+    "checker": "customintchecker"
 }

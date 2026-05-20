@@ -77,9 +77,9 @@ class TestMCQExtra:
 
     def test_feedback_returns_expected_entry(self, mcq: MultipleChoiceQuestion) -> None:
         """Test that feedback returns the matching feedback entry."""
-        assert mcq.feedback(0) == "a: wrong"
-        assert mcq.feedback(1) == "b: correct"
-        assert mcq.feedback(2) == "c: wrong"
+        assert mcq.verifyAndFeedback(0)[1] == "a: wrong"
+        assert mcq.verifyAndFeedback(1)[1] == "b: correct"
+        assert mcq.verifyAndFeedback(2)[1] == "c: wrong"
 
     def test_verify_correct_answer(self, mcq: MultipleChoiceQuestion) -> None:
         """Test that the correct answer is marked correct."""

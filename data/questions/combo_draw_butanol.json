@@ -19,5 +19,6 @@
   "defaultAnswer": "",
   "correctFeedback": "Correct: CCCCO is 1-butanol.",
   "incorrectFeedback": "Not quite. Draw a straight four-carbon chain with the OH group on carbon 1.",
-  "widgetKey": "combo_draw_butanol_editor"
+  "widgetKey": "combo_draw_butanol_editor",
+  "download_data": "data/images/test.png"
 }

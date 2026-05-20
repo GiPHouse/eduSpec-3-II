@@ -17,5 +17,6 @@
     "Correct: the absorption is close to 1245 cm^-1.",
     "Too low. Move toward the strong band centered a little above 1240 cm^-1.",
     "Too high. The band maximum is closer to 1245 cm^-1."
-  ]
+  ],
+  "download_data": "data/images/test.png"
 }

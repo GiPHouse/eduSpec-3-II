@@ -4,7 +4,6 @@ from typing import Any
 import streamlit as st
 
 from questions.Question import Question
-from questions.SpectralQuestion import SpectralQuestion
 
 
 class QuestionDrawer:
@@ -44,8 +43,8 @@ class QuestionDrawer:
         with st.container():
             st.title(current_question.title)
             current_question.drawImage()
-            # Check if we have a spectral question: in that case create a download button with _drawDownload
-            if isinstance(current_question, SpectralQuestion):
+
+            if current_question.download_data is not None:
                 QuestionDrawer._drawDownload(current_question)
             QuestionDrawer._drawBody(current_question)
 
@@ -100,18 +99,16 @@ class QuestionDrawer:
     def _drawDownload(current_question: Question) -> None:
         """Draws the download button for spectral data.
 
-        The check to see if this is a
-        spectral question is done inside the drawQuestion function.
         The filename for this file is the final component of the pathname of the file to be downloaded
 
         Args:
-            current_question (Question): question for which the spectral data is to be downloaded
+            current_question (Question): question for which the data is to be downloaded
         """
-        with open(current_question.spectralpath, "rb") as f:
+        with open(current_question.download_data, "rb") as f:
             st.download_button(
-                "Download Spectral Data",
+                "Download Data",
                 f,
-                file_name=os.path.basename(current_question.spectralpath),
+                file_name=os.path.basename(current_question.download_data),
                 icon=":material/file_download:",
             )
 

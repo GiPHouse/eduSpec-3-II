@@ -13,5 +13,6 @@
   "type": "word",
   "correctAnswer": "triplet",
   "correctFeedback": "Correct: the adjacent CH2 has two protons, so n+1 gives three lines.",
-  "incorrectFeedback": "Not quite. A CH3 next to one CH2 has two neighboring protons, so n+1 gives three lines."
+  "incorrectFeedback": "Not quite. A CH3 next to one CH2 has two neighboring protons, so n+1 gives three lines.",
+  "download_data": "data/images/test.png"
 }

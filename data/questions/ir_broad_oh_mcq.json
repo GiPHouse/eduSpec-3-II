@@ -23,5 +23,6 @@
     "A nitrile would be a sharp band near 2250 cm^-1.",
     "An alkene C=C stretch is much narrower and usually appears near 1640-1680 cm^-1.",
     "Aromatic C-H bands are not broad in this region."
-  ]
+  ],
+  "download_data": "data/images/ziptest.zip"
 }

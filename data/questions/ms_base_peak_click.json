@@ -17,5 +17,6 @@
     "Correct: m/z 43 is the base peak.",
     "Not quite. The base peak is the tallest bar, located at m/z 43."
   ],
-  "tolerance": 0.3
+  "tolerance": 0.3,
+  "download_data": "data/images/test.png"
 }

@@ -58,6 +58,7 @@ class QuestionSerialiser:
             - answers (array): The possible answers
             - correctAnswer (number): The correct answer as index of answers
             - feedbacks (array): The feedbacks given at each answer
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -68,6 +69,7 @@ class QuestionSerialiser:
         data_out["answers"] = question.answers
         data_out["correctAnswer"] = question.correct_answer
         data_out["feedbacks"] = question.feedbacks
+        # data_out["checker"] = question.checker  THIS IS MOVED TO _buildGenericQuestion.
 
         return json.dumps(data_out)
 
@@ -91,6 +93,7 @@ class QuestionSerialiser:
             - lowerBound (int): The lowest correct answer
             - upperBound (int): The highest correct answer
             - feedbacks (array): The feedbacks given at each stage (correct, too low, too high)
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -125,6 +128,7 @@ class QuestionSerialiser:
             - correctAnswer (string): The correct answer to the question
             - correctFeedback (string): The feedback given if the answer was correct
             - incorrectFeedback (string): The feedback given if the answer was incorrect
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -160,6 +164,7 @@ class QuestionSerialiser:
             - correctAnswer (float): The correct answer.
             - feedbacks (array): The feedbacks given at each stage (correct, wrong or anything that the client specifies)
             - tolerance (float): How off can the user input be from the correct answer.
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -198,6 +203,7 @@ class QuestionSerialiser:
             - correctFeedback (string): The feedback given if the answer was correct
             - incorrectFeedback (string): The feedback given if the answer was incorrect
             - widgetKey (string): The widget key used for the JSME component
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -230,6 +236,7 @@ class QuestionSerialiser:
             - title (string): The question title
             - bodyText (string): The question body text
             - figures (dict): The image path. Empty if None
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         # ! Versioning is done in the individual functions. When updating this function, increase all by 100
         data_out = {}
@@ -238,6 +245,7 @@ class QuestionSerialiser:
         data_out["title"] = question.title
         data_out["bodyText"] = question.bodytext
         data_out["bodyFormat"] = getattr(question, "body_format", "text")
+        data_out["checker"] = question.checker
 
         figures = question.figures
         if figures is None:

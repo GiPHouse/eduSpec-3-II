@@ -89,7 +89,7 @@ with st.form("baseform", enter_to_submit=False):
         accept_multiple_files=True,
     )
 
-    submitButton = st.form_submit_button()
+    submitButton = st.form_submit_button(label="Next")
 
 if submitButton:
     if (
