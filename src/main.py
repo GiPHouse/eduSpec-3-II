@@ -7,7 +7,6 @@ from navigation import (
     getTopLevelQuestionLabel,
     getTopLevelQuizLabel,
     homePage,
-    settingsPage,
     showNavigation,
 )
 from QuestionDrawer import QuestionDrawer
@@ -44,10 +43,7 @@ elif current_question_name:
     QuestionDrawer.drawQuestion(question)
 else:
     current_page = query_params.get("page")
-    if current_page and current_page.lower() == "settings":
-        st.session_state["current_page"] = "settings"
-        settingsPage()
-    elif current_page and current_page.lower() == "about":
+    if current_page and current_page.lower() == "about":
         st.session_state["current_page"] = "about"
         aboutPage()
     else:

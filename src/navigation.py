@@ -155,11 +155,6 @@ def homePage() -> None:
     )
 
 
-def settingsPage() -> None:
-    """render settings page"""
-    st.title("Settings")
-
-
 def aboutPage() -> None:
     """render about page"""
     st.title("About")
@@ -236,25 +231,13 @@ def showNavigation() -> None:
     )
 
     with st.sidebar:
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
         with col1:
             button_type = (
                 "primary" if st.session_state.get("current_page", "") == "home" else "secondary"
             )
             st.button("Home", width="stretch", on_click=navigateHome, type=button_type, key="Home")
         with col2:
-            button_type = (
-                "primary" if st.session_state.get("current_page", "") == "settings" else "secondary"
-            )
-            st.button(
-                "Settings",
-                width="stretch",
-                on_click=navigatePage,
-                args=("settings",),
-                type=button_type,
-                key="Settings",
-            )
-        with col3:
             button_type = (
                 "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
             )
