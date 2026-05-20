@@ -1,5 +1,6 @@
 import json
 
+from managers.BaseManager import BaseManager
 from managers.CheckerManager import CheckerManager
 from questions.IntegerQuestion import IntegerQuestion
 from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
@@ -99,6 +100,7 @@ class QuestionBuilder:
                 correct_answer = obj.get("correctAnswer")
                 feedbacks = obj.get("feedbacks")
                 tolerance = obj.get("tolerance")
+                spectralpath = BaseManager.resolveDataPath(spectralpath)
 
                 return SpectralQuestion(
                     name=name,

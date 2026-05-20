@@ -1,3 +1,4 @@
 */
 !src/
 !pyproject.toml
+!docker-entrypoint.sh
