@@ -148,10 +148,12 @@ def navigatePage(page: str) -> None:
 
 def homePage() -> None:
     """render home page"""
-    st.title("Live Laugh Learn")
+    st.title("EduSpec")
     st.image(str(data_dir / "images" / "maxresdefault.jpg"))
     st.text(
-        "In dit huis: maken we geen ruzie, is het altijd gezellig, staat de koffie en thee klaar, staan we voor elkaar klaar"
+        "This is the homepage for EduSpec, an online learning environment for microbiology. "
+        "Please use the buttons on the left to navigate to different quizzes. \n"
+        "You can change the theme of this website in the top right corner."
     )
 
 
@@ -164,6 +166,11 @@ def aboutPage() -> None:
 def questionNotFoundPage() -> None:
     """Render page that shows when the question requested does not exist"""
     st.error("Error, question not found. Please choose another question or page in the sidebar.")
+
+
+def quizNotFoundPage() -> None:
+    """Render page that shows when the question requested does not exist"""
+    st.error("Error, quiz not found. Please choose another quiz or page in the sidebar.")
 
 
 def renderQuestionButton(
