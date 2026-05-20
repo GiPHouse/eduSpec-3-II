@@ -151,7 +151,7 @@ def homePage() -> None:
     st.title("EduSpec")
     st.image(str(data_dir / "images" / "maxresdefault.jpg"))
     st.text(
-        "This is the homepage for EduSpec, an online learning environment for microbiology. "
+        "This is the homepage for EduSpec, an online learning environment for Molecular Sciences. "
         "Please use the buttons on the left to navigate to different quizzes. \n"
         "You can change the theme of this website in the top right corner."
     )
