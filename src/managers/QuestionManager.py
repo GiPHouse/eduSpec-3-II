@@ -39,10 +39,6 @@ class QuestionManager(BaseManager):
 
         question = QuestionBuilder.questionFromJson(question_data)
         question.figures = cls._resolveAssetPath(question.figures)
-        if hasattr(question, "spectralpath"):
-            question.spectralpath = cls._resolveSingleAssetPath(question.spectralpath)
-        if question.download_data is not None:
-            question.download_data = cls._resolveSingleAssetPath(question.download_data)
         return question
 
     @classmethod
@@ -105,7 +101,33 @@ class QuestionManager(BaseManager):
     @classmethod
     def _resolveSingleAssetPath(cls, path: str) -> str:
         """Resolve a single asset path to an existing file when possible."""
-        return cls.resolveDataPath(path, relative_to=cls._getDir())
+        resolved_path = Path(path)
+        if resolved_path.is_absolute() and resolved_path.exists():
+            return str(resolved_path)
+
+        base_dir = cls._getDir().parent
+        question_dir = cls._getDir()
+        data_root = base_dir / "data"
+
+        candidates = [
+            question_dir / resolved_path,
+            base_dir / resolved_path,
+            data_root / resolved_path,
+            data_root / "images" / resolved_path.name,
+            data_root / "molecules" / resolved_path.name,
+            data_root / "spectra" / resolved_path.name,
+            data_root / "spectra" / resolved_path,
+        ]
+
+        for candidate in candidates:
+            if candidate.exists():
+                return str(candidate.resolve())
+
+        matches = list(data_root.rglob(resolved_path.name))
+        if len(matches) == 1:
+            return str(matches[0].resolve())
+
+        return str(resolved_path)
 
     @classmethod
     def _resolveAssetPath(cls, figures: dict | list[dict] | None) -> list[dict] | None:

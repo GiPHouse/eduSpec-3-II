@@ -15,6 +15,7 @@ RUN apt-get update \
 WORKDIR /app
 COPY ./src /app/src
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN sed -i 's/\r$//' /app/docker-entrypoint.sh
 
 # Install pip requirements
 COPY pyproject.toml .
@@ -37,5 +38,5 @@ EXPOSE $PORT
 ENV EDUSPEC_DATA_DIR /data
 
 # CMD [ "/bin/sh", "-c", "echo", "${MAIN_FILE}" ]
-ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
-CMD [ "/bin/sh", "-c", " exec uv run streamlit run /app/src/${MAIN_FILE} --server.port=${PORT} --server.address=0.0.0.0 --server.headless=TRUE --browser.gatherUsageStats=FALSE --client.toolbarMode=minimal --client.showErrorDetails=none --client.showErrorLinks=False " ]
+ENTRYPOINT [ "/bin/sh", "/app/docker-entrypoint.sh" ]
+CMD [ "/bin/sh", "-c", " exec uv run streamlit run /app/src/${MAIN_FILE} --server.port=${PORT} --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false --client.toolbarMode=viewer --client.showErrorDetails=none --client.showErrorLinks=false " ]

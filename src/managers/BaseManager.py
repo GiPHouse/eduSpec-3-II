@@ -74,49 +74,6 @@ class BaseManager:
         return base_dir.joinpath(cls._data_dir)
 
     @classmethod
-    def resolveDataPath(
-        cls,
-        path: str,
-        relative_to: pathlib.Path | None = None,
-    ) -> str:
-        """Resolve a datasource-relative path to an existing file when possible."""
-        resolved_path = pathlib.Path(path)
-        if resolved_path.is_absolute() and resolved_path.exists():
-            return str(resolved_path)
-
-        data_root = cls.getDataDir()
-        path_without_data_prefix = (
-            pathlib.Path(*resolved_path.parts[1:])
-            if resolved_path.parts and resolved_path.parts[0].lower() == "data"
-            else resolved_path
-        )
-
-        candidates = []
-        if relative_to is not None:
-            candidates.append(relative_to / resolved_path)
-
-        candidates.extend(
-            [
-                data_root / resolved_path,
-                data_root / path_without_data_prefix,
-                data_root / "images" / resolved_path.name,
-                data_root / "molecules" / resolved_path.name,
-                data_root / "spectra" / resolved_path.name,
-                data_root / "spectra" / resolved_path,
-            ]
-        )
-
-        for candidate in candidates:
-            if candidate.exists():
-                return str(candidate.resolve())
-
-        matches = list(data_root.rglob(resolved_path.name)) if data_root.exists() else []
-        if len(matches) == 1:
-            return str(matches[0].resolve())
-
-        return str(resolved_path)
-
-    @classmethod
     def _iterDir(cls, start: pathlib.Path, enter_subdirs: bool = True) -> DirectoryStructure:
         """Iterates all the items in a directory
 
