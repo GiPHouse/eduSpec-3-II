@@ -138,6 +138,8 @@ class MoleculeDrawingQuestion(WordQuestion):
 
         data = jsme_component(default_smiles=self.default, key=component_key)
 
+        st.info("Draw a molecule in the editor, then click Submit Answer.")
+
         smiles = ""
         if isinstance(data, dict):
             smiles = data.get("smiles", "").strip()
@@ -150,7 +152,6 @@ class MoleculeDrawingQuestion(WordQuestion):
 
         self._latest_smiles = None
         st.session_state[self._last_seen_key] = current_base
-        st.info("Draw a molecule in the editor, then click Submit Answer.")
         return None
 
     def verifyAndFeedback(
