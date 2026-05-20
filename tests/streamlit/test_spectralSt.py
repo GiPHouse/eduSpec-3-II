@@ -8,9 +8,6 @@ no module-level names exist.
 
 from streamlit.testing.v1 import AppTest
 
-from QuestionDrawer import QuestionDrawer
-from questions.SpectralQuestion import SpectralQuestion
-
 WIDGET_KEY = "spectral_question_sq1"
 CORRECT_ANSWER = 100.0
 TOLERANCE = 0.5
@@ -24,6 +21,9 @@ TOLERANCE = 0.5
 
 def render_spectral_question() -> None:
     """The function that creates a dummy question"""
+    from QuestionDrawer import QuestionDrawer
+    from questions.SpectralQuestion import SpectralQuestion
+
     question = SpectralQuestion(
         name="sq1",
         title="Spectral Question",
