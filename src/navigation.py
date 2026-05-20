@@ -164,6 +164,7 @@ def aboutPage() -> None:
 def questionNotFoundPage() -> None:
     """Render page that shows when the question requested does not exist"""
     st.error("Error, question not found. Please choose another question or page in the sidebar.")
+    st.image("data/images/test.png", width=400)
 
 
 def renderQuestionButton(
@@ -241,7 +242,14 @@ def showNavigation() -> None:
             button_type = (
                 "primary" if st.session_state.get("current_page", "") == "home" else "secondary"
             )
-            st.button("Home", width="stretch", on_click=navigateHome, type=button_type, key="Home")
+            st.button(
+                "Home",
+                width="stretch",
+                on_click=navigateHome,
+                type=button_type,
+                key="Home",
+                icon=":material/home:",
+            )
         with col2:
             button_type = (
                 "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
@@ -253,6 +261,7 @@ def showNavigation() -> None:
                 args=("about",),
                 type=button_type,
                 key="About",
+                icon=":material/info:",
             )
 
     tabs = sidebar.tabs([item["label"] for item in items], default=current_label)
