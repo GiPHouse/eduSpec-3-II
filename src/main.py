@@ -7,13 +7,10 @@ from navigation import (
     getTopLevelQuestionLabel,
     getTopLevelQuizLabel,
     homePage,
-    initTheme,
     settingsPage,
     showNavigation,
 )
 from QuestionDrawer import QuestionDrawer
-
-initTheme()
 
 query_params = st.query_params
 requested_quiz = query_params.get("quiz")
@@ -57,5 +54,3 @@ else:
         st.session_state["current_page"] = "home"
         homePage()
     showNavigation()
-    
-

@@ -6,8 +6,6 @@ from typing import Any
 
 import streamlit as st
 
-from CustomThemes import THEMES, applyTheme, showThemeSelector
-
 data_dir = Path(__file__).parent.parent / "data"  # get path to data directory
 navigation_file = data_dir / "navigation" / "navigation.json"
 navigation_env_var = "EDUSPEC_NAVIGATION_FILE"
@@ -100,14 +98,6 @@ def getTopLevelQuizLabel(quiz: str) -> str:
     return items[0]["label"]
 
 
-def initTheme() -> None:
-    """Initialize and apply the current theme."""
-    if "theme" not in st.session_state:
-        st.session_state["theme"] = "Spotify"
-
-    applyTheme(THEMES[st.session_state["theme"]])
-
-
 def navigateQuestion(question: str, label: str | None = None) -> None:
     """Navigate to a question."""
     st.session_state["current_question"] = question
@@ -168,7 +158,6 @@ def homePage() -> None:
 def settingsPage() -> None:
     """render settings page"""
     st.title("Settings")
-    showThemeSelector()
 
 
 def aboutPage() -> None:
