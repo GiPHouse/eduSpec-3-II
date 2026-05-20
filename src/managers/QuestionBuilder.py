@@ -41,7 +41,6 @@ class QuestionBuilder:
         bodytext = obj.get("bodyText")
         body_format = obj.get("bodyFormat", "text")
         figures = obj.get("figures")
-        spectralpath = obj.get("spectralpath")
 
         match question_type:
             case "multipleChoice":
@@ -89,6 +88,7 @@ class QuestionBuilder:
                 correct_answer = obj.get("correctAnswer")
                 feedbacks = obj.get("feedbacks")
                 tolerance = obj.get("tolerance")
+                spectralpath = obj.get("spectralpath")
 
                 return SpectralQuestion(
                     name=name,

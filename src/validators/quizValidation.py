@@ -59,7 +59,9 @@ def validateQuizObject(obj: dict, **kwargs) -> list[str]:
 
     Args:
         object (dict): The json object to check.
-        fix_issues(bool): Whether to fix any compatible issues.
+
+    Kwargs:
+        file_name (str), optional: The filename of the quiz.
 
     Returns:
         list[str]: A list of problems. If it's empty the quiz is valid.
