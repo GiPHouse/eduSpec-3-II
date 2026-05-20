@@ -155,9 +155,7 @@ class TestQuestionManager:
         expected_location = tmp_path.joinpath("doesnotexist.json")
 
         assert not expected_location.exists()
-
-        with pytest.raises(FileNotFoundError):
-            assert None is QuestionManager.loadQuestion("doesnotexist")
+        assert None is QuestionManager.loadQuestion("doesnotexist")
 
     def test_SaveMCQ_duplicate(self, tmp_path: pathlib.Path) -> None:
         """Test case for saving a multiple-choice question twice"""
