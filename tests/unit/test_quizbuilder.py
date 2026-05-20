@@ -63,5 +63,4 @@ class TestQuizBuilder:
 
         input_data = r"""{"id": "quiz1", "questionNames": ["question1"]}"""
 
-        with pytest.raises(ValueError):
-            assert isinstance(QuizBuilder.quizFromJson(input_data), Quiz)
+        assert isinstance(QuizBuilder.quizFromJson(input_data), Quiz)

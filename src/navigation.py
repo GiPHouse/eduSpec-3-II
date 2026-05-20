@@ -161,6 +161,11 @@ def aboutPage() -> None:
     st.text("This application was developed by the EduSpec team for educational purposes.")
 
 
+def questionNotFoundPage() -> None:
+    """Render page that shows when the question requested does not exist"""
+    st.error("Error, question not found. Please choose another question or page in the sidebar.")
+
+
 def renderQuestionButton(
     container: Any, label: str, question: str, current_question: str | None
 ) -> None:
