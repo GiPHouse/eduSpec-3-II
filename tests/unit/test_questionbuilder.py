@@ -64,6 +64,32 @@ class TestBuildingMCQ:
         assert mcq.feedbacks == correct_mcq.feedbacks
         assert mcq.correct_answer == correct_mcq.correct_answer
 
+    def test_MCQ_custom_checker(self) -> None:
+        """Test case for building a multiple-choice question with a custom checker"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "multipleChoice", "checker": "customintchecker", "answers": ["a", "b", "c"]}"""
+
+        correct_mcq = MultipleChoiceQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            ["a", "b", "c"],
+            figures=[],
+            checker="customintchecker"
+        )
+
+        mcq = QuestionBuilder.questionFromJson(input_data)
+
+        assert isinstance(mcq, MultipleChoiceQuestion)
+
+        assert mcq.checker.get_file_name() == "customintchecker"
+        assert mcq.name == correct_mcq.name
+        assert mcq.title == correct_mcq.title
+        assert mcq.bodytext == correct_mcq.bodytext
+        assert mcq.figures == []
+        assert mcq.answers == correct_mcq.answers
+        assert mcq.feedbacks is None
+        assert mcq.correct_answer is None
+
     def test_faulty_MCQ_1(self) -> None:
         """Test case for building a multiple-choice  with a missing id attribute"""
         input_data = r"""{"title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
@@ -181,6 +207,30 @@ class TestBuildingIntQ:
         assert intq.correct_answer == correct_intq.correct_answer
         assert intq.feedbacks == correct_intq.feedbacks
 
+    def test_IntQ_custom_checker(self) -> None:
+        """Test case for building an integer question with a custom checker"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "integer", "checker": "customintchecker"}"""
+
+        correct_intq = IntegerQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            figures=[],
+            checker="customintchecker"
+        )
+
+        intq = QuestionBuilder.questionFromJson(input_data)
+
+        assert isinstance(intq, IntegerQuestion)
+
+        assert intq.checker.get_file_name() == "customintchecker" 
+        assert intq.name == correct_intq.name
+        assert intq.title == correct_intq.title
+        assert intq.bodytext == correct_intq.bodytext
+        assert intq.figures == [] 
+        assert intq.correct_answer is None
+        assert intq.feedbacks is None
+
     def test_faulty_IntQ_1(self) -> None:
         """Test case for building an integer question missing the title attribute"""
         input_data = r"""{"id": "question1", "bodyText": "here's a question", "figures": [], "version": 1, "type": "integer", "lowerBound": 0, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
@@ -270,6 +320,31 @@ class TestBuildingWordQ:
         assert wordq.correct_answer == correct_wordq.correct_answer
         assert wordq.feedbacks == correct_wordq.feedbacks
 
+    def test_WordQ_custom_checker(self) -> None:
+        """Test case for building a word question with a custom checker"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "word", "checker": "customintchecker"}"""
+
+        correct_wordq = WordQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            "text",
+            figures=[],
+            checker="customintchecker"
+        )
+
+        wordq = QuestionBuilder.questionFromJson(input_data)
+
+        assert isinstance(wordq, WordQuestion)
+
+        assert wordq.checker.get_file_name() == "customintchecker" 
+        assert wordq.name == correct_wordq.name
+        assert wordq.title == correct_wordq.title
+        assert wordq.bodytext == correct_wordq.bodytext
+        assert wordq.figures == [] 
+        assert wordq.correct_answer is None
+        assert wordq.feedbacks is None
+
     def test_faulty_WordQ_1(self) -> None:
         """Test case for building a word question without correctFeedback attribute"""
         input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "word", "correctAnswer": "answer", "incorrectFeedback": "wrong"}"""
@@ -342,6 +417,31 @@ class TestBuildingDrawingQ:
         assert drawq.figures == correct_drawq.figures
         assert drawq.correct_answer == correct_drawq.correct_answer
         assert drawq.feedbacks == correct_drawq.feedbacks
+
+    def test_WordQ_custom_checker(self) -> None:
+        """Test case for building a drawing question with a custom checker"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "drawing", "checker": "customintchecker", "defaultAnswer": "", "widgetKey": ""}"""
+
+        correct_drawq = MoleculeDrawingQuestion(
+            "question1",
+            "Example Question",
+            "here's a question",
+            MoleculeDrawingConfig(None, "", ""),
+            figures=[],
+            checker="customintchecker"
+        )
+
+        drawq = QuestionBuilder.questionFromJson(input_data)
+
+        assert isinstance(drawq, MoleculeDrawingQuestion)
+
+        assert drawq.checker.get_file_name() == "customintchecker"
+        assert drawq.name == correct_drawq.name
+        assert drawq.title == correct_drawq.title
+        assert drawq.bodytext == correct_drawq.bodytext
+        assert drawq.figures == []
+        assert drawq.correct_answer == correct_drawq.correct_answer
+        assert drawq.feedbacks is None
 
     def test_faulty_drawQ_1(self) -> None:
         """Test case for building a drawing question without version attribute"""

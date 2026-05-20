@@ -50,8 +50,8 @@ class QuestionBuilder:
         match question_type:
             case "multipleChoice":
                 answers = obj.get("answers")
-                feedbacks = obj.get("feedbacks")
-                correct_answer = obj.get("correctAnswer")
+                feedbacks = None if checker_object else obj.get("feedbacks")
+                correct_answer = None if checker_object else obj.get("correctAnswer")
                 return MultipleChoiceQuestion(
                     name=name,
                     title=title,
@@ -66,8 +66,8 @@ class QuestionBuilder:
                 )
 
             case "integer":
-                bounds = (obj.get("lowerBound"), obj.get("upperBound"))
-                feedbacks = obj.get("feedbacks")
+                bounds = None if checker_object else (obj.get("lowerBound"), obj.get("upperBound"))
+                feedbacks = None if checker_object else obj.get("feedbacks")
                 return IntegerQuestion(
                     name=name,
                     title=title,
@@ -81,8 +81,12 @@ class QuestionBuilder:
                 )
 
             case "word":
-                correct_answer = obj.get("correctAnswer")
-                feedbacks = [obj.get("correctFeedback"), obj.get("incorrectFeedback")]
+                correct_answer = None if checker_object else obj.get("correctAnswer")
+                feedbacks = (
+                    None
+                    if checker_object
+                    else [obj.get("correctFeedback"), obj.get("incorrectFeedback")]
+                )
                 return WordQuestion(
                     name=name,
                     title=title,
@@ -96,8 +100,8 @@ class QuestionBuilder:
                 )
 
             case "spectral":
-                correct_answer = obj.get("correctAnswer")
-                feedbacks = obj.get("feedbacks")
+                correct_answer = None if checker_object else obj.get("correctAnswer")
+                feedbacks = None if checker_object else obj.get("feedbacks")
                 tolerance = obj.get("tolerance")
 
                 return SpectralQuestion(
@@ -115,8 +119,8 @@ class QuestionBuilder:
                 )
 
             case "drawing":
-                feedbacks = [obj.get("correctFeedback"), obj.get("incorrectFeedback")]
-                correct_answer = obj.get("correctAnswer")
+                feedbacks = None if checker_object else [obj.get("correctFeedback"), obj.get("incorrectFeedback")]
+                correct_answer = None if checker_object else obj.get("correctAnswer")
                 default_answer = obj.get("defaultAnswer")
                 widget_key = obj.get("widgetKey")
                 config = MoleculeDrawingConfig(
@@ -207,8 +211,8 @@ class QuestionBuilder:
                 answers = obj.get("answers")
                 feedbacks = obj.get("feedbacks")
                 correct_answer = obj.get("correctAnswer")
-                if checker:
-                    return True  # If there is a custom checker, we don't need to verify the answers, feedbacks and correct answer
+                if checker and (answers and len(answers) >= 2):
+                    return True
                 if not answers or not feedbacks:
                     return False
                 if correct_answer is None or not isinstance(correct_answer, int):
@@ -223,11 +227,11 @@ class QuestionBuilder:
             case "integer":
                 # Integer questions must have an integer lower and higher bound, and 3 feedback options.
                 # The lower bound must be lower than or equal to the higher bound
+                if checker:
+                    return True  # If there is a custom checker, we don't need to verify the bounds and feedbacks
                 lower_bound = obj.get("lowerBound")
                 upper_bound = obj.get("upperBound")
                 feedbacks = obj.get("feedbacks")
-                if checker:
-                    return True  # If there is a custom checker, we don't need to verify the bounds and feedbacks
                 if lower_bound is None or upper_bound is None or feedbacks is None:
                     return False
                 if not isinstance(lower_bound, (int, float)) or not isinstance(
@@ -275,6 +279,8 @@ class QuestionBuilder:
                 incorrect_feedback = obj.get("incorrectFeedback")
                 widget_key = obj.get("widgetKey")
                 if not isinstance(widget_key, str):
+                    return False
+                if not isinstance(default_answer, str):
                     return False
                 if checker:
                     return True  # If there is a custom checker, we don't need to verify the correct answer, feedbacks and widget key

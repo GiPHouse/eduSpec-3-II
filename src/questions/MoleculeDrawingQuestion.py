@@ -27,7 +27,7 @@ class MoleculeDrawingConfig:
         only one editor is used per page, but good practice to always set it)
     """
 
-    expected_smiles: str  # what you want them to draw (answer)
+    expected_smiles: Optional[str]  # what you want them to draw (answer)
     seed_smiles: str  # what editor starts with
     widget_key: str  # unique key for Streamlit widget
 
@@ -48,7 +48,7 @@ class MoleculeDrawingQuestion(WordQuestion):
         title: str,
         bodytext: str,
         config: MoleculeDrawingConfig,
-        feedbacks: list[str],
+        feedbacks: Optional[list[str]] = None,
         checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
@@ -67,9 +67,11 @@ class MoleculeDrawingQuestion(WordQuestion):
             Configuration object containing expected answer,
             initial editor state, and widget key.
 
-        feedbacks (list[str]):
+        feedbacks (Optional[list[str]], optional):
             The feedbacks to the answers.
-            Needs to have 2 elements: correct feedback and incorrect feedback
+            Needs to have 2 elements: correct feedback and incorrect feedback.
+            Not needed when there is a custom checker.
+            Default to None.
 
         figures (Optional[dict], optional):
             Optional path to an image associated with the question.
@@ -77,6 +79,10 @@ class MoleculeDrawingQuestion(WordQuestion):
 
         download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
+        correct_answer = None
+        if checker is None:
+            correct_answer = config.expected_smiles.strip()
+
         super().__init__(
             name=name,
             title=title,
@@ -84,7 +90,7 @@ class MoleculeDrawingQuestion(WordQuestion):
             checker=checker,
             figures=figures,
             body_format=body_format,
-            correct_answer=config.expected_smiles.strip(),
+            correct_answer=correct_answer,
             feedbacks=feedbacks,
             download_data=download_data,
         )
