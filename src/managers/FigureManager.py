@@ -15,7 +15,7 @@ class FigureManager(BaseManager):
         ".mol": Path("molecules"),
         ".pdb": Path("molecules"),
     }
-    _item_dir = ""
+    _item_dir = "default"
 
     @classmethod
     def _detect_type_and_set_item_dir(cls, name: str) -> str:
