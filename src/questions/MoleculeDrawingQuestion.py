@@ -134,15 +134,17 @@ class MoleculeDrawingQuestion(WordQuestion):
         reset_requested = previous_base != default_val and current_base == default_val
 
         if reset_requested:
-            # st.session_state[self._nonce_key] += 1
+            st.session_state[self._nonce_key] += 1
             self._latest_smiles = None
             st.session_state[self._last_seen_key] = default_val
-            # st.rerun()
+            st.rerun()
 
         nonce = st.session_state.get(self._nonce_key, 0)
         component_key = f"{base_key}__jsme__{nonce}"
 
         data = jsme_component(default_smiles=self.default, key=component_key)
+
+        st.info("Draw a molecule in the editor, then click Submit Answer.")
 
         smiles = ""
         if isinstance(data, dict):
@@ -156,7 +158,6 @@ class MoleculeDrawingQuestion(WordQuestion):
 
         self._latest_smiles = None
         st.session_state[self._last_seen_key] = current_base
-        st.info("Draw a molecule in the editor, then click Submit Answer.")
         return None
 
     def verifyAndFeedback(

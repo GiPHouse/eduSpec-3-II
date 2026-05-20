@@ -178,6 +178,11 @@ class SpectralQuestion(Question):
         """
         if self.checker is not None:
             return self.checker.check(user_input)
+
+        if user_input is None:
+            raise TypeError(
+                "You wanted to check if a user input is the correct answer, but you didn't provide the user input itself!"
+            )
         is_correct = abs(user_input - self.correct_answer) <= self.tolerance
         return is_correct, self.feedback(user_input)
 
