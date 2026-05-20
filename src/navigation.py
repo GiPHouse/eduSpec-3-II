@@ -164,6 +164,7 @@ def aboutPage() -> None:
 def questionNotFoundPage() -> None:
     """Render page that shows when the question requested does not exist"""
     st.error("Error, question not found. Please choose another question or page in the sidebar.")
+    st.image("data/images/test.png", width=400)
 
 
 def renderQuestionButton(
