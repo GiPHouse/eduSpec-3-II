@@ -15,7 +15,7 @@ class QuizManager(BaseManager):
 
     @classmethod
     @cache_data
-    def loadQuiz(cls, name: str) -> Quiz:
+    def loadQuiz(cls, name: str) -> Quiz | None:
         """Loads a quiz from its name.
 
         Will also load all of the questions within said quiz.
@@ -32,7 +32,7 @@ class QuizManager(BaseManager):
             Quiz: The quiz.
         """
         if not cls.itemExists(name):
-            raise FileNotFoundError(f"Quiz {name} does not exist!")
+            return None
 
         data_dir = cls._getDir()
         quiz_file = data_dir.joinpath(f"{name}.json")
