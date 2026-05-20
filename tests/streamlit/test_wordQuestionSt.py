@@ -10,7 +10,7 @@ def render_word_question() -> None:
         name="q1",
         title="Word Question",
         bodytext="Type the answer.",
-        figures=[{"path": "data/images/test.png", "description": "This is a description!!"}],
+        figures=[{"path": "test.png", "description": "This is a description!!"}],
         body_format="text",
         correct_answer="answer",
         feedbacks=["Correct!", "Incorrect!"],

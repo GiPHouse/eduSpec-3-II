@@ -14,6 +14,8 @@ class FigureManager(BaseManager):
         ".jpeg": Path("images"),
         ".mol": Path("molecules"),
         ".pdb": Path("molecules"),
+        ".jdx": Path("spectra"),
+        ".dx": Path("spectra"),
     }
     _item_dir = "default"
 
@@ -52,9 +54,9 @@ class FigureManager(BaseManager):
         Returns:
             bytes: The pure bytes of the figure, to be decoded by the classes that want to use it.
         """
-        ext = cls._detect_type_and_set_item_dir(name)
-        if not cls.itemExists(name, extension=ext):
-            raise FileNotFoundError(f"Figure {name} does not exist!")
+        cls._detect_type_and_set_item_dir(name)
+        if not cls.itemExists(name, file_extension=""):
+            raise FileNotFoundError(f"Figure {name} does not exist!, full itemdir: {cls._item_dir}")
         data_dir = cls._getDir()
         figure_file_path = data_dir.joinpath(f"{name}")
 
@@ -76,9 +78,9 @@ class FigureManager(BaseManager):
         Returns:
             bool: Whether saving was succesful.
         """
-        ext = cls._detect_type_and_set_item_dir(name)
+        cls._detect_type_and_set_item_dir(name)
 
-        if cls.itemExists(name, extension=ext):
+        if cls.itemExists(name, file_extension=""):
             raise FileExistsError(f"Figure {name} already exists!")
 
         data_dir = cls._getDir()
@@ -100,8 +102,8 @@ class FigureManager(BaseManager):
         Returns:
             bool: Whether the update was succesful.
         """
-        ext = cls._detect_type_and_set_item_dir(name)
-        if not cls.itemExists(name, extension=ext):
+        cls._detect_type_and_set_item_dir(name)
+        if not cls.itemExists(name, file_extension=""):
             raise FileExistsError(
                 f"Figure {name} does not exist! Maybe you wanted to use FigureManager.saveFigure()?"
             )

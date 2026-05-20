@@ -226,7 +226,7 @@ def test_draw_question_calls_draw_download_for_spectral_question() -> None:
     class FakeSpectralQuestion(FakeQuestion):
         """Fake spectral question type."""
 
-    current_question = FakeSpectralQuestion(download_data="data/images/test.png")
+    current_question = FakeSpectralQuestion(download_data="test.png")
 
     with (
         patch("QuestionDrawer.st.container", return_value=DummyContext()),
@@ -248,7 +248,7 @@ def test_draw_download_calls_streamlit_download_button(tmp_path: Path) -> None:
     test_file = tmp_path / "spectrum.txt"
     test_file.write_text("example spectral data", encoding="utf-8")
 
-    current_question = FakeQuestion(download_data="data/images/test.png")
+    current_question = FakeQuestion(download_data="test.png")
     current_question.spectralpath = str(test_file)
 
     with patch("QuestionDrawer.st.download_button") as mock_download_button:

@@ -5,7 +5,7 @@
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock placeholder: normally this would show a mass spectrum with a strong fragment at m/z 43 and a weaker molecular ion near m/z 88."
     }
   ],
@@ -24,5 +24,5 @@
     "m/z 61 is a fragment peak in this spectrum.",
     "Correct: the high-mass peak near m/z 88 is the best molecular-ion candidate."
   ],
-  "download_data": "data/images/test.png"
+  "download_data": "test.png"
 }

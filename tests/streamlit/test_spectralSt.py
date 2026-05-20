@@ -20,7 +20,7 @@ TOLERANCE = 0.5
 
 
 def render_spectral_question() -> None:
-    """The function that creates a dummy question"""
+    """_summary_"""
     from QuestionDrawer import QuestionDrawer
     from questions.SpectralQuestion import SpectralQuestion
 
@@ -29,7 +29,7 @@ def render_spectral_question() -> None:
         title="Spectral Question",
         bodytext="Click the correct peak.",
         figures=None,
-        spectralpath="data/spectra/ms.dx",
+        spectralpath="ms.dx",  # <-- replace with your path
         correct_answer=100.0,
         feedbacks=["Correct!", "Incorrect!"],
         tolerance=0.5,
@@ -37,41 +37,43 @@ def render_spectral_question() -> None:
     QuestionDrawer.drawQuestion(question)
 
 
+# ── helper for pure-logic tests (does NOT use AppTest) ────────────────────────
+
 # ── rendering ─────────────────────────────────────────────────────────────────
 
 
 class TestSpectralQuestionRendering:
-    """Testing suite for spectral questions"""
+    """_summary_"""
 
     def test_renders_without_exception(self) -> None:
-        """Test that it renders correctly"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
 
     def test_title_is_displayed(self) -> None:
-        """Test that titel is displayed"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
         assert any(t.value == "Spectral Question" for t in at.title)
 
     def test_body_text_is_displayed(self) -> None:
-        """Test that body test is displayed"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
         assert any("Click the correct peak." in t.value for t in at.text)
 
     def test_default_state_shows_info_message(self) -> None:
-        """Test that no info messages in default state"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
         assert any("Click a peak" in i.value for i in at.info)
 
     def test_submit_and_reset_buttons_exist(self) -> None:
-        """Test that submit and resets buttons are present"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
@@ -86,10 +88,10 @@ class TestSpectralQuestionRendering:
 
 
 class TestSpectralQuestionSessionState:
-    """Testing suite for spectral question, but now we change the session state to check for peak selection."""
+    """_summary_"""
 
     def test_selected_peak_removes_info_message(self) -> None:
-        """Test that selected peak removes info message"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
@@ -100,7 +102,7 @@ class TestSpectralQuestionSessionState:
         assert not any("Click a peak" in i.value for i in at.info)
 
     def test_selected_peak_value_is_shown(self) -> None:
-        """Test that selected peak value is shown"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
@@ -114,6 +116,7 @@ class TestSpectralQuestionSessionState:
         assert f"{CORRECT_ANSWER:.3f}" in all_markdown
 
     def test_reset_clears_selection(self) -> None:
+        """_summary_"""
         """Test that reset clears the info about previously selected peak"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
@@ -132,10 +135,10 @@ class TestSpectralQuestionSessionState:
 
 
 class TestSpectralQuestionSubmit:
-    """Testing suite for spectral question, but now we change the session state to check for user input."""
+    """_summary_"""
 
     def test_correct_answer_shows_success(self) -> None:
-        """Testing the success message"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
@@ -149,7 +152,7 @@ class TestSpectralQuestionSubmit:
         assert any("correct" in s.value.lower() for s in at.success)
 
     def test_wrong_answer_shows_error(self) -> None:
-        """Testing the wrong answer message"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
@@ -163,7 +166,7 @@ class TestSpectralQuestionSubmit:
         assert any("incorrect" in e.value.lower() for e in at.error)
 
     def test_no_feedback_without_selection(self) -> None:
-        """Test that ensures no feedback if no selection"""
+        """_summary_"""
         at = AppTest.from_function(render_spectral_question)
         at.run()
         assert not at.exception
@@ -172,3 +175,6 @@ class TestSpectralQuestionSubmit:
         assert not at.exception
         assert len(at.success) == 0
         assert len(at.error) == 0
+
+
+# ── pure logic (no AppTest) ───────────────────────────────────────────────────

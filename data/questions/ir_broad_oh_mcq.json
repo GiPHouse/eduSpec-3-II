@@ -5,7 +5,7 @@
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock placeholder: normally this image would highlight a broad alcohol O-H band, alkyl C-H stretches, and a C-O band in the fingerprint region."
     }
   ],
@@ -24,5 +24,5 @@
     "An alkene C=C stretch is much narrower and usually appears near 1640-1680 cm^-1.",
     "Aromatic C-H bands are not broad in this region."
   ],
-  "download_data": "data/images/ziptest.zip"
+  "download_data": "ziptest.zip"
 }
