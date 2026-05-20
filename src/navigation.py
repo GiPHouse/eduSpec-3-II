@@ -237,6 +237,7 @@ def showNavigation() -> None:
 
     with st.sidebar:
         col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
         with col1:
             button_type = (
                 "primary" if st.session_state.get("current_page", "") == "home" else "secondary"
