@@ -31,7 +31,6 @@ class QuestionManager(BaseManager):
         """
         if not cls.itemExists(name):
             return None
-            raise FileNotFoundError(f"Question {name} does not exist!")
 
         data_dir = cls._getDir()
         question_file = data_dir.joinpath(f"{name}.json")

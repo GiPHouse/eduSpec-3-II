@@ -122,9 +122,7 @@ class TestQuizManager:
 
         expected_location = tmp_path.joinpath(QuizManager._item_dir).joinpath("doesnotexist.json")  # noqa: SLF001
         assert not expected_location.exists()
-
-        with pytest.raises(FileNotFoundError):
-            assert isinstance(QuizManager.loadQuiz("doesnotexist"), Quiz)
+        assert None is QuizManager.loadQuiz("doesnotexist")
 
     def test_SaveQuiz_duplicate(self, tmp_path: pathlib.Path) -> None:
         """Test case for saving a quiz name that already exists"""
