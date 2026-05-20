@@ -7,6 +7,7 @@ from navigation import (
     getTopLevelQuestionLabel,
     getTopLevelQuizLabel,
     homePage,
+    questionNotFoundPage,
     showNavigation,
 )
 from QuestionDrawer import QuestionDrawer
@@ -40,7 +41,10 @@ elif current_question_name:
     st.query_params.pop("quiz", None)
     showNavigation()
     question = QuestionManager.loadQuestion(current_question_name)
-    QuestionDrawer.drawQuestion(question)
+    if question is not None:
+        QuestionDrawer.drawQuestion(question)
+    else:
+        questionNotFoundPage()
 else:
     current_page = query_params.get("page")
     if current_page and current_page.lower() == "about":
