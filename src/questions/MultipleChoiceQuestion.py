@@ -15,8 +15,8 @@ class MultipleChoiceQuestion(Question):
         title: str,
         bodytext: str,
         answers: list[str],
-        correct_answer: int,
-        feedbacks: list[str],
+        correct_answer: Optional[int] = None,
+        feedbacks: Optional[list[str]] = None,
         checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         body_format: str = "text",
@@ -28,15 +28,20 @@ class MultipleChoiceQuestion(Question):
             name (str): The unique name/ID of the question.
             title (str): The title of the questio
             bodytext (str): The body text of the question
-            answers (list[str]): The possible answers
-            correct_answer (int): The correct answer, as an index to the answers list
-            feedbacks (list[str]): The feedbacks to the answers. Needs to be the same length as answers.
+            answers (list[str]): The possible answers.
+            correct_answer (Optional[int], optional): The correct answer, as an index to the answers list. Not needed when there is a custom checker. Defaults to None.
+            feedbacks (Optional[list[str]], optional): The feedbacks to the answers. Needs to be the same length as answers. Not needed when there is a custom checker. Defaults to None.
             figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
             download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
-        assert len(answers) == len(feedbacks)
-        assert correct_answer >= 0
-        assert correct_answer < len(answers)
+        if checker is None:
+            if answers is None or correct_answer is None or feedbacks is None:
+                raise ValueError(
+                    "MultipleChoiceQuestion needs answers, correct_answer and feedbacks without a custom checker"
+                )
+            assert len(answers) == len(feedbacks)
+            assert correct_answer >= 0
+            assert correct_answer < len(answers)
 
         super().__init__(name, title, bodytext, checker, figures, body_format, download_data)
         self.answers = answers
@@ -56,6 +61,10 @@ class MultipleChoiceQuestion(Question):
         """
         if self.checker is not None:
             return self.checker.check(user_input)
+        if self.correct_answer is None or self.feedbacks is None:
+            raise ValueError(
+                "MultipleChoiceQuestion needs correct_answer and feedbacks without a custom checker"
+            )
         return ((self.correct_answer == user_input), self.feedbacks[user_input])
 
     def drawYourself(self) -> Optional[int]:
@@ -65,6 +74,9 @@ class MultipleChoiceQuestion(Question):
             Optional[int]: returns the user input
         """
         # Options (Radio in streamlit)
+        if self.answers is None:
+            return None
+
         if self.widget_key not in st.session_state:
             st.session_state[self.widget_key] = self.default
 
