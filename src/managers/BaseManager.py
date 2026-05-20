@@ -25,7 +25,7 @@ class BaseManager:
             raise TypeError(f"{cls.__name__} must define '_item_dir'!")
 
     @classmethod
-    def itemExists(cls, item_name: str) -> bool:
+    def itemExists(cls, item_name: str, file_extension: str = ".json") -> bool:
         """Checks whether an item exists
 
         Args:
@@ -37,7 +37,7 @@ class BaseManager:
         item_dir = cls._getDir()
 
         # Most general items are json files
-        item_file = item_dir.joinpath(f"{item_name}.json")
+        item_file = item_dir.joinpath(f"{item_name}.{file_extension}")
 
         return item_file.is_file()
 
