@@ -5,18 +5,18 @@
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock placeholder: normally this would show a 1H NMR spectrum for a simple primary alcohol with labeled aliphatic regions."
     }
   ],
   "version": 1,
   "type": "spectral",
-  "spectralpath": "data/spectra/nmr.jdx",
+  "spectralpath": "nmr.jdx",
   "correctAnswer": 0.933,
   "feedbacks": [
     "Correct: the terminal CH3 group appears upfield near 0.93 ppm.",
     "Not quite. The terminal methyl group is the most upfield major signal, just below 1 ppm."
   ],
   "tolerance": 0.04,
-  "download_data": "data/images/test.png"
+  "download_data": "test.png"
 }

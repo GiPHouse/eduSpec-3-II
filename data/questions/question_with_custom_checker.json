@@ -6,7 +6,7 @@
     "type":  "integer",
     "figures":  [
                       {
-                        "path": "../data/images/test.png",
+                        "path": "test.png",
                         "description": "This is a description"
                       }
                   ],
