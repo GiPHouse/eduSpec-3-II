@@ -4,6 +4,10 @@
       "label": "IR",
       "children": [
         {
+          "label": "test non-existing question",
+          "question": "non-existing question"
+        },
+        {
           "label": "Overview",
           "question": "ir_broad_oh_mcq"
         },

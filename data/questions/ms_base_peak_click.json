@@ -5,18 +5,18 @@
   "bodyFormat": "text",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock placeholder: normally this would show an EI mass spectrum with the base peak at m/z 43 and smaller fragments at higher m/z values."
     }
   ],
   "version": 1,
   "type": "spectral",
-  "spectralpath": "data/spectra/ms.dx",
+  "spectralpath": "ms.dx",
   "correctAnswer": 43.0,
   "feedbacks": [
     "Correct: m/z 43 is the base peak.",
     "Not quite. The base peak is the tallest bar, located at m/z 43."
   ],
   "tolerance": 0.3,
-  "download_data": "data/images/test.png"
+  "download_data": "test.png"
 }

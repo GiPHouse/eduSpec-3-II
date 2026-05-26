@@ -10,6 +10,7 @@ import streamlit as st
 from plotly import graph_objects as go
 
 from Checker import Checker
+from managers.FigureManager import FigureManager
 from questions.NMRParser import loadJCAMP
 from questions.Question import Question
 
@@ -26,16 +27,18 @@ def read_jcamp_header_fields(figure: str) -> dict[str, str]:
     """
     fields: dict[str, str] = {}
 
-    with open(figure, "rb") as f:
-        for raw_line in f:
-            line = raw_line.decode("utf-8", errors="replace").strip()
+    figure_bytes = FigureManager.loadFigure(figure)
+    text = figure_bytes.decode("utf-8", errors="replace")
 
-            if not line.startswith("##") or "=" not in line:
-                continue
+    for line in text.splitlines():
+        line = line.strip()
 
-            key, value = line[2:].split("=", 1)
-            normalized_key = re.sub(r"[^A-Z0-9]", "", key.upper())
-            fields[normalized_key] = value.strip()
+        if not line.startswith("##") or "=" not in line:
+            continue
+
+        key, value = line[2:].split("=", 1)
+        normalized_key = re.sub(r"[^A-Z0-9]", "", key.upper())
+        fields[normalized_key] = value.strip()
 
     return fields
 
@@ -63,8 +66,9 @@ def load_non_nmr_jcamp(figures: str) -> Tuple[np.ndarray, np.ndarray, str]:
     Returns:
         Tuple[np.ndarray, np.ndarray, str]: The x and y axes of the data alongiside the unit as a string
     """
-    with open(figures, "rb") as f:
-        lines = [ln.decode("utf-8", errors="replace") for ln in f.read().splitlines()]
+    figure_bytes = FigureManager.loadFigure(figures)
+
+    lines = [ln.decode("utf-8", errors="replace") for ln in figure_bytes.splitlines()]
 
     data = jcamp.jcamp_read(lines)
     x = np.asarray(data["x"], dtype=float)
@@ -178,6 +182,11 @@ class SpectralQuestion(Question):
         """
         if self.checker is not None:
             return self.checker.check(user_input)
+
+        if user_input is None:
+            raise TypeError(
+                "You wanted to check if a user input is the correct answer, but you didn't provide the user input itself!"
+            )
         is_correct = abs(user_input - self.correct_answer) <= self.tolerance
         return is_correct, self.feedback(user_input)
 

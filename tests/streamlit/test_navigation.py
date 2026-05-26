@@ -360,3 +360,32 @@ def test_navigation_to_about() -> None:
     assert at.query_params.get("page") == ["about"]
     assert "question" not in at.query_params or at.query_params.get("question") is None
     assert "quiz" not in at.query_params or at.query_params.get("quiz") is None
+
+
+def test_navigation_to_question_not_found_page(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test navigation to the page that shows when a non-existing question is requested."""
+    from managers.QuestionManager import QuestionManager
+
+    def fake_load_question(question_name: str) -> Any:
+        if question_name == "non-existing question":
+            return None
+        return SimpleNamespace(
+            name=question_name,
+            title=f"title{question_name}",
+            bodytext=f"body{question_name}",
+            figures=None,
+            body_format="text",
+        )
+
+    monkeypatch.setattr(
+        QuestionManager,
+        "loadQuestion",
+        staticmethod(fake_load_question),
+    )
+
+    at = run_app()
+    click_button(at, "non-existing question")
+
+    assert at.error[0].value == (
+        "Error, question not found. Please choose another question or page in the sidebar."
+    )

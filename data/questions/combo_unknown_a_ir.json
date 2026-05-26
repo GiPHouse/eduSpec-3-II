@@ -5,18 +5,18 @@
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock placeholder: normally this would show a combined evidence panel with formula C4H10O, IR peaks, selected NMR shifts, and a small MS peak table."
     }
   ],
   "version": 1,
   "type": "spectral",
-  "spectralpath": "data/spectra/ir.dx",
+  "spectralpath": "ir.dx",
   "correctAnswer": 1245.0,
   "feedbacks": [
     "Correct: this C-O stretch is useful evidence for an oxygen-containing saturated compound.",
     "Not quite. In this mock set, the most diagnostic C-O stretch is around 1245 cm^-1."
   ],
   "tolerance": 8.0,
-  "download_data": "data/images/test.png"
+  "download_data": "test.png"
 }

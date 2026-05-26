@@ -1,8 +1,9 @@
-import os
+from pathlib import Path
 from typing import Any
 
 import streamlit as st
 
+from managers.FigureManager import FigureManager
 from questions.Question import Question
 
 
@@ -119,20 +120,15 @@ class QuestionDrawer:
     @staticmethod
     @st.fragment  # This is a fragment so the app doesn't rerun when clicking the download button
     def _drawDownload(current_question: Question) -> None:
-        """Draws the download button for spectral data.
+        """Draws the download button for spectral data."""
+        file_bytes = FigureManager.loadFigure(current_question.download_data)
 
-        The filename for this file is the final component of the pathname of the file to be downloaded
-
-        Args:
-            current_question (Question): question for which the data is to be downloaded
-        """
-        with open(current_question.download_data, "rb") as f:
-            st.download_button(
-                "Download Data",
-                f,
-                file_name=os.path.basename(current_question.download_data),
-                icon=":material/file_download:",
-            )
+        st.download_button(
+            "Download Data",
+            file_bytes,
+            file_name=Path(current_question.download_data).name,
+            icon=":material/file_download:",
+        )
 
     @staticmethod
     def _drawBody(current_question: Question) -> None:

@@ -5,6 +5,7 @@ from typing import Any, Optional
 import streamlit as st
 
 from Checker import Checker
+from managers.FigureManager import FigureManager
 from MoleculeDisplay import MoleculeDisplay
 
 
@@ -70,7 +71,8 @@ class Question(ABC):
                         if ext in [".pdb", ".ent"]:
                             MoleculeDisplay.drawYourself(figure["path"])
                         else:
-                            st.image(figure["path"], use_container_width=True)
+                            image_bytes = FigureManager.loadFigure(figure["path"])
+                            st.image(image_bytes, use_container_width=True)
                         st.markdown(figure["description"])
                 else:
                     with col2:
@@ -78,6 +80,7 @@ class Question(ABC):
                         if ext in [".pdb", ".ent"]:
                             MoleculeDisplay.drawYourself(figure["path"])
                         else:
-                            st.image(figure["path"], use_container_width=True)
+                            image_bytes = FigureManager.loadFigure(figure["path"])
+                            st.image(image_bytes, use_container_width=True)
                         st.markdown(figure["description"])
                 col_counter = (col_counter + 1) % 2

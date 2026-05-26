@@ -15,7 +15,7 @@ class QuestionManager(BaseManager):
 
     @classmethod
     @cache_data
-    def loadQuestion(cls, name: str) -> Question:
+    def loadQuestion(cls, name: str) -> Question | None:
         """Loads a question from its name.
 
         Args:
@@ -30,7 +30,7 @@ class QuestionManager(BaseManager):
             Question: The question.
         """
         if not cls.itemExists(name):
-            raise FileNotFoundError(f"Question {name} does not exist!")
+            return None
 
         data_dir = cls._getDir()
         question_file = data_dir.joinpath(f"{name}.json")
