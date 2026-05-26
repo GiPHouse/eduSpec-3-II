@@ -152,10 +152,12 @@ def navigatePage(page: str) -> None:
 
 def homePage() -> None:
     """render home page"""
-    st.title("Live Laugh Learn")
+    st.title("EduSpec")
     st.image(str(getDataDir() / "images" / "maxresdefault.jpg"))
     st.text(
-        "In dit huis: maken we geen ruzie, is het altijd gezellig, staat de koffie en thee klaar, staan we voor elkaar klaar"
+        "This is the homepage for EduSpec, an online learning environment for Molecular Sciences. "
+        "Please use the buttons on the left to navigate to different quizzes. \n"
+        "You can change the theme of this website in the top right corner."
     )
 
 
@@ -163,6 +165,17 @@ def aboutPage() -> None:
     """render about page"""
     st.title("About")
     st.text("This application was developed by the EduSpec team for educational purposes.")
+
+
+def questionNotFoundPage() -> None:
+    """Render page that shows when the question requested does not exist"""
+    st.error("Error, question not found. Please choose another question or page in the sidebar.")
+    st.image("data/images/test.png", width=400)
+
+
+def quizNotFoundPage() -> None:
+    """Render page that shows when the question requested does not exist"""
+    st.error("Error, quiz not found. Please choose another quiz or page in the sidebar.")
 
 
 def renderQuestionButton(
@@ -240,7 +253,14 @@ def showNavigation() -> None:
             button_type = (
                 "primary" if st.session_state.get("current_page", "") == "home" else "secondary"
             )
-            st.button("Home", width="stretch", on_click=navigateHome, type=button_type, key="Home")
+            st.button(
+                "Home",
+                width="stretch",
+                on_click=navigateHome,
+                type=button_type,
+                key="Home",
+                icon=":material/home:",
+            )
         with col2:
             button_type = (
                 "primary" if st.session_state.get("current_page", "") == "about" else "secondary"
@@ -252,6 +272,7 @@ def showNavigation() -> None:
                 args=("about",),
                 type=button_type,
                 key="About",
+                icon=":material/info:",
             )
 
     tabs = sidebar.tabs([item["label"] for item in items], default=current_label)

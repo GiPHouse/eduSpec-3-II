@@ -15,8 +15,8 @@ class WordQuestion(Question):
         title: str,
         bodytext: str,
         body_format: str,
-        correct_answer: str,
-        feedbacks: list[str],
+        correct_answer: Optional[str] = None,
+        feedbacks: Optional[list[str]] = None,
         checker: Optional[Checker] = None,
         figures: Optional[list[dict]] = None,
         download_data: Optional[str] = None,
@@ -27,8 +27,8 @@ class WordQuestion(Question):
             name (str): The unique name/ID of the question.
             title (str): The title of the question
             bodytext (str): The body text of the question
-            correct_answer str: The correct answer as a string
-            feedbacks (list[str]): The feedbacks to the answers. Needs to have 2 elements: correct feedback and incorrect feedback
+            correct_answer (Optional[str]): The correct answer as a string. Not needed when there is a custom checker.
+            feedbacks (Optional[list[str]]): The feedbacks to the answers. Needs to have 2 elements: correct feedback and incorrect feedback. Not needed when there is a custom checker.
             figures (Optional[list[dict]], optional): Represents the image if there is one, Defaults to None.
             download_data (Optional[str], optional): path to the data that can be downloaded with download button. Defaults to None.
         """
