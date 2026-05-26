@@ -4,6 +4,7 @@ from questions.IntegerQuestion import IntegerQuestion
 from questions.MoleculeDrawingQuestion import MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.Question import Question
+from questions.ScriptQuestion import ScriptQuestion
 from questions.SpectralQuestion import SpectralQuestion
 from questions.WordQuestion import WordQuestion
 
@@ -35,6 +36,8 @@ class QuestionSerialiser:
                 return cls._convertWordQuestion(question)
             case SpectralQuestion():
                 return cls._convertSpectralQuestion(question)
+            case ScriptQuestion():
+                return cls._convertScriptQuestion(question)
             case n:
                 raise TypeError(f"Unknown or illegal question type encountered: {n.__class__}")
 
@@ -254,3 +257,15 @@ class QuestionSerialiser:
             data_out["figures"] = figures
 
         return data_out
+
+    @classmethod
+    def _convertScriptQuestion(cls, question: ScriptQuestion) -> str:
+        """Serialises a ScriptQuestion to JSON."""
+        data_out = cls._buildGenericQuestion(question)
+
+        data_out["version"] = 1
+        data_out["type"] = "script"
+        data_out["script"] = question.script.get_file_name()
+        data_out["parameters"] = question.parameters
+
+        return json.dumps(data_out)
