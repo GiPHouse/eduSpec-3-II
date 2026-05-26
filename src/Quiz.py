@@ -231,22 +231,24 @@ class Quiz:
                         st.rerun()
                 button_index += 1
 
-        # Finish quiz button (only show when all questions answered)
-        if self.isQuizComplete():
+        col1, col2 = st.columns(2, gap="xxsmall", width=240)
+        with col1:
+            # Overview button - always visible
             st.divider()
-            if st.button("Finish Quiz", key="finish_quiz", type="primary"):
-                st.session_state[f"quiz_completed_{self.name}"] = True
+            if st.button(
+                "📊 Overview",
+                key="show_overview",
+                help="View your progress and attempts for each question",
+            ):
+                st.session_state[f"show_overview_{self.name}"] = True
                 st.rerun()
-
-        # Overview button - always visible
-        st.divider()
-        if st.button(
-            "📊 Overview",
-            key="show_overview",
-            help="View your progress and attempts for each question",
-        ):
-            st.session_state[f"show_overview_{self.name}"] = True
-            st.rerun()
+        with col2:
+            # Finish quiz button (only show when all questions answered)
+            if self.isQuizComplete():
+                st.divider()
+                if st.button("Finish Quiz", key="finish_quiz", type="primary"):
+                    st.session_state[f"quiz_completed_{self.name}"] = True
+                    st.rerun()
 
     def drawPreviousButton(self) -> None:
         """Draws a button to go to the previous question."""
