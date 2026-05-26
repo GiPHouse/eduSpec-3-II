@@ -5,12 +5,16 @@ from pathlib import Path
 from typing import Any
 
 import streamlit as st
+from managers.BaseManager import BaseManager
 
-data_dir = Path(__file__).parent.parent / "data"  # get path to data directory
-navigation_file = data_dir / "navigation" / "navigation.json"
 navigation_env_var = "EDUSPEC_NAVIGATION_FILE"
 
 NavigationItem = dict[str, Any]
+
+
+def getDataDir() -> Path:
+    """Return the active root data directory."""
+    return BaseManager.getDataDir()
 
 
 def getNavigationFile() -> Path:
@@ -18,7 +22,7 @@ def getNavigationFile() -> Path:
     override = os.getenv(navigation_env_var)
     if override:
         return Path(override)
-    return navigation_file
+    return getDataDir() / "navigation" / "navigation.json"
 
 
 @lru_cache(maxsize=None)
@@ -149,7 +153,7 @@ def navigatePage(page: str) -> None:
 def homePage() -> None:
     """render home page"""
     st.title("EduSpec")
-    st.image(str(data_dir / "images" / "maxresdefault.jpg"))
+    st.image(str(getDataDir() / "images" / "maxresdefault.jpg"))
     st.text(
         "This is the homepage for EduSpec, an online learning environment for Molecular Sciences. "
         "Please use the buttons on the left to navigate to different quizzes. \n"

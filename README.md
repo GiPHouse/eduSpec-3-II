@@ -84,6 +84,52 @@ Go back to the terminal where Streamlit is running and press:
 Ctrl + C
 ```
 
+## Running With External Content
+
+The application reads content from `EDUSPEC_DATA_DIR`. If this is not set, it uses the
+project's local `data/` folder. A datasource should contain the same folders described
+below, such as `questions/`, `navigation/`, `images/`, `molecules/`, and `spectra/`.
+
+### Local Directory
+
+Mount any existing content directory to `/data` and run the container with
+`EDUSPEC_DATA_DIR=/data`:
+
+```sh
+docker run \
+  -p 8501:8501 \
+  -e EDUSPEC_DATA_DIR=/data \
+  -v /path/to/course-data:/data:ro \
+  eduspec
+```
+
+With Podman on SELinux-enabled systems, add the `Z` mount option:
+
+```sh
+podman run \
+  -p 8501:8501 \
+  -e EDUSPEC_DATA_DIR=/data \
+  -v /path/to/course-data:/data:ro,Z \
+  eduspec
+```
+
+### Git Repository
+
+Instead of mounting a directory, the container can clone a Git repository before the
+app starts:
+
+```sh
+docker run \
+  -p 8501:8501 \
+  -e EDUSPEC_DATA_GIT_URL=https://github.com/example/course-data.git \
+  -e EDUSPEC_DATA_GIT_REF=main \
+  eduspec
+```
+
+`EDUSPEC_DATA_GIT_REF` is optional. If it is set, it should be a branch or tag name.
+Git mode expects `EDUSPEC_DATA_DIR` to be empty, because the repository is cloned into
+that directory.
+
 ## Project Folders
 
 The most important folders for content editors are:
