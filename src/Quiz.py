@@ -99,15 +99,6 @@ class Quiz:
         st.metric("Your Score", f"{correct_count} / {total}")
 
         if not wrong_questions:
-            # st.subheader("Questions to Review")
-            # for idx, data in wrong_questions:
-            #     with st.expander(f"❌ Question {idx + 1}: {data['title']}"):
-            #         st.write("Go back and review this question.")
-            #         if st.button(f"Go to Question {idx + 1}", key=f"review_goto_{idx}"):
-            #             st.session_state[f"quiz_completed_{self.name}"] = False
-            #             st.session_state[f"current_index_{self.name}"] = idx
-            #             st.rerun()
-            # else:
             st.success("Perfect score! You got all questions correct! 🌟")
 
         self.drawOverview()
