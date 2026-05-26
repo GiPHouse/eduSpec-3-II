@@ -109,6 +109,8 @@ class Quiz:
         else:
             st.success("Perfect score! You got all questions correct! 🌟")
 
+        self.drawOverview()
+
         # Restart quiz button
         if st.button("Restart Quiz", key="restart_quiz"):
             st.session_state[f"answers_{self.name}"] = {}
@@ -165,6 +167,7 @@ class Quiz:
                 with col2:
                     if st.button(f"Go to Q{idx + 1}", key=f"overview_goto_{idx}"):
                         st.session_state[f"show_overview_{self.name}"] = False
+                        st.session_state[f"quiz_completed_{self.name}"] = False
                         st.session_state[f"current_index_{self.name}"] = idx
                         st.rerun()
 
@@ -193,6 +196,7 @@ class Quiz:
         # Back button
         if st.button("← Back to Quiz", key="back_from_overview", type="primary"):
             st.session_state[f"show_overview_{self.name}"] = False
+            st.session_state[f"quiz_completed_{self.name}"] = False
             st.rerun()
 
     def drawQuestionNavigator(self) -> None:
