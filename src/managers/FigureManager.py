@@ -16,6 +16,7 @@ class FigureManager(BaseManager):
         ".pdb": Path("molecules"),
         ".jdx": Path("spectra"),
         ".dx": Path("spectra"),
+        ".zip": Path("compressed"),
     }
     _item_dir = "default"
 
