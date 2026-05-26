@@ -15,6 +15,7 @@ class Quiz:
             question_list (list[Question]): A list of questions in the quiz.
         """
         self.name = name
+        st.session_state[f"balloons_shown_{self.name}"] = False
         if "current_index" not in st.session_state:
             st.session_state["current_index"] = 0
         self.current_index = 0
@@ -85,7 +86,7 @@ class Quiz:
         wrong_questions = [(idx, data) for idx, data in answers.items() if not data["correct"]]
 
         # Show balloons on first view of review page
-        if not wrong_questions and not st.session_state[f"balloons_shown_{self.name}"]:
+        if not wrong_questions and not st.session_state.get(f"balloons_shown_{self.name}"):
             st.balloons()
             st.session_state[f"balloons_shown_{self.name}"] = True
 
