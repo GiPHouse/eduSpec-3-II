@@ -31,11 +31,11 @@ RUN adduser -u 5678 --disabled-password --gecos "" appuser \
 USER appuser
 
 # Select the file to run
-ENV MAIN_FILE main.py
-ENV PORT 8501
+ENV MAIN_FILE=main.py
+ENV PORT=8501
 EXPOSE $PORT
 
-ENV EDUSPEC_DATA_DIR /data
+ENV EDUSPEC_DATA_DIR=/data
 
 # CMD [ "/bin/sh", "-c", "echo", "${MAIN_FILE}" ]
 ENTRYPOINT [ "/bin/sh", "/app/docker-entrypoint.sh" ]
