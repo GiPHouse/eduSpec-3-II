@@ -48,6 +48,11 @@ class Quiz:
             is_correct (bool): Whether the answer was correct.
         """
         question = self.question_list[question_index]
+        # Record answer (only update to correct if they got it right)
+        answers_key = f"answers_{self.name}"
+        if answers_key not in st.session_state:
+            st.session_state[answers_key] = {}
+        current_answer = st.session_state[answers_key].get(question_index, {})
 
         # Increment attempt count
         attempts_key = f"attempts_{self.name}"
@@ -55,13 +60,8 @@ class Quiz:
             st.session_state[attempts_key] = {}
         if question_index not in st.session_state[attempts_key]:
             st.session_state[attempts_key][question_index] = 0
-        st.session_state[attempts_key][question_index] += 1
-
-        # Record answer (only update to correct if they got it right)
-        answers_key = f"answers_{self.name}"
-        if answers_key not in st.session_state:
-            st.session_state[answers_key] = {}
-        current_answer = st.session_state[answers_key].get(question_index, {})
+        if not current_answer.get("correct", False):
+            st.session_state[attempts_key][question_index] += 1
 
         # If already marked correct, don't change it
         if current_answer.get("correct", False):
@@ -81,8 +81,11 @@ class Quiz:
         """Draws the final review page showing results."""
         answers = st.session_state.get(f"answers_{self.name}", {})
 
+        # Show incorrect questions
+        wrong_questions = [(idx, data) for idx, data in answers.items() if not data["correct"]]
+
         # Show balloons on first view of review page
-        if not st.session_state.get(f"balloons_shown_{self.name}", False):
+        if not wrong_questions and not st.session_state[f"balloons_shown_{self.name}"]:
             st.balloons()
             st.session_state[f"balloons_shown_{self.name}"] = True
 
@@ -94,19 +97,16 @@ class Quiz:
 
         st.metric("Your Score", f"{correct_count} / {total}")
 
-        # Show incorrect questions
-        wrong_questions = [(idx, data) for idx, data in answers.items() if not data["correct"]]
-
-        if wrong_questions:
-            st.subheader("Questions to Review")
-            for idx, data in wrong_questions:
-                with st.expander(f"❌ Question {idx + 1}: {data['title']}"):
-                    st.write("Go back and review this question.")
-                    if st.button(f"Go to Question {idx + 1}", key=f"review_goto_{idx}"):
-                        st.session_state[f"quiz_completed_{self.name}"] = False
-                        st.session_state[f"current_index_{self.name}"] = idx
-                        st.rerun()
-        else:
+        if not wrong_questions:
+            # st.subheader("Questions to Review")
+            # for idx, data in wrong_questions:
+            #     with st.expander(f"❌ Question {idx + 1}: {data['title']}"):
+            #         st.write("Go back and review this question.")
+            #         if st.button(f"Go to Question {idx + 1}", key=f"review_goto_{idx}"):
+            #             st.session_state[f"quiz_completed_{self.name}"] = False
+            #             st.session_state[f"current_index_{self.name}"] = idx
+            #             st.rerun()
+            # else:
             st.success("Perfect score! You got all questions correct! 🌟")
 
         self.drawOverview()
