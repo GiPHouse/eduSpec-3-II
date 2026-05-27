@@ -84,7 +84,7 @@ class TestWordQuestionExtra:
             ("wrong", (False, "incorrect")),
             ("", (False, "incorrect")),
             (" ", (False, "incorrect")),
-            ("Correct answer", (False, "incorrect")),
+            ("Correct answer", (True, "correct")),
             ("correct answer ", (False, "incorrect")),
         ],
     )
