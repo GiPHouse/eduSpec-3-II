@@ -13,6 +13,7 @@ from navigation import (
 )
 from QuestionDrawer import QuestionDrawer
 
+st.logo("src/images/EduSpec.png")
 query_params = st.query_params
 requested_quiz = query_params.get("quiz")
 requested_question = query_params.get("question")

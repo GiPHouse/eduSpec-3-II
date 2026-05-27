@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import streamlit as st
+
 from managers.BaseManager import BaseManager
 
 navigation_env_var = "EDUSPEC_NAVIGATION_FILE"
@@ -153,7 +154,7 @@ def navigatePage(page: str) -> None:
 def homePage() -> None:
     """render home page"""
     st.title("EduSpec")
-    st.image(str(getDataDir() / "images" / "maxresdefault.jpg"))
+    st.image("src/images/EduSpec.png")
     st.text(
         "This is the homepage for EduSpec, an online learning environment for Molecular Sciences. "
         "Please use the buttons on the left to navigate to different quizzes. \n"
