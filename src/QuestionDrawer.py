@@ -1,10 +1,10 @@
-import os
+from pathlib import Path
 from typing import Any
 
 import streamlit as st
 
+from managers.FigureManager import FigureManager
 from questions.Question import Question
-from questions.SpectralQuestion import SpectralQuestion
 
 
 class QuestionDrawer:
@@ -30,6 +30,11 @@ class QuestionDrawer:
             else:
                 st.error(f"Your answer is incorrect!  \n {feedback}")
 
+            # After feedback, draw the script output if the question has it.
+            draw_feedback_result = getattr(current_question, "drawFeedbackResult", None)
+            if callable(draw_feedback_result):
+                draw_feedback_result()
+
     @staticmethod
     def drawQuestion(
         current_question: Question, quiz: Any | None = None, question_index: int = None
@@ -44,22 +49,39 @@ class QuestionDrawer:
         with st.container():
             st.title(current_question.title)
             current_question.drawImage()
-            # Check if we have a spectral question: in that case create a download button with _drawDownload
-            if isinstance(current_question, SpectralQuestion):
+
+            if current_question.download_data is not None:
                 QuestionDrawer._drawDownload(current_question)
             QuestionDrawer._drawBody(current_question)
 
             def _handle_reset_drawing_question() -> None:
-                nonce_key = f"{current_question.widget_key}__jsme_nonce"
-                last_seen_key = f"{current_question.widget_key}__last_seen"
+                widget_key = getattr(current_question, "widget_key", None)
+                default = getattr(current_question, "default", None)
+
+                if widget_key is None:
+                    return
+
+                nonce_key = f"{widget_key}__jsme_nonce"
+                last_seen_key = f"{widget_key}__last_seen"
+
                 if nonce_key in st.session_state:
                     st.session_state[nonce_key] += 1
                 if last_seen_key in st.session_state:
-                    st.session_state[last_seen_key] = current_question.default
+                    st.session_state[last_seen_key] = default
 
             def _reset_callback() -> None:
-                st.session_state[current_question.widget_key] = current_question.default
-                _handle_reset_drawing_question()
+                reset_session_state = getattr(current_question, "resetSessionState", None)
+
+                if callable(reset_session_state):
+                    reset_session_state()
+                    return
+
+                widget_key = getattr(current_question, "widget_key", None)
+                default = getattr(current_question, "default", None)
+
+                if widget_key is not None:
+                    st.session_state[widget_key] = default
+                    _handle_reset_drawing_question()
 
             with st.form(
                 "form" + current_question.title,
@@ -98,22 +120,15 @@ class QuestionDrawer:
     @staticmethod
     @st.fragment  # This is a fragment so the app doesn't rerun when clicking the download button
     def _drawDownload(current_question: Question) -> None:
-        """Draws the download button for spectral data.
+        """Draws the download button for spectral data."""
+        file_bytes = FigureManager.loadFigure(current_question.download_data)
 
-        The check to see if this is a
-        spectral question is done inside the drawQuestion function.
-        The filename for this file is the final component of the pathname of the file to be downloaded
-
-        Args:
-            current_question (Question): question for which the spectral data is to be downloaded
-        """
-        with open(current_question.spectralpath, "rb") as f:
-            st.download_button(
-                "Download Spectral Data",
-                f,
-                file_name=os.path.basename(current_question.spectralpath),
-                icon=":material/file_download:",
-            )
+        st.download_button(
+            "Download Data",
+            file_bytes,
+            file_name=Path(current_question.download_data).name,
+            icon=":material/file_download:",
+        )
 
     @staticmethod
     def _drawBody(current_question: Question) -> None:

@@ -17,7 +17,13 @@
             {
               "label": "Strongest Absorption",
               "question": "ir_c_o_range"
+            },
+            {
+
+              "label": "Full Script Test",
+              "question": "full_script_test_question"
             }
+
           ]
         }
       ]
@@ -72,6 +78,10 @@
         {
           "label": "Unknown A",
           "children": [
+                    {
+                "label": "Combination quiz",
+                "quiz": "combination1"
+            },
             {
               "label": "IR Clue",
               "question": "combo_unknown_a_ir"

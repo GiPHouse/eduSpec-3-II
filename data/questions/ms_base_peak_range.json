@@ -5,7 +5,7 @@
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock placeholder: normally this would show the tallest signal clearly labeled against the m/z axis."
     }
   ],
@@ -17,5 +17,6 @@
     "Correct: the base peak is at m/z 43.",
     "Too low. The tallest signal is just above m/z 42.",
     "Too high. The tallest signal is at m/z 43."
-  ]
+  ],
+  "download_data": "test.png"
 }

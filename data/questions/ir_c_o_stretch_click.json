@@ -5,17 +5,18 @@
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock placeholder: normally this would show the full IR spectrum with a strong fingerprint-region C-O absorption and weaker alkyl C-H stretches."
     }
   ],
   "version": 1,
   "type": "spectral",
-  "spectralpath": "data/spectra/ir.dx",
+  "spectralpath": "ir.dx",
   "correctAnswer": 1245.0,
   "feedbacks": [
     "Correct: the strongest C-O stretch is centered around 1245 cm^-1.",
     "Not quite. Look for the deepest absorption in the fingerprint region around 1200-1300 cm^-1."
   ],
-  "tolerance": 8.0
+  "tolerance": 8.0,
+  "download_data": "test.png"
 }

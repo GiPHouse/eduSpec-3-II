@@ -4,6 +4,7 @@ from questions.IntegerQuestion import IntegerQuestion
 from questions.MoleculeDrawingQuestion import MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.Question import Question
+from questions.ScriptQuestion import ScriptQuestion
 from questions.SpectralQuestion import SpectralQuestion
 from questions.WordQuestion import WordQuestion
 
@@ -35,6 +36,8 @@ class QuestionSerialiser:
                 return cls._convertWordQuestion(question)
             case SpectralQuestion():
                 return cls._convertSpectralQuestion(question)
+            case ScriptQuestion():
+                return cls._convertScriptQuestion(question)
             case n:
                 raise TypeError(f"Unknown or illegal question type encountered: {n.__class__}")
 
@@ -58,6 +61,7 @@ class QuestionSerialiser:
             - answers (array): The possible answers
             - correctAnswer (number): The correct answer as index of answers
             - feedbacks (array): The feedbacks given at each answer
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -68,6 +72,7 @@ class QuestionSerialiser:
         data_out["answers"] = question.answers
         data_out["correctAnswer"] = question.correct_answer
         data_out["feedbacks"] = question.feedbacks
+        # data_out["checker"] = question.checker  THIS IS MOVED TO _buildGenericQuestion.
 
         return json.dumps(data_out)
 
@@ -91,6 +96,7 @@ class QuestionSerialiser:
             - lowerBound (int): The lowest correct answer
             - upperBound (int): The highest correct answer
             - feedbacks (array): The feedbacks given at each stage (correct, too low, too high)
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -125,6 +131,7 @@ class QuestionSerialiser:
             - correctAnswer (string): The correct answer to the question
             - correctFeedback (string): The feedback given if the answer was correct
             - incorrectFeedback (string): The feedback given if the answer was incorrect
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -160,6 +167,7 @@ class QuestionSerialiser:
             - correctAnswer (float): The correct answer.
             - feedbacks (array): The feedbacks given at each stage (correct, wrong or anything that the client specifies)
             - tolerance (float): How off can the user input be from the correct answer.
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -198,6 +206,7 @@ class QuestionSerialiser:
             - correctFeedback (string): The feedback given if the answer was correct
             - incorrectFeedback (string): The feedback given if the answer was incorrect
             - widgetKey (string): The widget key used for the JSME component
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         data_out = cls._buildGenericQuestion(question)
 
@@ -230,6 +239,7 @@ class QuestionSerialiser:
             - title (string): The question title
             - bodyText (string): The question body text
             - figures (dict): The image path. Empty if None
+            - checker (string): The filename that the (optional) custom checker resides.
         """
         # ! Versioning is done in the individual functions. When updating this function, increase all by 100
         data_out = {}
@@ -238,6 +248,7 @@ class QuestionSerialiser:
         data_out["title"] = question.title
         data_out["bodyText"] = question.bodytext
         data_out["bodyFormat"] = getattr(question, "body_format", "text")
+        data_out["checker"] = question.checker
 
         figures = question.figures
         if figures is None:
@@ -246,3 +257,15 @@ class QuestionSerialiser:
             data_out["figures"] = figures
 
         return data_out
+
+    @classmethod
+    def _convertScriptQuestion(cls, question: ScriptQuestion) -> str:
+        """Serialises a ScriptQuestion to JSON."""
+        data_out = cls._buildGenericQuestion(question)
+
+        data_out["version"] = 1
+        data_out["type"] = "script"
+        data_out["script"] = question.script.get_file_name()
+        data_out["parameters"] = question.parameters
+
+        return json.dumps(data_out)

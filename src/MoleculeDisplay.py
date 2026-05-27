@@ -4,6 +4,8 @@ import py3Dmol
 import streamlit as st
 from stmol import render_pdb, showmol
 
+from managers.FigureManager import FigureManager
+
 
 class MoleculeDisplay:
     """Handles 3D interactive molecule display using stmol."""
@@ -111,8 +113,8 @@ class MoleculeDisplay:
             figures (str): _description_
         """
         try:
-            with open(figures, "r") as f:
-                mol_string = f.read()
+            mol_bytes = FigureManager.loadFigure(figures)
+            mol_string = mol_bytes.decode("utf-8")
 
             if not mol_string.strip():
                 st.error(f"Molecule file is empty: {figures}")

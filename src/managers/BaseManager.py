@@ -14,6 +14,7 @@ class BaseManager:
 
     # DO NOT MODIFY _data_dir OUTSIDE TESTS
     _data_dir = pathlib.Path("data/")
+    data_dir_env_var = "EDUSPEC_DATA_DIR"
 
     _item_dir: pathlib.Path
 
@@ -25,7 +26,7 @@ class BaseManager:
             raise TypeError(f"{cls.__name__} must define '_item_dir'!")
 
     @classmethod
-    def itemExists(cls, item_name: str) -> bool:
+    def itemExists(cls, item_name: str, file_extension: str = ".json") -> bool:
         """Checks whether an item exists
 
         Args:
@@ -35,10 +36,11 @@ class BaseManager:
             bool: Whether it exists on disk
         """
         item_dir = cls._getDir()
-
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
+        print(item_dir)
         # Most general items are json files
-        item_file = item_dir.joinpath(f"{item_name}.json")
-
+        item_file = item_dir.joinpath(f"{item_name}{file_extension}")
+        print(item_file)
         return item_file.is_file()
 
     @classmethod
@@ -48,25 +50,29 @@ class BaseManager:
         Returns:
             pathlib.Path: The quiz directory path
         """
-        # When running inside a container we can access a volume from root instead of relative from the file
-        if environ.get("PATH_FROM_ROOT", False):
-            # We can immediately start from root and go to the general data directory as given in the ENV
-            data_dir = pathlib.Path(environ.get("PATH_FROM_ROOT", "/data/"))
-            # Then just go to the item-specific dir
-            item_dir = data_dir.joinpath(cls._item_dir)
-        else:
-            # We are in <base>/src/managers/BaseManager.py
-            current_file = pathlib.Path(__file__)
-            # We wish to go up 2 directories (and start from the file)
-            base_dir = current_file.parents[2]
-            # Now we go down to the general data directory
-            data_dir = base_dir.joinpath(cls._data_dir)
-            # And finally to the item-specific one
-            item_dir = data_dir.joinpath(cls._item_dir)
+        item_dir = cls.getDataDir().joinpath(cls._item_dir)
 
         if not item_dir.exists():
             item_dir.mkdir(parents=True)
         return item_dir
+
+    @classmethod
+    def getDataDir(cls) -> pathlib.Path:
+        """Return the configured root data directory."""
+        configured_data_dir = (
+            environ.get(cls.data_dir_env_var)
+            or environ.get("DATA_DIR")
+            or environ.get("PATH_FROM_ROOT")
+        )
+        if configured_data_dir:
+            return pathlib.Path(configured_data_dir)
+
+        # We are in <base>/src/managers/BaseManager.py
+        current_file = pathlib.Path(__file__)
+        # We wish to go up 2 directories (and start from the file)
+        base_dir = current_file.parents[2]
+        # Now we go down to the general data directory
+        return base_dir.joinpath(cls._data_dir)
 
     @classmethod
     def _iterDir(cls, start: pathlib.Path, enter_subdirs: bool = True) -> DirectoryStructure:
