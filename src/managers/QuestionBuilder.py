@@ -121,7 +121,11 @@ class QuestionBuilder:
                 )
 
             case "drawing":
-                feedbacks = None if checker_object else [obj.get("correctFeedback"), obj.get("incorrectFeedback")]
+                feedbacks = (
+                    None
+                    if checker_object
+                    else [obj.get("correctFeedback"), obj.get("incorrectFeedback")]
+                )
                 correct_answer = None if checker_object else obj.get("correctAnswer")
                 default_answer = obj.get("defaultAnswer")
                 widget_key = obj.get("widgetKey")
@@ -305,10 +309,7 @@ class QuestionBuilder:
                     return True  # If there is a custom checker, we don't need to verify the correct answer, feedbacks and widget key
                 if not correct_answer or not correct_feedback or not incorrect_feedback:
                     return False
-                if (
-                    not isinstance(correct_answer, str)
-                    or not isinstance(default_answer, str)
-                ):
+                if not isinstance(correct_answer, str) or not isinstance(default_answer, str):
                     return False
 
             case "script":

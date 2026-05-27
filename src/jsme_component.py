@@ -13,9 +13,7 @@ if not _RELEASE:
     )
 else:
     frontend_dir = Path(__file__).parent / "pages" / "jsme_component" / "frontend"
-    _component_func = components.declare_component(
-        "jsme_component", path=os.fspath(frontend_dir)
-    )
+    _component_func = components.declare_component("jsme_component", path=os.fspath(frontend_dir))
 
 
 def jsme_component(default_smiles: str = "", key: Optional[str] = None) -> dict | None:
