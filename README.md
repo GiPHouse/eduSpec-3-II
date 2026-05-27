@@ -1,3 +1,5 @@
+*This guide was generated with Codex.*
+
 # EduSpec
 
 EduSpec is a Streamlit learning environment for spectroscopy practice. It supports standalone questions, multi-question quizzes, IR/NMR/MS spectrum-click exercises, text and numeric answers, multiple choice answers, molecule drawing with JSME, custom Python checkers, and script-driven interactive questions.
@@ -203,7 +205,7 @@ data/
 
 ## Assets And File Paths
 
-Question files can refer to assets by filename or by a path. Prefer short paths relative to the relevant asset folder when possible:
+Question files can refer to assets by filename.
 
 ```json
 {
@@ -223,18 +225,16 @@ easy001/ir.dx
 ziptest.zip
 ```
 
-Short paths are resolved by the file manager based on extension. For example, `test.png` resolves under `images/`, `water.pdb` resolves under `molecules/`, and `easy001/ir.dx` resolves under `spectra/`. Existing absolute paths can also be used.
-
 Supported content-manager file types:
 
 | Type | Extensions | Default folder |
 | --- | --- | --- |
 | Images | `.png`, `.jpg`, `.jpeg` | `images/` |
-| Molecules | `.pdb`, `.mol` | `molecules/` |
+| Molecules | `.pdb`, `.mol`, `.mol2` | `molecules/` |
 | Spectra | `.dx`, `.jdx` | `spectra/` |
 | Downloads | `.zip` | `compressed/` |
 
-For molecule figures, `.pdb` is supported in the current app. `.mol` files are included here because they are expected to be supported by the PR that is about to be merged. Put both file types in `data/molecules/`.
+For molecule figures, `.pdb`, `.mol`, and `.mol2` files are supported in the current app. Put all file types in `data/molecules/`.
 
 ## Creating Questions
 
@@ -344,7 +344,7 @@ Each figure has a `path` and `description`:
 "figures": [
   {
     "path": "test.png",
-    "description": "Image shown below the question title."
+    "description": "Example image"
   },
   {
     "path": "water.pdb",
@@ -453,7 +453,7 @@ The student types a word or short text answer.
 Important details:
 
 - The answer is compared directly to `correctAnswer`.
-- Keep answers simple and consistent with spelling and capitalization expected from students.
+- Answers are not case-sensitive.
 
 ### Spectral
 
@@ -468,7 +468,7 @@ The student clicks a peak or point in a spectrum. This is used for IR, NMR, and 
   "figures": [
     {
       "path": "test.png",
-      "description": "Mock IR spectrum."
+      "description": "Example description"
     }
   ],
   "version": 1,
@@ -489,7 +489,7 @@ Important details:
 - `correctAnswer` and `tolerance` must be floats, such as `1245.0` and `8.0`.
 - `feedbacks` has two items: correct and incorrect.
 - Spectrum type is detected from JCAMP metadata first. If metadata is incomplete, the app falls back to the filename or path containing `ir`, `nmr`, or `ms`.
-- IR and NMR line plots snap selected points to nearby peaks. MS spectra are displayed as bars.
+- IR and NMR line plots snap selected points to nearby peaks. MS spectra are displayed as bars. 
 
 ### Molecule Drawing
 
@@ -576,6 +576,41 @@ For `slider`, you can use `min`, `max`, `default`, and `step`. For `select`, `op
 
 See [Script Questions](#script-questions) for the Python script format.
 
+## Custom Checkers
+
+Custom checkers live in:
+
+```text
+data/checkers/
+```
+
+Use a checker when the built-in answer comparison is not enough. The question JSON references the checker module name without `.py`:
+
+```json
+{
+  "id": "question_custom_checker",
+  "title": "Custom range",
+  "bodyText": "Enter a number.",
+  "version": 1,
+  "type": "integer",
+  "figures": [],
+  "checker": "customintchecker"
+}
+```
+
+The checker file must define a callable `check` function with the return annotation `tuple[bool, str]`:
+
+```python
+def check(answer: int) -> tuple[bool, str]:
+    if answer < 50:
+        return False, "Too low!"
+    if answer > 100:
+        return False, "Too high!"
+    return True, "Juuust right!"
+```
+
+When `checker` is set, the app delegates answer checking to the custom function. Some question types still require display-related fields. For example, multiple-choice questions still need `answers`, and drawing questions still need `defaultAnswer` and `widgetKey`.
+
 ## Quizzes
 
 Quizzes are stored in:
@@ -584,7 +619,7 @@ Quizzes are stored in:
 data/quizzes/
 ```
 
-A quiz JSON file lists question IDs in order:
+A quiz JSON file needs a unique ID and a list of question IDs in order:
 
 ```json
 {
@@ -718,41 +753,6 @@ http://localhost:8501/?question=ir_c_o_stretch_click
 http://localhost:8501/?quiz=combination1
 http://localhost:8501/?page=about
 ```
-
-## Custom Checkers
-
-Custom checkers live in:
-
-```text
-data/checkers/
-```
-
-Use a checker when the built-in answer comparison is not enough. The question JSON references the checker module name without `.py`:
-
-```json
-{
-  "id": "question_custom_checker",
-  "title": "Custom range",
-  "bodyText": "Enter a number.",
-  "version": 1,
-  "type": "integer",
-  "figures": [],
-  "checker": "customintchecker"
-}
-```
-
-The checker file must define a callable `check` function with the return annotation `tuple[bool, str]`:
-
-```python
-def check(answer: int) -> tuple[bool, str]:
-    if answer < 50:
-        return False, "Too low!"
-    if answer > 100:
-        return False, "Too high!"
-    return True, "Juuust right!"
-```
-
-When `checker` is set, the app delegates answer checking to the custom function. Some question types still require display-related fields. For example, multiple-choice questions still need `answers`, and drawing questions still need `defaultAnswer` and `widgetKey`.
 
 ## Script Questions
 
@@ -962,24 +962,6 @@ Run all tests:
 
 ```powershell
 python -m pytest
-```
-
-Run unit tests:
-
-```powershell
-python -m pytest tests/unit
-```
-
-Run Streamlit-focused tests:
-
-```powershell
-python -m pytest tests/streamlit
-```
-
-Run only navigation tests:
-
-```powershell
-python -m pytest tests/streamlit/test_navigation.py
 ```
 
 ## Code Style

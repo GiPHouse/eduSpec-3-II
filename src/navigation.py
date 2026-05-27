@@ -188,7 +188,7 @@ def renderQuestionButton(
 
 
 def renderQuizButton(container: Any, label: str, quiz: str, current_quiz: str | None) -> None:
-    """Render a single navigation button for quizes"""
+    """Render a single navigation button for quizzes"""
     button_type = "primary" if current_quiz == quiz else "secondary"
     if container.button(label, key=f"quiz_{quiz}", type=button_type, width="stretch"):
         navigateQuiz(quiz)
