@@ -45,10 +45,10 @@ class TestWordQuestionExtra:
         assert wq.verifyAndFeedback("correct answer ") == (False, "incorrect")
         assert wq.verifyAndFeedback(" correct answer") == (False, "incorrect")
 
-    def test_verify_is_case_sensitive(self, wq: WordQuestion) -> None:
-        """Test that answer checking is case sensitive."""
-        assert wq.verifyAndFeedback("Correct answer") == (False, "incorrect")
-        assert wq.verifyAndFeedback("CORRECT ANSWER") == (False, "incorrect")
+    def test_verify_is_not_case_sensitive(self, wq: WordQuestion) -> None:
+        """Test that answer checking is not case sensitive."""
+        assert wq.verifyAndFeedback("Correct answer") == (True, "correct")
+        assert wq.verifyAndFeedback("CORRECT ANSWER") == (True, "correct")
 
     def test_verify_empty_string_is_incorrect(self, wq: WordQuestion) -> None:
         """Test that an empty string is incorrect."""
