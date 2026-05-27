@@ -1,10 +1,12 @@
 import json
 
 from managers.CheckerManager import CheckerManager
+from managers.ScriptManager import ScriptManager
 from questions.IntegerQuestion import IntegerQuestion
 from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDrawingQuestion
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.Question import Question
+from questions.ScriptQuestion import ScriptQuestion
 from questions.SpectralQuestion import SpectralQuestion
 from questions.WordQuestion import WordQuestion
 
@@ -141,6 +143,23 @@ class QuestionBuilder:
                     body_format=body_format,
                     config=config,
                     feedbacks=feedbacks,
+                    figures=figures,
+                    download_data=download_data,
+                    checker=checker_object,
+                )
+
+            case "script":
+                script_name = obj.get("script")
+                parameters = obj.get("parameters", [])
+                script = ScriptManager.buildScript(script_name)
+
+                return ScriptQuestion(
+                    name=name,
+                    title=title,
+                    bodytext=bodytext,
+                    body_format=body_format,
+                    script=script,
+                    parameters=parameters,
                     figures=figures,
                     download_data=download_data,
                     checker=checker_object,
@@ -293,6 +312,48 @@ class QuestionBuilder:
                     return False
                 if not isinstance(correct_answer, str) or not isinstance(default_answer, str):
                     return False
+
+            case "script":
+                script_name = obj.get("script")
+                parameters = obj.get("parameters")
+
+                if not script_name or not isinstance(script_name, str):
+                    return False
+
+                if parameters is None or not isinstance(parameters, list):
+                    return False
+
+                try:
+                    ScriptManager.buildScript(script_name)
+                except Exception:
+                    return False
+
+                allowed_input_types = {
+                    "text",
+                    "textarea",
+                    "number",
+                    "integer",
+                    "slider",
+                    "checkbox",
+                    "select",
+                }
+
+                for parameter in parameters:
+                    if not isinstance(parameter, dict):
+                        return False
+
+                    param_name = parameter.get("name")
+                    if not param_name or not isinstance(param_name, str):
+                        return False
+
+                    input_type = parameter.get("inputType", "text")
+                    if input_type not in allowed_input_types:
+                        return False
+
+                    if input_type == "select":
+                        options = parameter.get("options")
+                        if not isinstance(options, list) or len(options) == 0:
+                            return False
 
             case n:
                 raise TypeError(f"Attempted to verify unknown or illegal question type: {n}")

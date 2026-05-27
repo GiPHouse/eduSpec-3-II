@@ -17,7 +17,13 @@
             {
               "label": "Strongest Absorption",
               "question": "ir_c_o_range"
+            },
+            {
+
+              "label": "Full Script Test",
+              "question": "full_script_test_question"
             }
+
           ]
         }
       ]

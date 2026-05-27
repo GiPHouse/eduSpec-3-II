@@ -3,6 +3,8 @@ from typing import Any, Optional, cast
 
 import numpy as np
 
+from managers.FigureManager import FigureManager
+
 
 def convertASDF(XYYdata: str) -> np.ndarray:
     """Converts string of ASDF data to an array of floats.
@@ -171,8 +173,9 @@ def loadJCAMP(filePath: str) -> tuple:
     SpectrumClass
         SpectrumClass object of the loaded data
     """
-    with open(filePath, "r") as f:
-        data = f.read().split("\n")
+    text = FigureManager.loadFigure(filePath).decode("utf-8", errors="replace")
+
+    data = text.split("\n")
 
     dataTypesOfInterest = (
         "NMR SPECTRUM",
