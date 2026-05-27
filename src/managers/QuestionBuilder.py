@@ -102,9 +102,9 @@ class QuestionBuilder:
                 )
 
             case "spectral":
-                correct_answer = None if checker_object else obj.get("correctAnswer")
+                correct_answer = None if checker_object else float(obj.get("correctAnswer"))
                 feedbacks = None if checker_object else obj.get("feedbacks")
-                tolerance = obj.get("tolerance")
+                tolerance = None if checker_object else float(obj.get("tolerance"))
                 spectralpath = obj.get("spectralpath")
 
                 return SpectralQuestion(
@@ -112,11 +112,11 @@ class QuestionBuilder:
                     title=title,
                     bodytext=bodytext,
                     body_format=body_format,
-                    correct_answer=float(correct_answer),
+                    correct_answer=correct_answer,
                     feedbacks=feedbacks,
                     figures=figures,
                     spectralpath=spectralpath,
-                    tolerance=float(tolerance),
+                    tolerance=tolerance,
                     download_data=download_data,
                     checker=checker_object,
                 )

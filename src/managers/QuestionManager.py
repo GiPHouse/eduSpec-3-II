@@ -23,7 +23,6 @@ class QuestionManager(BaseManager):
             name (str): The unique id/name of the question to load.
 
         Raises:
-            FileNotFound: When trying to load a question that doesn't exist.
             TypeError: When building an unrecognised question type.
             ValueError: When building a malformed question.
 
@@ -39,7 +38,6 @@ class QuestionManager(BaseManager):
         question_data = question_file.read_text()
 
         question = QuestionBuilder.questionFromJson(question_data)
-        question.figures = cls._resolveAssetPath(question.figures)
         return question
 
     @classmethod

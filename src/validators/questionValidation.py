@@ -320,7 +320,9 @@ def _validateIntegerQuestion(obj: dict) -> list[str]:
 
     elif len(attr_feedbacks) != 3:
         # Check whether feedbacks is 3 long
-        problems.append("The `feedbacks` attribute must have a length of 3")
+        problems.append(
+            "The `feedbacks` attribute must have a length of 3. It is sorted as 'correct feedback', 'too low feedback', 'too high feedback'."
+        )
 
     elif any([not isinstance(x, str) or x == "" for x in attr_feedbacks]):
         # Check whether feedbacks only contains non-empty strings
@@ -471,10 +473,10 @@ def _validateSpectralQuestion(obj: dict) -> list[str]:
         # Check whether feedbacks is a list
         problems.append("The `feedbacks` attribute must be a list.")
 
-    elif len(attr_feedbacks) != 3:
-        # Check whether feedbacks is 3 long
+    elif len(attr_feedbacks) != 2:
+        # Check whether feedbacks is 2 long
         problems.append(
-            "The `feedbacks` attribute must have a length of 3. It is sorted as 'correct feedback', 'too low feedback', 'too high feedback'."
+            "The `feedbacks` attribute must have a length of 2. It is sorted as ['correct feedback', 'incorrect feedback']."
         )
 
     attr_correctanswer = obj.get("correctAnswer", None)

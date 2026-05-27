@@ -247,12 +247,17 @@ class QuestionSerialiser:
         data_out["id"] = question.name
         data_out["title"] = question.title
         data_out["bodyText"] = question.bodytext
-        data_out["bodyFormat"] = getattr(question, "body_format", "text")
         data_out["checker"] = question.checker
 
+        body_format = question.body_format
+        if body_format is None:
+            data_out["bodyFormat"] = "text"
+        else:
+            data_out["bodyFormat"] = body_format
+
         figures = question.figures
-        if figures is None:
-            data_out["figures"] = []
+        if figures is None or len(figures) == 0:
+            data_out["figures"] = None
         else:
             data_out["figures"] = figures
 
