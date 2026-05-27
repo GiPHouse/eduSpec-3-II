@@ -36,11 +36,8 @@ class BaseManager:
             bool: Whether it exists on disk
         """
         item_dir = cls._getDir()
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
-        print(item_dir)
         # Most general items are json files
         item_file = item_dir.joinpath(f"{item_name}{file_extension}")
-        print(item_file)
         return item_file.is_file()
 
     @classmethod
