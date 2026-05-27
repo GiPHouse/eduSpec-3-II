@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import streamlit as st
+
 from managers.BaseManager import BaseManager
 
 navigation_env_var = "EDUSPEC_NAVIGATION_FILE"
