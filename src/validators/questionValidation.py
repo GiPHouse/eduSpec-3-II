@@ -20,7 +20,7 @@ Stuff to check (integer):
     - checker is a nonnull string
     OR all of the below:
     - lowerBound is an integer
-    - upperBound is an integer
+    - upperBound is an integer greater or equal to lowerBound
     - feedbacks is a list of 3 nonnull strings
 
 Stuff to check (multipleChoice):
@@ -216,11 +216,23 @@ def validateQuestionObject(obj: dict, **kwargs) -> list[str]:
             case "integer":
                 problems.extend(_validateIntegerQuestion(obj))
 
+            case "multipleChoice":
+                problems.extend(_validateMultipleChoiceQuestion(obj))
+
+            case "spectral":
+                problems.extend(_validateSpectralQuestion(obj))
+
+            case "word":
+                problems.extend(_validateWordQuestion(obj))
+
+            case "drawing":
+                problems.extend(_validateDrawingQuestion(obj))
+
     return problems
 
 
 def _validateIntegerQuestion(obj: dict) -> list[str]:
-    """Checks a json-loaded integer question object to see if it valid.
+    """Checks a json-loaded integer question object to see if it's valid.
 
     This only checks the integer question-specific attributes, not generic.
 
@@ -231,5 +243,341 @@ def _validateIntegerQuestion(obj: dict) -> list[str]:
         list[str]: A list of problems. If it's empty the integer-specific parts of the question are valid.
     """
     problems = []
+
+    attr_checker = obj.get("checker", None)
+    if attr_checker is not None:
+        # If checker does not exist, standard checking is used
+        if not isinstance(attr_checker, str) or attr_checker == "":
+            # Check whether checker is a nonnull string, if it exists
+            problems.append(
+                "The `checker` attribute should be a non-empty string. If you do not want to use a custom checker, leave it out."
+            )
+
+        return problems
+
+    attr_lowerbound = obj.get("lowerBound", None)
+    if attr_lowerbound is None:
+        # Check whether lowerBound exists
+        problems.append(
+            "Integer questions must have a `lowerBound` attribute. This should be an integer."
+        )
+
+    elif not isinstance(attr_lowerbound, int):
+        # Check whether lowerBound is an int
+        problems.append("The `lowerBound` attribute should be an integer.")
+
+    attr_upperbound = obj.get("upperBound", None)
+    if attr_upperbound is None:
+        # Check whether upperbound exists
+        problems.append(
+            "Integer questions must have a `upperBound` attribute. This should be an integer."
+        )
+
+    elif not isinstance(attr_upperbound, int):
+        # Check whether upperbound is an int
+        problems.append("The `upperBound` attribute should be an integer.")
+
+    if (
+        isinstance(attr_lowerbound, int)
+        and isinstance(attr_upperbound, int)
+        and attr_upperbound < attr_lowerbound
+    ):
+        # Check whether lowerbound is lower than upperbound
+        problems.append(
+            "The upper bound of an integer question must be higher than the lower bound"
+        )
+
+    attr_feedbacks = obj.get("feedbacks", None)
+    if attr_feedbacks is None:
+        # Check whether feedbacks exists
+        problems.append(
+            "Integer questions must have a `feedbacks` attribute. This should be a list of 3 non-empty strings"
+        )
+
+    elif not isinstance(attr_feedbacks, list):
+        # Check whether feedbacks is a list
+        problems.append("The `feedbacks` attribute must be a list.")
+
+    elif len(attr_feedbacks) != 3:
+        # Check whether feedbacks is 3 long
+        problems.append("The `feedbacks` attribute must have a length of 3")
+
+    elif any([not isinstance(x, str) or x == "" for x in attr_feedbacks]):
+        # Check whether feedbacks only contains non-empty strings
+        problems.append(
+            "The `feedbacks` attribute must only contain non-empty strings. You currently have an empty string or non-string in it."
+        )
+
+    return problems
+
+
+def _validateMultipleChoiceQuestion(obj: dict) -> list[str]:
+    """Checks a json-loaded multiple-choice question object to see if it's valid.
+
+    This only checks the multiple-choice question-specific attributes, not generic.
+
+    Args:
+        obj (dict): The json object to check.
+
+    Returns:
+        list[str]: A list of problems. If it's empty the multiple-choice-specific parts of the question are valid.
+    """
+    problems = []
+
+    attr_answers = obj.get("answers", None)
+    if attr_answers is None:
+        # Check if answers exists
+        problems.append(
+            "Multiple-choice questions must have an `answers` attribute. This should be a list of non-empty strings."
+        )
+
+    elif not isinstance(attr_answers, list):
+        # Check whether answers is a list
+        problems.append("The `answers` attribute should be a list.")
+
+    else:
+        if any(not isinstance(x, str) or x == "" for x in attr_answers):
+            # Check whether answers is filled with nonnull strings
+            problems.append(
+                "The `answers` attribute should only contain non-empty strings. You currently have an empty string or non-string in it."
+            )
+
+        if len(attr_answers) < 2:
+            # Check that there are at least 2 answers
+            problems.append(
+                "The `answers` attribute should contain at least two elements. You have less than that."
+            )
+
+    attr_checker = obj.get("checker", None)
+    if attr_checker is not None:
+        # If checker does not exist, standard checking is used
+        if not isinstance(attr_checker, str) or attr_checker == "":
+            # Check whether checker is a nonnull string, if it exists
+            problems.append(
+                "The `checker` attribute should be a non-empty string. If you do not want to use a custom checker, leave it out."
+            )
+
+        return problems
+
+    attr_feedbacks = obj.get("feedbacks", None)
+    if attr_feedbacks is None:
+        # Check if feedbacks exists
+        problems.append(
+            "Multiple-choice questions must have a `feedbacks` attribute. This should be a list of non-empty strings."
+        )
+
+    elif not isinstance(attr_feedbacks, list):
+        # Check whether feedbacks is a list
+        problems.append("The `answers` attribute should be a list.")
+
+    else:
+        if any(not isinstance(x, str) or x == "" for x in attr_feedbacks):
+            # Check whether feedbacks is filled with nonnull strings
+            problems.append(
+                "The `feedback` attribute should only contain non-empty strings. You currently have an empty string or non-string in it."
+            )
+
+        if isinstance(attr_answers, list) and len(attr_feedbacks) != len(attr_answers):
+            # Check that there is feedback for every answer
+            problems.append(
+                f"The `feedback` attribute should have the same length as the `answers` attribute. Currently there are {len(attr_feedbacks)} feedbacks for {len(attr_answers)} answers."
+            )
+
+    attr_correctanswer = obj.get("correctAnswer", None)
+    if attr_correctanswer is None:
+        # Check whether correct answer exists
+        problems.append(
+            "Multiple-choicelist of non-empty strings questions must have a `correctAnswer` attribute. This should be an integer between 0 and the amount of answers."
+        )
+
+    elif not isinstance(attr_correctanswer, int):
+        # Check whether correct answer is an int.
+        problems.append("The `correctAnswer` attribute should be an integer.")
+
+    elif attr_correctanswer < 0 or (
+        isinstance(attr_answers, list) and attr_correctanswer >= len(attr_answers)
+    ):
+        # Check whether correct answer is a valid answer
+        problems.append(
+            "The `correctAnswer` attribute should be no lower than zero and not equal or higher than the amount of answers."
+        )
+
+    return problems
+
+
+def _validateSpectralQuestion(obj: dict) -> list[str]:
+    """Checks a json-loaded spectral question object to see if it's valid.
+
+    This only checks the spectral question-specific attributes, not generic.
+
+    Args:
+        obj (dict): The json object to check.
+
+    Returns:
+        list[str]: A list of problems. If it's empty the spectral-specific parts of the question are valid.
+    """
+    problems = []
+
+    attr_path = obj.get("spectralpath", None)
+    if attr_path is None:
+        # Check whether spectral path exists
+        problems.append(
+            "Spectral questions must have a `spectralpath` attribute. This should be a non-empty string."
+        )
+
+    elif not isinstance(attr_path, str) or attr_path == "":
+        # Check whether spectral path is a nonnull string
+        problems.append("The `spectralpath` attribute should be a non-empty string.")
+
+    attr_checker = obj.get("checker", None)
+    if attr_checker is not None:
+        # If checker does not exist, standard checking is used
+        if not isinstance(attr_checker, str) or attr_checker == "":
+            # Check whether checker is a nonnull string, if it exists
+            problems.append(
+                "The `checker` attribute should be a non-empty string. If you do not want to use a custom checker, leave it out."
+            )
+
+        return problems
+
+    attr_feedbacks = obj.get("feedbacks")
+    if attr_feedbacks is None:
+        # Check whether feedbacks exists
+        problems.append(
+            "Spectral questions must have a `feedbacks` attribute. This should be a list of 2 non-empty strings"
+        )
+
+    elif not isinstance(attr_feedbacks, list):
+        # Check whether feedbacks is a list
+        problems.append("The `feedbacks` attribute must be a list.")
+
+    elif len(attr_feedbacks) != 3:
+        # Check whether feedbacks is 3 long
+        problems.append("The `feedbacks` attribute must have a length of 2")
+
+    attr_correctanswer = obj.get("correctAnswer", None)
+    if attr_correctanswer is None:
+        # Check whether correct answer exists
+        problems.append(
+            "Spectral questions must have a `correctAnswer` attribute. This should be an int or float."
+        )
+
+    elif not isinstance(attr_correctanswer, (int, float)):
+        # Check whether correct answer is an int or float
+        problems.append(
+            f"The `correctAnswer` attribute should be an int or float. Currently it is {type(attr_correctanswer)}"
+        )
+
+    attr_tolerance = obj.get("tolerance", None)
+    if attr_tolerance is None:
+        # Check whether tolerance exists
+        problems.append(
+            "Spectral questions must have a `tolerance` attribute. This should be an int or float."
+        )
+
+    elif not isinstance(attr_tolerance, (int, float)):
+        # Check whether tolerance is an int or float
+        problems.append(
+            f"The `tolerance` attribute should be an int or float. Currently it is {type(attr_tolerance)}"
+        )
+
+    return problems
+
+
+def _validateWordQuestion(obj: dict) -> list[str]:
+    """Checks a json-loaded word question object to see if it's valid.
+
+    This only checks the word question-specific attributes, not generic.
+
+    Args:
+        obj (dict): The json object to check.
+
+    Returns:
+        list[str]: A list of problems. If it's empty the word-specific parts of the question are valid.
+    """
+    problems = []
+
+    attr_checker = obj.get("checker", None)
+    if attr_checker is not None:
+        # If checker does not exist, standard checking is used
+        if not isinstance(attr_checker, str) or attr_checker == "":
+            # Check whether checker is a nonnull string, if it exists
+            problems.append(
+                "The `checker` attribute should be a non-empty string. If you do not want to use a custom checker, leave it out."
+            )
+
+        return problems
+
+    attr_correctanswer = obj.get("correctAnswer", None)
+    if attr_correctanswer is None:
+        # Check whether correct answer exists
+        problems.append(
+            "Word questions must have a `correctAnswer` attribute. This should be a non-empty string."
+        )
+
+    elif not isinstance(attr_correctanswer, str) or attr_correctanswer == "":
+        # Check whether correct answer is a nonnull string
+        problems.append("The `correctAnswer` attribute should be a non-empty string.")
+
+    attr_correctfeedback = obj.get("correctFeedback", None)
+    if attr_correctfeedback is None:
+        # Check whether correct feedback exists
+        problems.append(
+            "Word questions must have a `correctFeedback` attribute. This should be a non-empty string."
+        )
+
+    elif not isinstance(attr_correctfeedback, str) or attr_correctfeedback == "":
+        # Check whether correct feedback is a nonnull string
+        problems.append("The `correctFeedback` attribute should be a non-empty string.")
+
+    attr_incorrectfeedback = obj.get("incorrectFeedback", None)
+    if attr_incorrectfeedback is None:
+        # Check whether incorrect feedback exists
+        problems.append(
+            "Word questions must have a `incorrectFeedback` attribute. This should be a non-empty string."
+        )
+
+    elif not isinstance(attr_incorrectfeedback, str) or attr_incorrectfeedback == "":
+        # Check whether incorrect feedback is a nonnull string
+        problems.append("The `incorrectFeedback` attribute should be a non-empty string.")
+
+    return problems
+
+
+def _validateDrawingQuestion(obj: dict) -> list[str]:
+    """Checks a json-loaded drawing question object to see if it's valid.
+
+    This only checks the drawing question-specific attributes, not generic.
+
+    Args:
+        obj (dict): The json object to check.
+
+    Returns:
+        list[str]: A list of problems. If it's empty the drawing-specific parts of the question are valid.
+    """
+    problems = []
+
+    attr_defaultanswer = obj.get("defaultAnswer", None)
+    if attr_defaultanswer is not None:
+        # Default answer is not required
+        if not isinstance(attr_defaultanswer, str) or attr_defaultanswer == "":
+            # Check whether default answer is a nonnull string, if it exists
+            problems.append(
+                "The `defaultAnswer` attribute should be a non-empty string. If you do not want to use it, leave it out."
+            )
+
+    attr_widgetkey = obj.get("widgetKey", None)
+    if attr_widgetkey is not None:
+        # Default answer is not required
+        if not isinstance(attr_widgetkey, str) or attr_widgetkey == "":
+            # Check whether default answer is a nonnull string, if it exists
+            problems.append(
+                "The `widgetKey` attribute should be a non-empty string. If you do not want to use it, leave it out."
+            )
+
+    word_problems = _validateWordQuestion(obj)
+    word_problems = [x.replace("Word", "Drawing") for x in word_problems]
+
+    problems.extend(word_problems)
 
     return problems

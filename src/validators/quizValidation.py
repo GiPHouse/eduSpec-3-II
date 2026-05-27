@@ -112,7 +112,7 @@ def validateQuizObject(obj: dict, **kwargs) -> list[str]:
     else:
         # Check whether all questions exist
         for question_name in attr_questions:
-            if not QuestionManager.questionExists(question_name):
+            if not QuestionManager.itemExists(question_name):
                 problems.append(
                     f"The question '{question_name}' included in `questionNames` does not exist."
                 )
