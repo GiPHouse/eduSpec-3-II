@@ -119,7 +119,6 @@ if submitButton:
                     f.write(newFile.getbuffer())
         if spectral_counter != 1 and questionType == "Spectral Question":
             st.error(f"You need exactly one spectral data file, you have {spectral_counter} files")
-            print("boo")
         else:
             st.session_state["last_successful_id"] = question_id
             st.session_state["last_successful_title"] = title
