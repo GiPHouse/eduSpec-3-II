@@ -2,55 +2,55 @@
 
 Stuff to check (generic):
     - id is a nonnull string
+    - if there is a file name, it must match the id
     - title is a nonnull string
     - bodyText is a string
     - version is a positive integer
-    - figures is either:
+    - figures (optional) is either:
         - a list of strings
         - a list of dicts, which contain
             - path: string
             - description: string
-    - bodyFormat is either
+    - bodyFormat (optional) is either
         - "text"
         - "latex"
     - type is either of the following:
         - ["integer", "multipleChoice", "spectral", "word", "drawing"]
 
 Stuff to check (integer):
-    - checker is a nonnull string
+    - checker (optional) is a nonnull string
     OR all of the below:
-    - lowerBound is an integer
-    - upperBound is an integer greater or equal to lowerBound
+    - lowerBound is an int or float
+    - upperBound is an int or float
+    - upperBound is greater or equal to lowerBound
     - feedbacks is a list of 3 nonnull strings
 
 Stuff to check (multipleChoice):
     - answers is a list of 2 or more nonnull strings
-    - checker is a nonnull string
+    - checker (optional) is a nonnull string
     OR all of the below:
     - feedbacks is a list of nonnull strings of the same length as answers
     - correctAnswer is an integer >=0 and <len(answers)
 
 Stuff to check (spectral):
     - spectralpath is a nonnull string
-    - checker is a nonnull string
+    - checker (optional) is a nonnull string
     OR all of the below:
     - feedbacks is a 2-element list of nonnull strings
     - correctAnswer is an int or float
-    - tolerance is an int or float
+    - tolerance (optional) is an int or float
 
 Stuff to check (word):
-    - checker is a nonnull string
+    - checker (optional) is a nonnull string
     OR all of the below:
     - correctFeedback is a nonnull string
     - incorrectFeedback is a nonnull string
     - correctAnswer is a nonnull string
 
 Stuff to check (drawing):
-    - defaultAnswer is a string
-    - widgetKey is a string
+    - defaultAnswer (optional) is a string
+    - widgetKey (optional) is a string
     All of the checks for word
-
-
 """
 
 import json
@@ -125,9 +125,9 @@ def validateQuestionObject(obj: dict, **kwargs) -> list[str]:
             "Questions must have an `bodyText` attribute. This should be a non-empty string."
         )
 
-    elif not isinstance(attr_bodytext, str) or attr_bodytext == "":
+    elif not isinstance(attr_bodytext, str):
         # Check whether bodyText is a non-empty string
-        problems.append("The `bodyText` attribute must be a non-empty string.")
+        problems.append("The `bodyText` attribute must be a string.")
 
     attr_version = obj.get("version")
     if attr_version is None:
@@ -160,24 +160,18 @@ def validateQuestionObject(obj: dict, **kwargs) -> list[str]:
         )
 
     attr_bodyformat = obj.get("bodyFormat", None)
-    if attr_bodyformat is None:
-        # Check whether bodyText exists
+    if not isinstance(attr_bodyformat, str) or attr_bodytext not in ["text", "latex"]:
+        # Check whether bodyText is "text" or "latex"
         problems.append(
-            'Questions must have an `bodyFormat` attribute. This should be either "text" or "latex".'
+            'The `bodyText` attribute must be either "text" or "latex". If you do not want to specify it, leave it out and it will default to text.'
         )
 
-    elif not isinstance(attr_bodyformat, str) or attr_bodytext not in ["text", "latex"]:
-        # Check whether bodyText is "text" or "latex"
-        problems.append('The `bodyText` attribute must be either "text" or "latex".')
-
     attr_figures = obj.get("figures", None)
-    if attr_figures is None:
-        # Check whether figures exists
-        problems.append("Questions must have an `figures` attribute. This should be a list.")
-
-    elif not isinstance(attr_figures, list):
+    if not isinstance(attr_figures, list):
         # Check whether questionNames is a list
-        problems.append("The `figures` attribute must be a list.")
+        problems.append(
+            "The `figures` attribute must be a list. If you do not wish to have figures leave it out."
+        )
 
     else:
         if any([not isinstance(x, (str, dict)) for x in attr_figures]):
@@ -259,32 +253,32 @@ def _validateIntegerQuestion(obj: dict) -> list[str]:
     if attr_lowerbound is None:
         # Check whether lowerBound exists
         problems.append(
-            "Integer questions must have a `lowerBound` attribute. This should be an integer."
+            "Integer questions must have a `lowerBound` attribute. This should be an int or float."
         )
 
-    elif not isinstance(attr_lowerbound, int):
+    elif not isinstance(attr_lowerbound, (int, float)):
         # Check whether lowerBound is an int
-        problems.append("The `lowerBound` attribute should be an integer.")
+        problems.append("The `lowerBound` attribute should be an int or float.")
 
     attr_upperbound = obj.get("upperBound", None)
     if attr_upperbound is None:
         # Check whether upperbound exists
         problems.append(
-            "Integer questions must have a `upperBound` attribute. This should be an integer."
+            "Integer questions must have a `upperBound` attribute. This should be an int or float."
         )
 
-    elif not isinstance(attr_upperbound, int):
+    elif not isinstance(attr_upperbound, (int, float)):
         # Check whether upperbound is an int
-        problems.append("The `upperBound` attribute should be an integer.")
+        problems.append("The `upperBound` attribute should be an int or float.")
 
     if (
-        isinstance(attr_lowerbound, int)
-        and isinstance(attr_upperbound, int)
+        isinstance(attr_lowerbound, (int, float))
+        and isinstance(attr_upperbound, (int, float))
         and attr_upperbound < attr_lowerbound
     ):
         # Check whether lowerbound is lower than upperbound
         problems.append(
-            "The upper bound of an integer question must be higher than the lower bound"
+            "The upper bound of an integer question must be higher than or equal to the lower bound"
         )
 
     attr_feedbacks = obj.get("feedbacks", None)
