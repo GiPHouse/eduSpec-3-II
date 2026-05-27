@@ -803,7 +803,7 @@ For chart and table outputs, pass data in a shape accepted by the corresponding 
 
 ## Content Editor
 
-The repository includes an experimental Streamlit editor for creating question files and uploading assets.
+Please note that the content editor is not fully up to date since other features got a higher priority. It is still in the repository and could be made up to date.
 
 With Docker Compose:
 
@@ -931,7 +931,7 @@ Good:
 
 ### A Molecule Figure Does Not Render
 
-Use `.pdb` files in the current app. `.mol` files should be placed in `data/molecules/` and are expected to work after the upcoming `.mol` support PR is merged.
+`.mol`, `.pdb` and `.mol2` files should be placed in `data/molecules/`.
 
 ### A Spectrum Question Does Not Load
 
@@ -989,7 +989,6 @@ For code changes:
 - Use type hints for function parameters and return types.
 - Use Google-style docstrings.
 - Prefer `snake_case` for variables.
-- Existing code contains a mix of naming styles; follow nearby code when changing existing modules.
 - Keep content JSON valid and formatted consistently.
 
 Ruff configuration is stored in `pyproject.toml`.
