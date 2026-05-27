@@ -74,7 +74,7 @@ class TestBuildingMCQ:
             "here's a question",
             ["a", "b", "c"],
             figures=[],
-            checker="customintchecker"
+            checker="customintchecker",
         )
 
         mcq = QuestionBuilder.questionFromJson(input_data)
@@ -216,18 +216,18 @@ class TestBuildingIntQ:
             "Example Question",
             "here's a question",
             figures=[],
-            checker="customintchecker"
+            checker="customintchecker",
         )
 
         intq = QuestionBuilder.questionFromJson(input_data)
 
         assert isinstance(intq, IntegerQuestion)
 
-        assert intq.checker.get_file_name() == "customintchecker" 
+        assert intq.checker.get_file_name() == "customintchecker"
         assert intq.name == correct_intq.name
         assert intq.title == correct_intq.title
         assert intq.bodytext == correct_intq.bodytext
-        assert intq.figures == [] 
+        assert intq.figures == []
         assert intq.correct_answer is None
         assert intq.feedbacks is None
 
@@ -330,18 +330,18 @@ class TestBuildingWordQ:
             "here's a question",
             "text",
             figures=[],
-            checker="customintchecker"
+            checker="customintchecker",
         )
 
         wordq = QuestionBuilder.questionFromJson(input_data)
 
         assert isinstance(wordq, WordQuestion)
 
-        assert wordq.checker.get_file_name() == "customintchecker" 
+        assert wordq.checker.get_file_name() == "customintchecker"
         assert wordq.name == correct_wordq.name
         assert wordq.title == correct_wordq.title
         assert wordq.bodytext == correct_wordq.bodytext
-        assert wordq.figures == [] 
+        assert wordq.figures == []
         assert wordq.correct_answer is None
         assert wordq.feedbacks is None
 
@@ -396,7 +396,7 @@ class TestBuildingDrawingQ:
 
     def test_WordQ_2(self) -> None:
         """Test case for building a standard word question with image path"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "data/img/image1.png", "description": "This is a description"}], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": ""}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "data/img/image1.png", "description": "This is a description"}], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         correct_drawq = MoleculeDrawingQuestion(
             "question1",
@@ -420,7 +420,7 @@ class TestBuildingDrawingQ:
 
     def test_WordQ_custom_checker(self) -> None:
         """Test case for building a drawing question with a custom checker"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "drawing", "checker": "customintchecker", "defaultAnswer": "", "widgetKey": ""}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "drawing", "checker": "customintchecker", "defaultAnswer": ""}"""
 
         correct_drawq = MoleculeDrawingQuestion(
             "question1",
@@ -428,7 +428,7 @@ class TestBuildingDrawingQ:
             "here's a question",
             MoleculeDrawingConfig(None, "", ""),
             figures=[],
-            checker="customintchecker"
+            checker="customintchecker",
         )
 
         drawq = QuestionBuilder.questionFromJson(input_data)
@@ -451,8 +451,8 @@ class TestBuildingDrawingQ:
             assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)
 
     def test_faulty_drawQ_2(self) -> None:
-        """Test case for building a drawing question without defaultAnswer attribute"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "drawing", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": "key"}"""
+        """Test case for building a drawing question with an empty widgetKey attribute"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "drawing", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong", "widgetKey": ""}"""
 
         with pytest.raises(ValueError):
             assert isinstance(QuestionBuilder.questionFromJson(input_data), MoleculeDrawingQuestion)

@@ -56,7 +56,7 @@ class TestQuestionManager:
         location.parent.mkdir(exist_ok=True)
         location.touch()
         location.write_text(
-            r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
+            r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
         )
 
         loaded_mcq = QuestionManager.loadQuestion("question1")

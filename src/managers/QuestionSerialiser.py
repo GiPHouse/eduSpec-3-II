@@ -257,7 +257,7 @@ class QuestionSerialiser:
 
         figures = question.figures
         if figures is None or len(figures) == 0:
-            data_out["figures"] = None
+            pass
         else:
             data_out["figures"] = figures
 

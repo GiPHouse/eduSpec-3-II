@@ -181,7 +181,7 @@ def validateQuestionObject(obj: dict, **kwargs) -> list[str]:
 
     attr_bodyformat = obj.get("bodyFormat", None)
     if attr_bodyformat is not None and (
-        not isinstance(attr_bodyformat, str) or attr_bodytext not in ["text", "latex"]
+        not isinstance(attr_bodyformat, str) or attr_bodyformat not in ["text", "latex"]
     ):
         # Check whether bodyText is "text" or "latex"
         problems.append(
@@ -578,10 +578,10 @@ def _validateDrawingQuestion(obj: dict) -> list[str]:
     attr_defaultanswer = obj.get("defaultAnswer", None)
     if attr_defaultanswer is not None:
         # Default answer is not required
-        if not isinstance(attr_defaultanswer, str) or attr_defaultanswer == "":
+        if not isinstance(attr_defaultanswer, str):
             # Check whether default answer is a nonnull string, if it exists
             problems.append(
-                "The `defaultAnswer` attribute should be a non-empty string. If you do not want to use it, leave it out."
+                "The `defaultAnswer` attribute should be a string. If you do not want to use it, leave it out."
             )
 
     attr_widgetkey = obj.get("widgetKey", None)
