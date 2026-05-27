@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import streamlit as st
 
 from managers.QuestionManager import QuestionManager
@@ -13,6 +15,7 @@ from navigation import (
 )
 from QuestionDrawer import QuestionDrawer
 
+st.logo(str(Path(__file__).parent / "images" / "EduSpec.png"))
 query_params = st.query_params
 requested_quiz = query_params.get("quiz")
 requested_question = query_params.get("question")
