@@ -171,12 +171,13 @@ def aboutPage() -> None:
 def questionNotFoundPage() -> None:
     """Render page that shows when the question requested does not exist"""
     st.error("Error, question not found. Please choose another question or page in the sidebar.")
-    st.image(str(getDataDir() / "images" / "test.png"), width=400)
+    st.image(str(Path(__file__).parent / "images" / "EduSpec.png"), width=400)
 
 
 def quizNotFoundPage() -> None:
     """Render page that shows when the question requested does not exist"""
     st.error("Error, quiz not found. Please choose another quiz or page in the sidebar.")
+    st.image(str(Path(__file__).parent / "images" / "EduSpec.png"), width=400)
 
 
 def renderQuestionButton(
