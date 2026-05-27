@@ -153,7 +153,7 @@ def test_display_molecule_from_file_uses_mol2_for_other_extensions(tmp_path: Pat
     ):
         MoleculeDisplay.displayMoleculeFromFile(pdb_file_path=str(mol2_file))
 
-    fake_view.addModel.assert_called_once_with("MOL2 CONTENT", "mol2")
+    fake_view.addModel.assert_called_once_with("MOL2 CONTENT", "mol")
 
 
 def test_display_molecule_from_file_unknown_style_uses_current_fallback(
@@ -216,7 +216,7 @@ def test_draw_yourself_shows_error_for_empty_file(tmp_path: Path) -> None:
     with patch("MoleculeDisplay.st.error") as mock_error:
         MoleculeDisplay.drawYourself(figures=str(empty_file))
 
-    mock_error.assert_called_once_with(f"PDB file is empty: {empty_file}")
+    mock_error.assert_called_once_with(f"Molecule file is empty: {empty_file}")
 
 
 def test_draw_yourself_shows_error_for_missing_file(tmp_path: Path) -> None:
@@ -228,7 +228,7 @@ def test_draw_yourself_shows_error_for_missing_file(tmp_path: Path) -> None:
     with patch("MoleculeDisplay.st.error") as mock_error:
         MoleculeDisplay.drawYourself(figures=str(missing_file))
 
-    mock_error.assert_called_once_with(f"PDB file not found: {missing_file}")
+    mock_error.assert_called_once_with(f"Molecule file not found: {missing_file}")
 
 
 def test_draw_yourself_shows_error_when_rendering_fails(tmp_path: Path) -> None:
