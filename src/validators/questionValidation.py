@@ -77,7 +77,7 @@ def validateQuestionFile(file_to_check: str | Path) -> list[str]:
         return validateQuestionObject(obj, file_name=file_to_check)
 
 
-def validateQuestion(to_check: str) -> list[str]:
+def validateQuestion(to_check: str, **kwargs) -> list[str]:
     """Checks a json question to see if it's valid.
 
     Args:
@@ -86,7 +86,7 @@ def validateQuestion(to_check: str) -> list[str]:
     Returns:
         list[str]: A list of problems. If it's empty the question is valid.
     """
-    return validateQuestionObject(json.loads(to_check))
+    return validateQuestionObject(json.loads(to_check), kwargs=kwargs)
 
 
 def validateQuestionObject(obj: dict, **kwargs) -> list[str]:

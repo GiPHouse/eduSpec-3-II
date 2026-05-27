@@ -42,7 +42,7 @@ def validateQuizFile(file_to_check: str | Path) -> list[str]:
         return validateQuizObject(obj, file_name=file_to_check)
 
 
-def validateQuiz(to_check: str) -> list[str]:
+def validateQuiz(to_check: str, **kwargs) -> list[str]:
     """Checks a json quiz to see if it's valid.
 
     Args:
@@ -51,7 +51,7 @@ def validateQuiz(to_check: str) -> list[str]:
     Returns:
         list[str]: A list of problems. If it's empty the quiz is valid.
     """
-    return validateQuizObject(json.loads(to_check))
+    return validateQuizObject(json.loads(to_check), kwargs=kwargs)
 
 
 def validateQuizObject(obj: dict, **kwargs) -> list[str]:

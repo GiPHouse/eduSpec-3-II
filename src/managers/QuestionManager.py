@@ -6,6 +6,7 @@ from managers.BaseManager import BaseManager, DirectoryStructure
 from managers.QuestionBuilder import QuestionBuilder
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.Question import Question
+from validators.questionValidation import validateQuestion
 
 
 class QuestionManager(BaseManager):
@@ -88,6 +89,26 @@ class QuestionManager(BaseManager):
         return True
 
     @classmethod
+    def validateQuestion(cls, name: str) -> list[str]:
+        """Validates a question based on its name.
+
+        Args:
+            name (str): The unique id/name of the question to load.
+
+        Returns:
+            list[str]: A list of problems. If it's empty, the question is valid.
+        """
+        if not cls.itemExists(name):
+            return [f"There is no question with the name {name}."]
+
+        data_dir = cls._getDir()
+        question_file = data_dir.joinpath(f"{name}.json")
+
+        question_data = question_file.read_text()
+
+        return validateQuestion(question_data, file_name=question_file)
+
+    @classmethod
     def listQuestions(cls) -> DirectoryStructure:
         """Lists all the currently saved questions
 
@@ -97,44 +118,3 @@ class QuestionManager(BaseManager):
         base_dir = cls._getDir()
 
         return cls._iterDir(base_dir)
-
-    @classmethod
-    def _resolveSingleAssetPath(cls, path: str) -> str:
-        """Resolve a single asset path to an existing file when possible."""
-        resolved_path = Path(path)
-        if resolved_path.is_absolute() and resolved_path.exists():
-            return str(resolved_path)
-
-        base_dir = cls._getDir().parent
-        question_dir = cls._getDir()
-        data_root = base_dir / "data"
-
-        candidates = [
-            question_dir / resolved_path,
-            base_dir / resolved_path,
-            data_root / resolved_path,
-            data_root / "images" / resolved_path.name,
-            data_root / "molecules" / resolved_path.name,
-            data_root / "spectra" / resolved_path.name,
-            data_root / "spectra" / resolved_path,
-        ]
-
-        for candidate in candidates:
-            if candidate.exists():
-                return str(candidate.resolve())
-
-        matches = list(data_root.rglob(resolved_path.name))
-        if len(matches) == 1:
-            return str(matches[0].resolve())
-
-        return str(resolved_path)
-
-    @classmethod
-    def _resolveAssetPath(cls, figures: dict | list[dict] | None) -> list[dict] | None:
-        """Resolve question asset paths to existing files when possible."""
-        if not figures:
-            return None
-
-        for figure in figures:
-            figure["path"] = cls._resolveSingleAssetPath(figure["path"].strip())
-        return figures or None

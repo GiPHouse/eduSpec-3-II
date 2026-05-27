@@ -1,11 +1,14 @@
+import json
 from pathlib import Path
 
 from streamlit import cache_data
 
 from managers.BaseManager import BaseManager
+from managers.QuestionManager import QuestionManager
 from managers.QuizBuilder import QuizBuilder
 from managers.QuizSerialiser import QuizSerialiser
 from Quiz import Quiz
+from validators.quizValidation import validateQuiz, validateQuizObject
 
 
 class QuizManager(BaseManager):
@@ -91,6 +94,58 @@ class QuizManager(BaseManager):
         quiz_file = data_dir.joinpath(f"{quiz_name}.json")
         quiz_file.write_text(quiz_data)
         return True
+
+    @classmethod
+    def validateQuiz(cls, name: str) -> list[str]:
+        """Validates a quiz based on its name.
+
+        Args:
+            name (str): The unique id/name of the quiz to check.
+
+        Returns:
+            list[str]: A list of problems. If there are none the quiz is valid.
+        """
+        if not cls.itemExists(name):
+            return [f"There exists no quiz with the name {name}."]
+
+        data_dir = cls._getDir()
+        quiz_file = data_dir.joinpath(f"{name}.json")
+
+        quiz_data = quiz_file.read_text()
+
+        return validateQuiz(quiz_data, file_name=quiz_file)
+
+    @classmethod
+    def validateQuizRecursive(cls, name: str) -> tuple[list[str], dict[str, list[str]]]:
+        """Validates a quiz an all its questions based on its name.
+
+        Args:
+            name (str): The unique id/name of the quiz to check.
+
+        Returns:
+            list[str],dict[str,list[str]]: A list of problems, and a dict with all question names and the list of their problems. If all of these are empty the quiz and its questions are valid.
+        """
+        if not cls.itemExists(name):
+            return ([f"There exists no quiz with the name {name}."], {})
+
+        data_dir = cls._getDir()
+        quiz_file = data_dir.joinpath(f"{name}.json")
+
+        quiz_data = quiz_file.read_text()
+
+        quiz_obj = json.loads(quiz_data)
+
+        problems = validateQuizObject(quiz_obj, file_name=f"{name}.json")
+
+        attr_questions = quiz_obj.get("questionNames", [])
+        if not isinstance(attr_questions, list):
+            return problems, {}
+
+        question_problems = {}
+        for question in attr_questions:
+            question_problems[question] = QuestionManager.validateQuestion(question)
+
+        return problems, question_problems
 
     @classmethod
     def listQuizzes(cls) -> list[str]:
