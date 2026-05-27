@@ -57,6 +57,26 @@ import json
 from pathlib import Path
 
 
+def validateQuestionFile(file_to_check: str | Path) -> list[str]:
+    """Checks a file to see if it's valid.
+
+    This has more checks than `validateQuestion()`.
+
+    Args:
+        file_to_check (str|Path): The file to check.
+
+    Returns:
+        list[str]: A list of problems. If it's empty the question is valid.
+    """
+    if not isinstance(file_to_check, Path):
+        file_to_check = Path(file_to_check)
+    file_to_check = file_to_check.resolve()
+    with open(file_to_check) as f:
+        contents = f.read()
+        obj = json.loads(contents)
+        return validateQuestionObject(obj, file_name=file_to_check)
+
+
 def validateQuestion(to_check: str) -> list[str]:
     """Checks a json question to see if it's valid.
 
@@ -160,14 +180,20 @@ def validateQuestionObject(obj: dict, **kwargs) -> list[str]:
         )
 
     attr_bodyformat = obj.get("bodyFormat", None)
-    if not isinstance(attr_bodyformat, str) or attr_bodytext not in ["text", "latex"]:
+    if attr_bodyformat is not None and (
+        not isinstance(attr_bodyformat, str) or attr_bodytext not in ["text", "latex"]
+    ):
         # Check whether bodyText is "text" or "latex"
         problems.append(
-            'The `bodyText` attribute must be either "text" or "latex". If you do not want to specify it, leave it out and it will default to text.'
+            'The `bodyFormat` attribute must be either "text" or "latex". If you do not want to specify it, leave it out and it will default to text.'
         )
 
     attr_figures = obj.get("figures", None)
-    if not isinstance(attr_figures, list):
+    if attr_figures is None:
+        # Figures is not required
+        pass
+
+    elif not isinstance(attr_figures, list):
         # Check whether questionNames is a list
         problems.append(
             "The `figures` attribute must be a list. If you do not wish to have figures leave it out."
@@ -447,7 +473,9 @@ def _validateSpectralQuestion(obj: dict) -> list[str]:
 
     elif len(attr_feedbacks) != 3:
         # Check whether feedbacks is 3 long
-        problems.append("The `feedbacks` attribute must have a length of 2")
+        problems.append(
+            "The `feedbacks` attribute must have a length of 3. It is sorted as 'correct feedback', 'too low feedback', 'too high feedback'."
+        )
 
     attr_correctanswer = obj.get("correctAnswer", None)
     if attr_correctanswer is None:
@@ -463,16 +491,10 @@ def _validateSpectralQuestion(obj: dict) -> list[str]:
         )
 
     attr_tolerance = obj.get("tolerance", None)
-    if attr_tolerance is None:
-        # Check whether tolerance exists
-        problems.append(
-            "Spectral questions must have a `tolerance` attribute. This should be an int or float."
-        )
-
-    elif not isinstance(attr_tolerance, (int, float)):
+    if attr_tolerance is not None and not isinstance(attr_tolerance, (int, float)):
         # Check whether tolerance is an int or float
         problems.append(
-            f"The `tolerance` attribute should be an int or float. Currently it is {type(attr_tolerance)}"
+            f"The `tolerance` attribute should be an int or float. Currently it is {type(attr_tolerance)}. You can leave it out, and it will default to 0.5."
         )
 
     return problems
