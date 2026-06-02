@@ -289,8 +289,8 @@ def test_multiple_quiz_navigation() -> None:
     assert_title(at, "titleir_quiz")
 
 
-def test_navigation_between_quizes_questions_pages() -> None:
-    """Test navigation between quizes, questions and pages."""
+def test_navigation_between_quizzes_questions_pages() -> None:
+    """Test navigation between quizzes, questions and pages."""
     at = run_app()
 
     click_button(at, "quiz_nmr_quiz")
