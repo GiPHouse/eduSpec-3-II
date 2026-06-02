@@ -45,7 +45,7 @@ class BaseManager:
         """Returns the directory path
 
         Returns:
-            pathlib.Path: The quiz directory path
+            pathlib.Path: The specific manager's directory path
         """
         item_dir = cls.getDataDir().joinpath(cls._item_dir)
 
