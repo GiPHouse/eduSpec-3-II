@@ -6,11 +6,16 @@ from typing import Any
 
 import streamlit as st
 
-data_dir = Path(__file__).parent.parent / "data"  # get path to data directory
-navigation_file = data_dir / "navigation" / "navigation.json"
+from managers.BaseManager import BaseManager
+
 navigation_env_var = "EDUSPEC_NAVIGATION_FILE"
 
 NavigationItem = dict[str, Any]
+
+
+def getDataDir() -> Path:
+    """Return the active root data directory."""
+    return BaseManager.getDataDir()
 
 
 def getNavigationFile() -> Path:
@@ -18,7 +23,7 @@ def getNavigationFile() -> Path:
     override = os.getenv(navigation_env_var)
     if override:
         return Path(override)
-    return navigation_file
+    return getDataDir() / "navigation" / "navigation.json"
 
 
 @lru_cache(maxsize=None)
@@ -149,7 +154,7 @@ def navigatePage(page: str) -> None:
 def homePage() -> None:
     """render home page"""
     st.title("EduSpec")
-    st.image(str(data_dir / "images" / "maxresdefault.jpg"))
+    st.image(str(Path(__file__).parent / "images" / "EduSpec.png"))
     st.text(
         "This is the homepage for EduSpec, an online learning environment for Molecular Sciences. "
         "Please use the buttons on the left to navigate to different quizzes. \n"
@@ -166,12 +171,13 @@ def aboutPage() -> None:
 def questionNotFoundPage() -> None:
     """Render page that shows when the question requested does not exist"""
     st.error("Error, question not found. Please choose another question or page in the sidebar.")
-    st.image("data/images/test.png", width=400)
+    st.image(str(Path(__file__).parent / "images" / "EduSpec.png"), width=400)
 
 
 def quizNotFoundPage() -> None:
     """Render page that shows when the question requested does not exist"""
     st.error("Error, quiz not found. Please choose another quiz or page in the sidebar.")
+    st.image(str(Path(__file__).parent / "images" / "EduSpec.png"), width=400)
 
 
 def renderQuestionButton(
@@ -184,7 +190,7 @@ def renderQuestionButton(
 
 
 def renderQuizButton(container: Any, label: str, quiz: str, current_quiz: str | None) -> None:
-    """Render a single navigation button for quizes"""
+    """Render a single navigation button for quizzes"""
     button_type = "primary" if current_quiz == quiz else "secondary"
     if container.button(label, key=f"quiz_{quiz}", type=button_type, width="stretch"):
         navigateQuiz(quiz)

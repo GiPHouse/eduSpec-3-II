@@ -52,7 +52,7 @@ class WordQuestion(Question):
         isAnswerCorrect: bool
         ReturnFeedback: str
 
-        if user_input == self.correct_answer:
+        if user_input.lower() == self.correct_answer.lower():
             isAnswerCorrect = True
             ReturnFeedback = self.feedbacks[0]
         else:

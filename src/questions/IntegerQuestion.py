@@ -53,7 +53,9 @@ class IntegerQuestion(Question):
             return self.checker.check(user_input)
 
         if self.correct_answer is None or self.feedbacks is None:
-            raise ValueError("IntegerQuestion needs correct_answer and feedbacks without a custom checker")
+            raise ValueError(
+                "IntegerQuestion needs correct_answer and feedbacks without a custom checker"
+            )
 
         isAnswerCorrect: bool
         ReturnFeedback: str

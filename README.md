@@ -1,68 +1,71 @@
-*This guide was generated with the help of Codex*
+*This guide was generated with Codex.*
 
 # EduSpec
 
-EduSpec is a Streamlit application for practicing spectroscopy questions. It supports IR, NMR, MS, combination exercises, normal text and multiple-choice questions, spectrum-click questions, and molecule drawing questions checked with SMILES.
+EduSpec is a Streamlit learning environment for spectroscopy practice. It supports standalone questions, multi-question quizzes, IR/NMR/MS spectrum-click exercises, text and numeric answers, multiple choice answers, molecule drawing with JSME, custom Python checkers, and script-driven interactive questions.
 
-## Setup And Run
+The application reads course content from a data directory, so the app code and the teaching material can be managed separately. The default data directory is `data/`, but deployments can point EduSpec at another folder or clone a content repository at container startup.
 
-### 1. Install Python
+## Table of Contents
 
-Install Python 3.12 or newer.
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [Running With Docker](#running-with-docker)
+- [Configuration](#configuration)
+- [Project Structure](#project-structure)
+- [Data Directory Structure](#data-directory-structure)
+- [Assets And File Paths](#assets-and-file-paths)
+- [Creating Questions](#creating-questions)
+- [Shared Question Fields](#shared-question-fields)
+- [Question Types](#question-types)
+- [Quizzes](#quizzes)
+- [Navigation](#navigation)
+- [Custom Checkers](#custom-checkers)
+- [Script Questions](#script-questions)
+- [Content Editor](#content-editor)
+- [Content Checklist](#content-checklist)
+- [Troubleshooting](#troubleshooting)
+- [Running Tests](#running-tests)
+- [Code Style](#code-style)
 
-To check whether Python is available, open a terminal in the project folder and run:
+## Requirements
+
+- Python 3.12 or newer
+- A browser
+- Docker or Podman, if you want to run the containerized app
+
+Check Python with:
 
 ```powershell
 python --version
 ```
 
-You should see something like `Python 3.12.x` or higher.
+The project dependencies are listed in `pyproject.toml`. The main runtime dependencies are Streamlit, Plotly, JCAMP parsing, `stmol`, and `py3Dmol`.
 
-### 2. Open The Project Folder
+## Quick Start
 
-All commands should be run from the root of this project. That is the folder that contains:
+Run all commands from the project root unless a command says otherwise. The project root is the folder that contains `README.md`, `pyproject.toml`, `src/`, `data/`, and `tests/`.
 
-```text
-README.md
-pyproject.toml
-src/
-data/
-tests/
-```
-
-### 3. Create A Virtual Environment
-
-This keeps the app's Python packages separate from the rest of your computer.
+Create and activate a virtual environment:
 
 ```powershell
 python -m venv .venv
-```
-
-Activate it:
-
-```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-If PowerShell blocks activation, you can use Command Prompt instead:
+If PowerShell blocks activation, use Command Prompt:
 
 ```cmd
 .venv\Scripts\activate.bat
 ```
 
-### 4. Install The App Dependencies
-
-Run this from the project root:
+Install the app in editable mode:
 
 ```powershell
 python -m pip install -e .
 ```
 
-This installs Streamlit and the other packages listed in `pyproject.toml`.
-
-### 5. Start The Application
-
-Run Streamlit from the project root:
+Start the learner app:
 
 ```powershell
 python -m streamlit run src/main.py
@@ -74,30 +77,166 @@ Streamlit will print a local URL, usually:
 http://localhost:8501
 ```
 
-Open that URL in your browser.
+Stop the app with `Ctrl + C` in the terminal where Streamlit is running.
 
-### 6. Stop The Application
+## Running With Docker
 
-Go back to the terminal where Streamlit is running and press:
+Build and run the learner app with Docker Compose:
 
-```text
-Ctrl + C
+```powershell
+docker compose up --build eduspec
 ```
 
-## Project Folders
-
-The most important folders for content editors are:
+The learner app is served on:
 
 ```text
-data/questions/     Question JSON files
-data/navigation/    Sidebar navigation JSON
-data/images/        Image files used by questions
-data/molecules/     Molecule files used as 3D figures
-data/spectra/       IR, NMR, and MS spectral data files
-src/                Application code
+http://localhost:8501
 ```
 
-## Creating A New Question
+Run the content editor service with:
+
+```powershell
+docker compose up --build eduspec-editor
+```
+
+The editor is served on:
+
+```text
+http://localhost:8502
+```
+
+The Compose setup mounts the local `data/` directory into the container. The learner app uses it read-only; the editor uses it read-write.
+
+You can also build and run the image manually:
+
+```powershell
+docker build -t eduspec .
+docker run -p 8501:8501 -v ${PWD}\data:/data:ro -e EDUSPEC_DATA_DIR=/data eduspec
+```
+
+On Linux or macOS, the volume syntax is:
+
+```sh
+docker run \
+  -p 8501:8501 \
+  -e EDUSPEC_DATA_DIR=/data \
+  -v "$PWD/data:/data:ro" \
+  eduspec
+```
+
+With Podman on SELinux-enabled systems, add the `Z` mount option:
+
+```sh
+podman run \
+  -p 8501:8501 \
+  -e EDUSPEC_DATA_DIR=/data \
+  -v "$PWD/data:/data:ro,Z" \
+  eduspec
+```
+
+## Configuration
+
+EduSpec uses these environment variables:
+
+| Variable | Purpose |
+| --- | --- |
+| `EDUSPEC_DATA_DIR` | Root directory for content. Defaults to the project's `data/` folder locally and `/data` in Docker. |
+| `DATA_DIR` | Backward-compatible fallback for the data directory. |
+| `PATH_FROM_ROOT` | Older fallback for the data directory. Prefer `EDUSPEC_DATA_DIR`. |
+| `EDUSPEC_NAVIGATION_FILE` | Optional override for the navigation JSON file. Defaults to `<data-dir>/navigation/navigation.json`. |
+| `EDUSPEC_DATA_GIT_URL` | Optional Git repository URL to clone into the data directory before the container starts. |
+| `EDUSPEC_DATA_GIT_REF` | Optional branch or tag to use with `EDUSPEC_DATA_GIT_URL`. |
+| `MAIN_FILE` | Docker entrypoint setting for the Streamlit file. Defaults to `main.py`. |
+| `PORT` | Docker entrypoint setting for the Streamlit port. Defaults to `8501`. |
+
+To run locally with a separate content folder:
+
+```powershell
+$env:EDUSPEC_DATA_DIR = "C:\path\to\course-data"
+python -m streamlit run src/main.py
+```
+
+To use a custom navigation file:
+
+```powershell
+$env:EDUSPEC_NAVIGATION_FILE = "C:\path\to\navigation.json"
+python -m streamlit run src/main.py
+```
+
+In Git-backed Docker mode, the target data directory must be empty before startup:
+
+```sh
+docker run \
+  -p 8501:8501 \
+  -e EDUSPEC_DATA_GIT_URL=https://github.com/example/course-data.git \
+  -e EDUSPEC_DATA_GIT_REF=main \
+  eduspec
+```
+
+## Project Structure
+
+```text
+src/                    Streamlit application code
+src/main.py             Learner app entry point
+src/editor/editor.py    Content editor entry point
+data/                   Example/default content
+tests/                  Unit and Streamlit tests
+Dockerfile              Container image definition
+compose.yaml            Learner and editor Compose services
+pyproject.toml          Python package metadata, dependencies, and test config
+```
+
+## Data Directory Structure
+
+A data directory can be the built-in `data/` folder or any folder selected with `EDUSPEC_DATA_DIR`.
+
+```text
+data/
+  questions/      Question JSON files
+  quizzes/        Quiz JSON files
+  navigation/     Sidebar navigation JSON
+  images/         Image assets: .png, .jpg, .jpeg
+  molecules/      Molecule assets: .pdb now, .mol after the pending molecule-file PR
+  spectra/        Spectrum assets: .dx, .jdx
+  compressed/     Downloadable .zip files
+  checkers/       Custom checker Python files
+  scripts/        Custom script-question Python files
+```
+
+## Assets And File Paths
+
+Question files can refer to assets by filename.
+
+```json
+{
+  "path": "test.png",
+  "description": "Image shown above the question."
+}
+```
+
+Useful examples:
+
+```text
+test.png
+water.pdb
+ir.dx
+nmr.jdx
+easy001/ir.dx
+ziptest.zip
+```
+
+Supported content-manager file types:
+
+| Type | Extensions | Default folder |
+| --- | --- | --- |
+| Images | `.png`, `.jpg`, `.jpeg` | `images/` |
+| Molecules | `.pdb`, `.mol`, `.mol2` | `molecules/` |
+| Spectra | `.dx`, `.jdx` | `spectra/` |
+| Downloads | `.zip` | `compressed/` |
+
+For molecule figures, `.pdb`, `.mol`, and `.mol2` files are supported in the current app. Put all file types in `data/molecules/`.
+
+## Creating Questions
 
 Every question is stored as one JSON file in:
 
@@ -105,9 +244,7 @@ Every question is stored as one JSON file in:
 data/questions/
 ```
 
-The file name should match the question `id`.
-
-For example, this question:
+The filename should match the question `id`:
 
 ```json
 {
@@ -115,13 +252,13 @@ For example, this question:
 }
 ```
 
-should be saved as:
+Save it as:
 
 ```text
 data/questions/ir_example_question.json
 ```
 
-Use simple, unique IDs with lowercase letters, numbers, and underscores. Good examples:
+Use simple, unique IDs with lowercase letters, numbers, and underscores:
 
 ```text
 ir_carbonyl_click
@@ -129,7 +266,7 @@ nmr_methyl_triplet
 combo_draw_ethanol
 ```
 
-Avoid spaces in IDs.
+Avoid spaces in IDs. IDs are also used in navigation and quiz files.
 
 ## Shared Question Fields
 
@@ -147,23 +284,36 @@ All question types use these fields:
 }
 ```
 
+Optional shared fields:
+
+```json
+{
+  "checker": "custom_checker_module",
+  "download_data": "ziptest.zip"
+}
+```
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| `id` | Yes | Unique question ID. |
+| `title` | Yes | Displayed as the question title. |
+| `bodyText` | Yes | Main prompt. |
+| `bodyFormat` | No | `"text"` or `"latex"`. Defaults to `"text"` when omitted. |
+| `figures` | Yes | Use `[]` when there are no figures. |
+| `version` | Yes | Current question JSON version is `1`. |
+| `type` | Yes | One of `multipleChoice`, `integer`, `word`, `spectral`, `drawing`, or `script`. |
+| `checker` | No | Custom checker module from `data/checkers/`. |
+| `download_data` | No | Adds a download button for a file that can be loaded by `FigureManager`, such as a `.zip`, image, or spectrum file. |
+
 ### Body Format
 
-`bodyFormat` controls how the question instructions are displayed, is optional and defaults to latex.
-
-Use normal text for simple prompts:
+Use `"text"` for plain prompts:
 
 ```json
 "bodyFormat": "text"
 ```
 
-Use LaTeX formatting when the prompt contains formulas, units, isotopes, subscripts, superscripts, or simple math:
-
-```json
-"bodyFormat": "latex"
-```
-
-When `bodyFormat` is `"latex"`, write LaTeX math between dollar signs inside `bodyText`:
+Use `"latex"` when the prompt contains formulas, units, isotopes, subscripts, superscripts, or simple math:
 
 ```json
 {
@@ -174,40 +324,36 @@ When `bodyFormat` is `"latex"`, write LaTeX math between dollar signs inside `bo
 
 Important details:
 
-- In the JSON file, the field is named `bodyFormat`.
-- In the Python code, this becomes `body_format`.
-- If `bodyFormat` is left out, the app treats it as `"latex"`.
-- In JSON strings, write a backslash as `\\`. For example, use `$1245\\ cm^{-1}$`, not `$1245\ cm^{-1}$`.
-- Do not use LaTeX packages such as `mhchem`; keep formulas simple, such as `$C_4H_{10}O$`, `$CH_3$`, `$^1H$`, and `$m/z$`.
+- The JSON field is named `bodyFormat`.
+- In Python, this becomes `body_format`.
+- If `bodyFormat` is omitted, the app uses `"text"`.
+- In JSON strings, write a backslash as `\\`.
+- Keep LaTeX simple. Do not rely on extra LaTeX packages.
 
 ### Figures
 
-`figures` is always a list. It can be empty:
+`figures` is always a list. Use an empty list if the question has no figures:
 
 ```json
 "figures": []
 ```
 
-Or it can contain one or more figures:
+Each figure has a `path` and `description`:
 
 ```json
 "figures": [
   {
-    "path": "data/images/test.png",
-    "description": "Description shown below the image."
+    "path": "test.png",
+    "description": "Example image"
   },
   {
-    "path": "data/molecules/water.pdb",
-    "description": "Description shown below the 3D molecule viewer."
+    "path": "water.pdb",
+    "description": "3D molecule figure."
   }
 ]
 ```
 
-Use image files for normal figures, such as `.png`, `.jpg`, or `.jpeg`.
-
-Use molecule files from `data/molecules/` for 3D molecule figures. The current app renders `.pdb` and `.ent` files as 3D molecule viewers.
-
-A question can have multiple figures. The app displays them in two columns.
+The app displays figures in two columns. Normal image files are rendered as images. Molecule files are rendered in the 3D molecule viewer when supported by the active branch.
 
 ## Question Types
 
@@ -223,7 +369,7 @@ The student chooses one answer from a list.
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock IR spectrum showing a broad O-H absorption."
     }
   ],
@@ -247,15 +393,13 @@ The student chooses one answer from a list.
 
 Important details:
 
-- `answers` is the list of choices.
-- `correctAnswer` is the number of the correct answer, starting at `0`.
+- `answers` must contain at least two choices.
+- `correctAnswer` is zero-based. The first answer is `0`.
 - `feedbacks` must have the same number of items as `answers`.
-
-Example: if the first answer is correct, use `"correctAnswer": 0`.
 
 ### Integer Or Number Range
 
-The student enters a number. The answer is correct if it is between `lowerBound` and `upperBound`.
+The student enters a number. The answer is correct if it is between `lowerBound` and `upperBound`, inclusive.
 
 ```json
 {
@@ -265,7 +409,7 @@ The student enters a number. The answer is correct if it is between `lowerBound`
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
+      "path": "test.png",
       "description": "Mock mass spectrum with a clear base peak."
     }
   ],
@@ -283,11 +427,9 @@ The student enters a number. The answer is correct if it is between `lowerBound`
 
 Important details:
 
-- The correct answer is a range.
-- `feedbacks` must contain exactly three items:
-  - correct feedback
-  - too low feedback
-  - too high feedback
+- Bounds may be integers or floats.
+- `lowerBound` must be less than or equal to `upperBound`.
+- `feedbacks` must contain exactly three items: correct, too low, too high.
 
 ### Word
 
@@ -310,12 +452,12 @@ The student types a word or short text answer.
 
 Important details:
 
-- The answer must match `correctAnswer`.
-- Keep answers simple, because this question type checks text directly.
+- The answer is compared directly to `correctAnswer`.
+- Answers are not case-sensitive.
 
 ### Spectral
 
-The student clicks a point in a spectrum. This is used for IR, NMR, and MS questions.
+The student clicks a peak or point in a spectrum. This is used for IR, NMR, and MS questions.
 
 ```json
 {
@@ -325,13 +467,13 @@ The student clicks a point in a spectrum. This is used for IR, NMR, and MS quest
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
-      "description": "Mock IR spectrum."
+      "path": "test.png",
+      "description": "Example description"
     }
   ],
   "version": 1,
   "type": "spectral",
-  "spectralpath": "data/spectra/ir.dx",
+  "spectralpath": "ir.dx",
   "correctAnswer": 1245.0,
   "feedbacks": [
     "Correct.",
@@ -343,20 +485,15 @@ The student clicks a point in a spectrum. This is used for IR, NMR, and MS quest
 
 Important details:
 
-- `spectralpath` points to the spectrum file.
-- The app detects the spectrum type from the file path:
-  - path containing `ir` becomes an IR spectrum
-  - path containing `nmr` becomes an NMR spectrum
-  - path containing `ms` becomes an MS spectrum
-- `correctAnswer` is the x-axis value the student should click.
-- `tolerance` is how far away the click may be and still count as correct.
-- `feedbacks` has two items:
-  - correct feedback
-  - incorrect feedback
+- `spectralpath` points to a `.dx` or `.jdx` file.
+- `correctAnswer` and `tolerance` must be floats, such as `1245.0` and `8.0`.
+- `feedbacks` has two items: correct and incorrect.
+- Spectrum type is detected from JCAMP metadata first. If metadata is incomplete, the app falls back to the filename or path containing `ir`, `nmr`, or `ms`.
+- IR and NMR line plots snap selected points to nearby peaks. MS spectra are displayed as bars. 
 
 ### Molecule Drawing
 
-The student draws a molecule. The drawing is converted to a SMILES string and checked against `correctAnswer`.
+The student draws a molecule in the JSME editor. The drawn molecule is submitted as a SMILES string and checked against `correctAnswer`.
 
 ```json
 {
@@ -366,11 +503,11 @@ The student draws a molecule. The drawing is converted to a SMILES string and ch
   "bodyFormat": "latex",
   "figures": [
     {
-      "path": "data/images/test.png",
-      "description": "Mock evidence panel."
+      "path": "test.png",
+      "description": "Evidence panel."
     },
     {
-      "path": "data/molecules/water.pdb",
+      "path": "water.pdb",
       "description": "Example 3D molecule figure."
     }
   ],
@@ -387,10 +524,125 @@ The student draws a molecule. The drawing is converted to a SMILES string and ch
 Important details:
 
 - `correctAnswer` is the expected SMILES string.
-- `defaultAnswer` is what appears in the editor at the start. Use `""` for a blank editor.
-- `widgetKey` must be unique for every drawing question.
+- `defaultAnswer` is the starting SMILES in the editor. Use `""` for a blank editor.
+- `widgetKey` must be a string and should be unique for every drawing question.
+- The current comparison is direct string comparison unless a custom checker is used.
 
-## Adding A Question To Navigation
+### Script
+
+Script questions draw one or more input widgets, pass the collected values to a Python script, and display the returned feedback and optional output.
+
+```json
+{
+  "id": "script_peak_ratio",
+  "title": "Script: Peak Ratio",
+  "bodyText": "Choose values and submit.",
+  "bodyFormat": "text",
+  "figures": [],
+  "version": 1,
+  "type": "script",
+  "script": "PeakRatio.py",
+  "parameters": [
+    {
+      "name": "peak_a",
+      "label": "Peak A",
+      "inputType": "number",
+      "default": 1.0
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "inputType": "select",
+      "options": ["strict", "lenient"],
+      "default": "strict"
+    }
+  ]
+}
+```
+
+Supported parameter `inputType` values:
+
+```text
+text
+textarea
+number
+integer
+slider
+checkbox
+select
+```
+
+For `slider`, you can use `min`, `max`, `default`, and `step`. For `select`, `options` must be a non-empty list.
+
+See [Script Questions](#script-questions) for the Python script format.
+
+## Custom Checkers
+
+Custom checkers live in:
+
+```text
+data/checkers/
+```
+
+Use a checker when the built-in answer comparison is not enough. The question JSON references the checker module name without `.py`:
+
+```json
+{
+  "id": "question_custom_checker",
+  "title": "Custom range",
+  "bodyText": "Enter a number.",
+  "version": 1,
+  "type": "integer",
+  "figures": [],
+  "checker": "customintchecker"
+}
+```
+
+The checker file must define a callable `check` function with the return annotation `tuple[bool, str]`:
+
+```python
+def check(answer: int) -> tuple[bool, str]:
+    if answer < 50:
+        return False, "Too low!"
+    if answer > 100:
+        return False, "Too high!"
+    return True, "Juuust right!"
+```
+
+When `checker` is set, the app delegates answer checking to the custom function. Some question types still require display-related fields. For example, multiple-choice questions still need `answers`, and drawing questions still need `defaultAnswer` and `widgetKey`.
+
+## Quizzes
+
+Quizzes are stored in:
+
+```text
+data/quizzes/
+```
+
+A quiz JSON file needs a unique ID and a list of question IDs in order:
+
+```json
+{
+  "id": "combination1",
+  "questionNames": [
+    "combo_unknown_a_ir",
+    "nmr_methyl_triplet_click",
+    "ms_base_peak_click",
+    "combo_unknown_a_mcq",
+    "combo_draw_butanol"
+  ]
+}
+```
+
+Save this as:
+
+```text
+data/quizzes/combination1.json
+```
+
+The quiz UI tracks attempts, lets students jump between numbered questions, shows an overview, and displays a final review page once every question has been attempted.
+
+## Navigation
 
 The sidebar navigation is stored in:
 
@@ -398,7 +650,7 @@ The sidebar navigation is stored in:
 data/navigation/navigation.json
 ```
 
-The top-level `items` become the main sidebar tabs. For example:
+The top-level `items` become sidebar tabs:
 
 ```json
 {
@@ -415,16 +667,27 @@ The top-level `items` become the main sidebar tabs. For example:
 }
 ```
 
-Each navigation entry must have either:
+Navigation entries can point to a question, a quiz, or a group of child entries.
 
-- `children`, if it is a folder/group
-- `question`, if it opens a question
+Question entry:
 
-It must not have both.
+```json
+{
+  "label": "C-O Stretch",
+  "question": "ir_c_o_stretch_click"
+}
+```
 
-### Folder Entry
+Quiz entry:
 
-Use a folder entry when you want to group questions:
+```json
+{
+  "label": "Combination quiz",
+  "quiz": "combination1"
+}
+```
+
+Folder entry:
 
 ```json
 {
@@ -438,32 +701,7 @@ Use a folder entry when you want to group questions:
 }
 ```
 
-### Question Entry
-
-Use a question entry when clicking it should open a question:
-
-```json
-{
-  "label": "C-O Stretch",
-  "question": "ir_c_o_stretch_click"
-}
-```
-
-The value of `question` must match the `id` of a file in `data/questions/`.
-
-For example:
-
-```json
-"question": "ir_c_o_stretch_click"
-```
-
-loads:
-
-```text
-data/questions/ir_c_o_stretch_click.json
-```
-
-### Full Navigation Example
+Full example:
 
 ```json
 {
@@ -487,14 +725,18 @@ data/questions/ir_c_o_stretch_click.json
       ]
     },
     {
-      "label": "NMR",
+      "label": "Combination exercises",
       "children": [
         {
-          "label": "1H NMR Basics",
+          "label": "Unknown A",
           "children": [
             {
-              "label": "Chemical Shift",
-              "question": "nmr_oxygen_shift_mcq"
+              "label": "Combination quiz",
+              "quiz": "combination1"
+            },
+            {
+              "label": "Draw 1-butanol",
+              "question": "combo_draw_butanol"
             }
           ]
         }
@@ -504,28 +746,112 @@ data/questions/ir_c_o_stretch_click.json
 }
 ```
 
-## Checklist For Adding Content
+Direct links are also supported through query parameters:
 
-1. Add any needed files:
+```text
+http://localhost:8501/?question=ir_c_o_stretch_click
+http://localhost:8501/?quiz=combination1
+http://localhost:8501/?page=about
+```
+
+## Script Questions
+
+Script-question Python files live in:
+
+```text
+data/scripts/
+```
+
+The script must define:
+
+```python
+def run(params: dict) -> dict:
+    return {
+        "correct": True,
+        "feedback": "Correct.",
+        "output": {
+            "type": "markdown",
+            "data": "**Optional extra output**"
+        }
+    }
+```
+
+The `params` dictionary contains the submitted values keyed by the `name` fields from the question JSON.
+
+The result dictionary supports:
+
+| Key | Required | Notes |
+| --- | --- | --- |
+| `correct` | No | Boolean. Defaults to `True` if omitted. |
+| `feedback` | No | String. Defaults to `""` if omitted. |
+| `output` | No | Optional extra content displayed after feedback. |
+
+Supported output `type` values:
+
+```text
+text
+markdown
+json
+table
+line_chart
+bar_chart
+scatter_chart
+pyplot
+```
+
+For chart and table outputs, pass data in a shape accepted by the corresponding Streamlit function.
+
+## Content Editor
+
+Please note that the content editor is not fully up to date since other features got a higher priority. It is still in the repository and could be made up to date.
+
+With Docker Compose:
+
+```powershell
+docker compose up --build eduspec-editor
+```
+
+Open:
+
+```text
+http://localhost:8502
+```
+
+For local development, run the editor from the `src/` directory so its relative upload paths point back to the project `data/` folder:
+
+```powershell
+cd src
+python -m streamlit run editor/editor.py --server.port 8502
+```
+
+The editor is intended to help create integer, word, multiple-choice, spectral, and drawing questions. It uploads image files, spectra, `.pdb` molecule files, and `.mol` molecule files. After creating a question, check the generated JSON and add the question or quiz to `data/navigation/navigation.json` if needed.
+
+## Content Checklist
+
+1. Add required assets to the data directory:
    - images to `data/images/`
    - molecule files to `data/molecules/`
-   - spectrum files to `data/spectra/`
-2. Create a new question JSON file in `data/questions/`.
-3. Make sure the file name matches the question `id`.
-4. Add a navigation entry in `data/navigation/navigation.json`.
-5. Start the app with:
+   - spectra to `data/spectra/`
+   - downloadable ZIP files to `data/compressed/`
+2. Create the question JSON file in `data/questions/`.
+3. Make sure the question filename matches the question `id`.
+4. Create or update quiz JSON files in `data/quizzes/`, if needed.
+5. Add a navigation entry in `data/navigation/navigation.json`.
+6. Start the app:
 
 ```powershell
 python -m streamlit run src/main.py
 ```
 
-6. Open the question from the sidebar and check:
-   - the title appears
-   - figures load
-   - spectrum files load, if used
-   - answer checking works
+Check that:
 
-## Common Mistakes
+- The sidebar entry appears.
+- The question or quiz opens.
+- Figures and downloads load.
+- Spectra render and clicks are accepted, if used.
+- Answer checking and feedback work.
+
+## Troubleshooting
 
 ### The Question Does Not Appear In The Sidebar
 
@@ -535,11 +861,13 @@ Check that the question was added to:
 data/navigation/navigation.json
 ```
 
+Also check that the entry uses `question`, not `quiz`, for standalone questions.
+
 ### The App Says The Question Does Not Exist
 
-Check that the `question` value in navigation matches the question file name.
+The navigation `question` value must match the JSON filename and the question `id`.
 
-For example, this navigation entry:
+This entry:
 
 ```json
 {
@@ -548,13 +876,13 @@ For example, this navigation entry:
 }
 ```
 
-requires this file:
+requires:
 
 ```text
 data/questions/my_question.json
 ```
 
-and the JSON inside should contain:
+and:
 
 ```json
 {
@@ -562,61 +890,73 @@ and the JSON inside should contain:
 }
 ```
 
-### The Navigation File Breaks
+### The App Says The Quiz Does Not Exist
 
-Make sure every navigation item has either `question` or `children`, not both.
-
-Correct:
+The navigation `quiz` value must match a file in `data/quizzes/`.
 
 ```json
 {
-  "label": "Example Question",
-  "question": "example_question"
+  "label": "Combination quiz",
+  "quiz": "combination1"
 }
 ```
 
-Correct:
+requires:
 
-```json
-{
-  "label": "Example Folder",
-  "children": []
-}
-```
-
-Incorrect:
-
-```json
-{
-  "label": "Broken Entry",
-  "question": "example_question",
-  "children": []
-}
+```text
+data/quizzes/combination1.json
 ```
 
 ### A Figure Does Not Load
 
-Check the path. Paths should normally start from the project root:
+Check that:
+
+- The file exists in the active data directory.
+- The extension is supported.
+- The path is spelled exactly as it appears on disk.
+- The `figures` field is a list, even for one figure.
+
+Good:
 
 ```json
 {
-  "path": "data/images/test.png",
-  "description": "Example image."
+  "figures": [
+    {
+      "path": "test.png",
+      "description": "Example image."
+    }
+  ]
 }
 ```
+
+### A Molecule Figure Does Not Render
+
+`.mol`, `.pdb` and `.mol2` files should be placed in `data/molecules/`.
 
 ### A Spectrum Question Does Not Load
 
 Check that:
 
-- `spectralpath` points to an existing file
-- the path contains `ir`, `nmr`, or `ms`
-- `correctAnswer` is a number with a decimal, such as `1245.0`
-- `tolerance` is a number with a decimal, such as `8.0`
+- `spectralpath` points to an existing `.dx` or `.jdx` file.
+- The file has JCAMP metadata that identifies IR, NMR, or MS, or the path contains `ir`, `nmr`, or `ms`.
+- `correctAnswer` is a float, such as `1245.0`.
+- `tolerance` is a float, such as `8.0`.
+- `feedbacks` has at least the correct and incorrect feedback messages.
+
+### A Custom Checker Does Not Load
+
+Check that:
+
+- The checker file is in `data/checkers/`.
+- The JSON value does not include `.py`.
+- The checker defines `check(answer) -> tuple[bool, str]`.
+- The return annotation is exactly `tuple[bool, str]`.
+
+### Docker Git Mode Fails
+
+If `EDUSPEC_DATA_GIT_URL` is set, the target `EDUSPEC_DATA_DIR` must be empty. Use an empty volume or remove the Git-mode environment variables and mount existing content instead.
 
 ## Running Tests
-
-Tests are optional for content editors, but useful after changing code.
 
 Run all tests:
 
@@ -624,18 +964,13 @@ Run all tests:
 python -m pytest
 ```
 
-Run only the navigation tests:
-
-```powershell
-python -m pytest tests/streamlit/test_navigation.py
-```
-
 ## Code Style
 
-For code changes, use:
+For code changes:
 
-- `snake_case` for variables
-- `camelCase` for functions
-- `PascalCase` for classes
-- Google-style docstrings
-- type hints for function parameters and return types
+- Use type hints for function parameters and return types.
+- Use Google-style docstrings.
+- Prefer `snake_case` for variables.
+- Keep content JSON valid and formatted consistently.
+
+Ruff configuration is stored in `pyproject.toml`.
