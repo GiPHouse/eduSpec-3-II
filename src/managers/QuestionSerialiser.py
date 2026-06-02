@@ -70,9 +70,10 @@ class QuestionSerialiser:
         data_out["type"] = "multipleChoice"
 
         data_out["answers"] = question.answers
-        data_out["correctAnswer"] = question.correct_answer
-        data_out["feedbacks"] = question.feedbacks
-        # data_out["checker"] = question.checker  THIS IS MOVED TO _buildGenericQuestion.
+
+        if data_out.get("checker") is None:
+            data_out["correctAnswer"] = question.correct_answer
+            data_out["feedbacks"] = question.feedbacks
 
         return json.dumps(data_out)
 
@@ -104,10 +105,11 @@ class QuestionSerialiser:
         data_out["version"] = 1
         data_out["type"] = "integer"
 
-        data_out["lowerBound"] = question.correct_answer[0]
-        data_out["upperBound"] = question.correct_answer[1]
+        if data_out.get("checker") is None:
+            data_out["lowerBound"] = question.correct_answer[0]
+            data_out["upperBound"] = question.correct_answer[1]
 
-        data_out["feedbacks"] = question.feedbacks
+            data_out["feedbacks"] = question.feedbacks
 
         return json.dumps(data_out)
 
@@ -139,10 +141,11 @@ class QuestionSerialiser:
         data_out["version"] = 1
         data_out["type"] = "word"
 
-        data_out["correctAnswer"] = question.correct_answer
+        if data_out.get("checker") is None:
+            data_out["correctAnswer"] = question.correct_answer
 
-        data_out["correctFeedback"] = question.feedbacks[0]
-        data_out["incorrectFeedback"] = question.feedbacks[1]
+            data_out["correctFeedback"] = question.feedbacks[0]
+            data_out["incorrectFeedback"] = question.feedbacks[1]
 
         return json.dumps(data_out)
 
@@ -177,10 +180,11 @@ class QuestionSerialiser:
 
         data_out["spectralpath"] = question.spectralpath
 
-        data_out["correctAnswer"] = question.correct_answer
+        if data_out.get("checker") is None:
+            data_out["correctAnswer"] = question.correct_answer
 
-        data_out["feedbacks"] = question.feedbacks
-        data_out["tolerance"] = question.tolerance
+            data_out["feedbacks"] = question.feedbacks
+            data_out["tolerance"] = question.tolerance
 
         return json.dumps(data_out)
 
@@ -214,13 +218,16 @@ class QuestionSerialiser:
         data_out["version"] = 1
         data_out["type"] = "drawing"
 
-        data_out["correctAnswer"] = question.correct_answer
-        data_out["defaultAnswer"] = question.default
+        if question.widget_key is not None:
+            data_out["widgetKey"] = question.widget_key
+        if question.default is not None:
+            data_out["defaultAnswer"] = question.default
 
-        data_out["correctFeedback"] = question.feedbacks[0]
-        data_out["incorrectFeedback"] = question.feedbacks[1]
+        if data_out.get("checker") is None:
+            data_out["correctAnswer"] = question.correct_answer
 
-        data_out["widgetKey"] = question.widget_key
+            data_out["correctFeedback"] = question.feedbacks[0]
+            data_out["incorrectFeedback"] = question.feedbacks[1]
 
         return json.dumps(data_out)
 
@@ -247,18 +254,19 @@ class QuestionSerialiser:
         data_out["id"] = question.name
         data_out["title"] = question.title
         data_out["bodyText"] = question.bodytext
-        data_out["checker"] = question.checker
 
-        body_format = question.body_format
-        if body_format is None:
+        # Don't include checker if it doesn't exist
+        if question.checker is not None:
+            data_out["checker"] = question.checker
+
+        if question.body_format is None:
             data_out["bodyFormat"] = "text"
         else:
-            data_out["bodyFormat"] = body_format
+            data_out["bodyFormat"] = question.body_format
 
         figures = question.figures
-        if figures is None or len(figures) == 0:
-            pass
-        else:
+        # Don't include figures if there are none
+        if figures is not None and len(figures) > 0:
             data_out["figures"] = figures
 
         return data_out
