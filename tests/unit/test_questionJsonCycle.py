@@ -18,7 +18,7 @@ class TestSerialisationCycle:
             ["a", "b", "c"],
             1,
             ["a: wrong", "b: correct", "c: wrong"],
-            figures=["data/img/image1.png"],
+            figures=["image1.png"],
         )
         json_1 = QuestionSerialiser.questionToJson(mcq_1)
 
@@ -36,7 +36,7 @@ class TestSerialisationCycle:
             "here's a question",
             (0, 3),
             ["correct", "too low", "too high"],
-            figures=["data/img/image2.png"],
+            figures=["image1.png"],
         )
         json_1 = QuestionSerialiser.questionToJson(intq_1)
 
@@ -55,7 +55,7 @@ class TestSerialisationCycle:
             "text",
             "The correct answer",
             ["correct", "wrong"],
-            figures=["data/img/image1.png"],
+            figures=["image1.png"],
         )
         json_1 = QuestionSerialiser.questionToJson(wordq_1)
 

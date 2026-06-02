@@ -4,11 +4,12 @@ import pytest
 from streamlit import cache_data
 
 from managers.BaseManager import BaseManager
+from managers.FigureManager import FigureManager
 from managers.QuestionManager import QuestionManager
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 
-IMAGE_FIGURE = [({"path": "../data/img/test1", "description": "This is a description"})]
+IMAGE_FIGURE = [({"path": "test1.png", "description": "This is a description"})]
 
 
 class TestQuestionManager:
@@ -113,6 +114,8 @@ class TestQuestionManager:
         BaseManager._data_dir = tmp_path  # noqa: SLF001
         cache_data.clear()
 
+        FigureManager.saveFigure(b"", "test1.png")
+
         mcq_1 = MultipleChoiceQuestion(
             "question1",
             "Example Question",
@@ -201,6 +204,8 @@ class TestQuestionManager:
         """Test case for cycling multiple multiple-choice questions"""
         BaseManager._data_dir = tmp_path  # noqa: SLF001
         cache_data.clear()
+
+        FigureManager.saveFigure(b"", "test1.png")
 
         mcq_1 = MultipleChoiceQuestion(
             "question1",

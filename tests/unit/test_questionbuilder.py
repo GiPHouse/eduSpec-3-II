@@ -6,7 +6,7 @@ from questions.MoleculeDrawingQuestion import MoleculeDrawingConfig, MoleculeDra
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 from questions.WordQuestion import WordQuestion
 
-IMAGE_FIGURE_1 = [{"path": "data/img/image1.png", "description": "This is a description"}]
+IMAGE_FIGURE_1 = [{"path": "image1.png", "description": "This is a description"}]
 
 
 class TestBuildingMCQ:
@@ -40,7 +40,7 @@ class TestBuildingMCQ:
 
     def test_MCQ_2(self) -> None:
         """Test case for building a standard multiple-choice question with image path"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "data/img/image1.png", "description": "This is a description"}], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "image1.png", "description": "This is a description"}], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
 
         correct_mcq = MultipleChoiceQuestion(
             "question1",
@@ -161,7 +161,7 @@ class TestBuildingIntQ:
 
     def test_IntQ_2(self) -> None:
         """Test case for building a standard integer question with image path and equal lower and upper bound"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "data/img/image1.png", "description": "This is a description"}], "version": 1, "type": "integer", "lowerBound": 3, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "image1.png", "description": "This is a description"}], "version": 1, "type": "integer", "lowerBound": 3, "upperBound": 3, "feedbacks": ["correct", "too low", "too high"]}"""
 
         correct_intq = IntegerQuestion(
             "question1",
@@ -297,7 +297,7 @@ class TestBuildingWordQ:
 
     def test_WordQ_2(self) -> None:
         """Test case for building a standard word question with image path"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "data/img/image1.png", "description": "This is a description"}], "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "image1.png", "description": "This is a description"}], "version": 1, "type": "word", "correctAnswer": "answer", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         correct_wordq = WordQuestion(
             "question1",
@@ -396,7 +396,7 @@ class TestBuildingDrawingQ:
 
     def test_WordQ_2(self) -> None:
         """Test case for building a standard word question with image path"""
-        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "data/img/image1.png", "description": "This is a description"}], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
+        input_data = r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [{"path": "image1.png", "description": "This is a description"}], "version": 1, "type": "drawing", "correctAnswer": "answer", "defaultAnswer": "", "correctFeedback": "correct", "incorrectFeedback": "wrong"}"""
 
         correct_drawq = MoleculeDrawingQuestion(
             "question1",

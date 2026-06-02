@@ -56,8 +56,10 @@ Stuff to check (drawing):
 import json
 from pathlib import Path
 
+from managers.FigureManager import FigureManager
 
-def validateQuestionFile(file_to_check: str | Path) -> list[str]:
+
+def validateQuestionFile(file_to_check: str | Path, **kwargs) -> list[str]:
     """Checks a file to see if it's valid.
 
     This has more checks than `validateQuestion()`.
@@ -74,7 +76,7 @@ def validateQuestionFile(file_to_check: str | Path) -> list[str]:
     with open(file_to_check) as f:
         contents = f.read()
         obj = json.loads(contents)
-        return validateQuestionObject(obj, file_name=file_to_check)
+        return validateQuestionObject(obj, file_name=file_to_check, kwargs=kwargs)
 
 
 def validateQuestion(to_check: str, **kwargs) -> list[str]:
@@ -97,6 +99,7 @@ def validateQuestionObject(obj: dict, **kwargs) -> list[str]:
 
     Kwargs:
         file_name (str), optional: The filename of the quiz.
+        dont_check_figures (bool), optional: Whether to ignore checking if all figures exist.
 
     Returns:
         list[str]: A list of problems. If it's empty the question is valid.
@@ -230,6 +233,19 @@ def validateQuestionObject(obj: dict, **kwargs) -> list[str]:
             problems.append(
                 "The `figures` attribute must only contain strings or dictionaries with non-empty strings under the `path` and `description` keys. You currently have a broken dictionary in it."
             )
+
+        for figure in attr_figures:
+            if isinstance(figure, str) and not FigureManager.itemExists(figure):
+                problems.append(
+                    f"The figure {figure} does not exist. Is it in the right directory?"
+                )
+
+            elif isinstance(figure, dict):
+                path = figure.get("path")
+                if isinstance(path, str) and not FigureManager.itemExists(path):
+                    problems.append(
+                        f"The figure {path} does not exist. Is it in the right directory?"
+                    )
 
     if attr_type in ["integer", "multipleChoice", "spectral", "word", "drawing"]:
         match attr_type:

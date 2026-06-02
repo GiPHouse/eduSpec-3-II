@@ -45,7 +45,7 @@ class TestSerialisationMCQ:
             answers=["a", "b", "c"],
             correct_answer=1,
             feedbacks=["a: wrong", "b: correct", "c: wrong"],
-            figures=["data/img/image1.png"],
+            figures=["image1.png"],
             body_format="text",
         )
 
@@ -56,7 +56,7 @@ class TestSerialisationMCQ:
             "title": "Example Question",
             "bodyText": "here's a question",
             "bodyFormat": "text",
-            "figures": ["data/img/image1.png"],
+            "figures": ["image1.png"],
             "version": 1,
             "type": "multipleChoice",
             "answers": ["a", "b", "c"],
