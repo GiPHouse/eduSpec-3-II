@@ -176,6 +176,7 @@ def validateQuestionObject(obj: dict, **kwargs) -> list[str]:
         "spectral",
         "word",
         "drawing",
+        "script",
     ]:
         # Check whether type is a valid type
         problems.append(
