@@ -4,4 +4,3 @@ managers
 pages
 questions
 quizzes
-validators

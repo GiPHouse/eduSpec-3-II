@@ -41,6 +41,27 @@ class FigureManager(BaseManager):
         return ext
 
     @classmethod
+    def itemExists(cls, item_name: str, file_extension: str = "") -> bool:
+        """Checks whether the figure requested exists.
+
+        Args:
+            item_name (str): The item to check, by name.
+            file_extension (str, optional): Ignored.
+
+        Raises:
+            FileNotFoundError: _description_
+            FileExistsError: _description_
+            FileExistsError: _description_
+
+        Returns:
+            bool: Whether the item exists.
+        """
+        cls._detect_type_and_set_item_dir(item_name)
+        data_dir = cls._getDir()
+        item_file = data_dir.joinpath(f"{item_name}")
+        return item_file.is_file()
+
+    @classmethod
     @cache_data
     def loadFigure(cls, name: str) -> bytes:
         """Loads a figure from its name.
