@@ -166,7 +166,7 @@ def aboutPage() -> None:
     """render about page"""
     st.title("About")
     st.text(
-        "This application was developed by the EduSpec team for educational purposes, developed as a GipHouse project. \n"
+        "This application was developed by the EduSpec team for educational purposes, developed as a GipHouse project. "
         "The members of the team are Sybren, Jolien, Rozemarie, Emir, Ozgun, Yusuf, Soykan, Tijs."
     )
 
