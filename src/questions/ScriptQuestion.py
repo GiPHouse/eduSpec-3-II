@@ -211,8 +211,11 @@ class ScriptQuestion(Question):
         for parameter in self.parameters:
             param_name = parameter["name"]
             key = self._paramKey(param_name)
+
             if key in st.session_state:
-                st.session_state[key] = parameter.get("default", "")
+                del st.session_state[key]
+
+        self.last_script_output = None
 
     def _paramKey(self, param_name: str) -> str:
         """Create a unique Streamlit key for one parameter."""
