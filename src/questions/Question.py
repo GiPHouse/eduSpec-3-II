@@ -72,7 +72,7 @@ class Question(ABC):
                             MoleculeDisplay.drawYourself(figure["path"])
                         else:
                             image_bytes = FigureManager.loadFigure(figure["path"])
-                            st.image(image_bytes, use_container_width=True)
+                            st.image(image_bytes, width="stretch")
                         st.markdown(figure["description"])
                 else:
                     with col2:
@@ -81,6 +81,6 @@ class Question(ABC):
                             MoleculeDisplay.drawYourself(figure["path"])
                         else:
                             image_bytes = FigureManager.loadFigure(figure["path"])
-                            st.image(image_bytes, use_container_width=True)
+                            st.image(image_bytes, width="stretch")
                         st.markdown(figure["description"])
                 col_counter = (col_counter + 1) % 2
