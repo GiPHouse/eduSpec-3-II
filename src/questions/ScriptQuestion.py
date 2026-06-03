@@ -169,7 +169,7 @@ class ScriptQuestion(Question):
                 st.json(data)
 
             case "table":
-                st.dataframe(data, use_container_width=True)
+                st.dataframe(data, width="stretch")
 
             case "line_chart":
                 if isinstance(data, list) and data and isinstance(data[0], dict):
@@ -198,7 +198,7 @@ class ScriptQuestion(Question):
                     st.scatter_chart(data)
                 else:
                     st.warning("scatter_chart is not available in this Streamlit version.")
-                    st.dataframe(data, use_container_width=True)
+                    st.dataframe(data, width="stretch")
 
             case "pyplot":
                 st.pyplot(data)
