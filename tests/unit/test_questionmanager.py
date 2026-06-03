@@ -4,11 +4,12 @@ import pytest
 from streamlit import cache_data
 
 from managers.BaseManager import BaseManager
+from managers.FigureManager import FigureManager
 from managers.QuestionManager import QuestionManager
 from managers.QuestionSerialiser import QuestionSerialiser
 from questions.MultipleChoiceQuestion import MultipleChoiceQuestion
 
-IMAGE_FIGURE = [({"path": "../data/img/test1", "description": "This is a description"})]
+IMAGE_FIGURE = [({"path": "test1.png", "description": "This is a description"})]
 
 
 class TestQuestionManager:
@@ -56,7 +57,7 @@ class TestQuestionManager:
         location.parent.mkdir(exist_ok=True)
         location.touch()
         location.write_text(
-            r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "figures": [], "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
+            r"""{"id": "question1", "title": "Example Question", "bodyText": "here's a question", "version": 1, "type": "multipleChoice", "answers": ["a", "b", "c"], "correctAnswer": 1, "feedbacks": ["a: wrong", "b: correct", "c: wrong"]}"""
         )
 
         loaded_mcq = QuestionManager.loadQuestion("question1")
@@ -112,6 +113,8 @@ class TestQuestionManager:
         """Test case for updating a multiple-choice question"""
         BaseManager._data_dir = tmp_path  # noqa: SLF001
         cache_data.clear()
+
+        FigureManager.saveFigure(b"", "test1.png")
 
         mcq_1 = MultipleChoiceQuestion(
             "question1",
@@ -201,6 +204,8 @@ class TestQuestionManager:
         """Test case for cycling multiple multiple-choice questions"""
         BaseManager._data_dir = tmp_path  # noqa: SLF001
         cache_data.clear()
+
+        FigureManager.saveFigure(b"", "test1.png")
 
         mcq_1 = MultipleChoiceQuestion(
             "question1",

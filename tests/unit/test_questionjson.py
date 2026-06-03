@@ -29,13 +29,11 @@ class TestSerialisationMCQ:
             "title": "Example Question",
             "bodyText": "here's a question",
             "bodyFormat": "text",
-            "figures": [],
             "version": 1,
             "type": "multipleChoice",
             "answers": ["a", "b", "c"],
             "correctAnswer": 1,
             "feedbacks": ["a: wrong", "b: correct", "c: wrong"],
-            "checker": None,
         }
 
     def test_MCQfigures(self) -> None:
@@ -47,7 +45,7 @@ class TestSerialisationMCQ:
             answers=["a", "b", "c"],
             correct_answer=1,
             feedbacks=["a: wrong", "b: correct", "c: wrong"],
-            figures=["data/img/image1.png"],
+            figures=["image1.png"],
             body_format="text",
         )
 
@@ -58,13 +56,12 @@ class TestSerialisationMCQ:
             "title": "Example Question",
             "bodyText": "here's a question",
             "bodyFormat": "text",
-            "figures": ["data/img/image1.png"],
+            "figures": ["image1.png"],
             "version": 1,
             "type": "multipleChoice",
             "answers": ["a", "b", "c"],
             "correctAnswer": 1,
             "feedbacks": ["a: wrong", "b: correct", "c: wrong"],
-            "checker": None,
         }
 
 
@@ -89,13 +86,11 @@ class TestSerialisationIntQ:
             "title": "Example Question",
             "bodyText": "here's a question",
             "bodyFormat": "text",
-            "figures": [],
             "version": 1,
             "type": "integer",
             "lowerBound": 0,
             "upperBound": 3,
             "feedbacks": ["correct", "too low", "too high"],
-            "checker": None,
         }
 
 
@@ -120,13 +115,11 @@ class TestSerialisationWordQ:
             "title": "Example Question",
             "bodyText": "here's a question",
             "bodyFormat": "text",
-            "figures": [],
             "version": 1,
             "type": "word",
             "correctAnswer": "answer",
             "correctFeedback": "correct",
             "incorrectFeedback": "wrong",
-            "checker": None,
         }
 
 
@@ -151,13 +144,11 @@ class TestSerialisationDrawQ:
             "title": "Example Question",
             "bodyText": "here's a question",
             "bodyFormat": "text",
-            "figures": [],
             "version": 1,
             "type": "drawing",
             "correctAnswer": "answer",
             "defaultAnswer": "seed",
             "correctFeedback": "correct",
             "incorrectFeedback": "wrong",
-            "checker": None,
             "widgetKey": "key",
         }

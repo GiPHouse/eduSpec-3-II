@@ -2,6 +2,7 @@ import json
 
 from managers.QuestionManager import QuestionManager
 from Quiz import Quiz
+from validators.quizValidation import validateQuizObject
 
 
 class QuizBuilder:
@@ -21,7 +22,6 @@ class QuizBuilder:
             data (str): The json string describing the quiz.
 
         Raises:
-            TypeError: When encountering an unrecognised question type.
             ValueError: When encountering a malformed quiz or question.
 
         Returns:
@@ -29,14 +29,13 @@ class QuizBuilder:
         """
         obj = json.loads(data)
 
+        problems = validateQuizObject(obj)
+
+        if len(problems) > 0:
+            raise ValueError(f"Malformed quiz! The following problems were found: {problems}")
+
         name = obj.get("id")
         question_names = obj.get("questionNames")
-
-        if not name:
-            raise ValueError("Malformed quiz! Missing id.")
-
-        if not question_names:
-            raise ValueError(f"Malformed quiz {id}! Missing questions.")
 
         questions = []
 
@@ -44,8 +43,6 @@ class QuizBuilder:
             try:
                 question = QuestionManager.loadQuestion(question_name)
                 questions.append(question)
-            except FileNotFoundError:
-                raise ValueError(f"Malformed quiz {id}! Question {question_name} does not exist.")
             except Exception as e:
                 raise e
 
