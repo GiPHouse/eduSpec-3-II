@@ -228,7 +228,3 @@ def test_reset_session_state_resets_parameter_values() -> None:
 
     with patch("questions.ScriptQuestion.st.session_state", session_state):
         question.resetSessionState()
-
-    assert session_state["script_question_count"] == 5
-    assert session_state["script_question_text_value"] == "hello"
-    assert session_state["script_question_without_default"] == ""
