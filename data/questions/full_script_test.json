@@ -1,0 +1,65 @@
+{
+  "id": "full_script_test",
+  "title": "Full Script Question Test",
+  "bodyText": "Fill in the parameters below. When you submit, a custom Python script will process your input, create custom feedback, and display the selected output type.",
+  "bodyFormat": "text",
+  "figures": [],
+  "version": 1,
+  "type": "script",
+  "script": "full_script_test",
+  "parameters": [
+    {
+      "name": "name",
+      "label": "Your name",
+      "inputType": "text",
+      "default": ""
+    },
+    {
+      "name": "notes",
+      "label": "Optional notes",
+      "inputType": "textarea",
+      "default": "testing the script question"
+    },
+    {
+      "name": "a",
+      "label": "Coefficient a",
+      "inputType": "number",
+      "default": 1.0
+    },
+    {
+      "name": "power",
+      "label": "Power",
+      "inputType": "integer",
+      "default": 2
+    },
+    {
+      "name": "x_max",
+      "label": "Maximum x value",
+      "inputType": "slider",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "name": "show_extra",
+      "label": "Show extra feedback",
+      "inputType": "checkbox",
+      "default": true
+    },
+    {
+      "name": "output_type",
+      "label": "Output type",
+      "inputType": "select",
+      "default": "line_chart",
+      "options": [
+        "text",
+        "markdown",
+        "json",
+        "table",
+        "line_chart",
+        "bar_chart"
+      ]
+    }
+  ]
+}
